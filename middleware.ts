@@ -8,10 +8,14 @@ export async function middleware(request: NextRequest) {
     request: { headers: request.headers },
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const hasSupabaseEnv = Boolean(supabaseUrl && supabaseAnonKey)
+
+  let user: unknown = null
+
+  if (hasSupabaseEnv) {
+    const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (cookies: { name: string; value: string; options: any }[]) =>
@@ -19,10 +23,15 @@ export async function middleware(request: NextRequest) {
             response.cookies.set(name, value, options)
           ),
       },
-    }
-  )
+    })
 
-  const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser()
+
+    user = authUser
+  }
+
   const adminSession = request.cookies.get('admin_session')
 
   // Protect Admin Dashboard
@@ -33,12 +42,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect unauthenticated users from scout dashboard
-  if (pathname.startsWith('/scout/') && !user) {
+  if (hasSupabaseEnv && pathname.startsWith('/scout/') && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
   // Redirect unauthenticated users from athlete dashboard
-  if (pathname.startsWith('/athlete/dashboard') && !user) {
+  if (hasSupabaseEnv && pathname.startsWith('/athlete/dashboard') && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
