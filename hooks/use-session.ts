@@ -1,9 +1,14 @@
 import { createClientComponentClient } from '@/lib/supabase-client'
-import { User } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 
 interface Profile {
-  role: 'scout' | 'athlete'
+  id: string
+  role: string
+  full_name?: string | null
+  phone?: string | null
+  status?: string | null
+  subscription_tier?: string | null
+  email?: string | null
 }
 
 export function useSession() {
@@ -14,15 +19,37 @@ export function useSession() {
   const supabase = createClientComponentClient()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session?.user || null)
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      const user = session?.user || null
+      setSession(user)
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, role, full_name, phone, status, subscription_tier, email')
+          .or(`user_id.eq.${user.id},id.eq.${user.id}`)
+          .single()
+        setProfile((data as any) || null)
+      } else {
+        setProfile(null)
+      }
       setLoading(false)
     })
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session?.user || null)
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const user = session?.user || null
+      setSession(user)
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, role, full_name, phone, status, subscription_tier, email')
+          .or(`user_id.eq.${user.id},id.eq.${user.id}`)
+          .single()
+        setProfile((data as any) || null)
+      } else {
+        setProfile(null)
+      }
       setLoading(false)
     })
 
@@ -31,4 +58,6 @@ export function useSession() {
 
   return { session, profile, loading }
 }
+
+
 

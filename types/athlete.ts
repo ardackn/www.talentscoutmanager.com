@@ -11,6 +11,11 @@ export interface AthletePublic {
   stamina: number      // 0-100
   image: string
   created_at: string
+  ai_scores?: {
+    scoutScore: number
+    breakdown: Record<string, number>
+    recommendation: string
+  }
 }
 
 export interface AthletePrivate {

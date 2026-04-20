@@ -153,7 +153,7 @@ export async function POST(req: NextRequest) {
     await supabase.from('athletes').delete().neq('id', '')
 
     // Insert new sample data
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('athletes')
       .insert(
         SAMPLE_ATHLETES.map(athlete => ({

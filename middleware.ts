@@ -6,24 +6,22 @@ import type { User } from '@supabase/supabase-js'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const response = NextResponse.next({
-    request: { headers: request.headers },
-  })
+  const response = NextResponse.next()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const hasSupabaseEnv = Boolean(supabaseUrl && supabaseAnonKey)
 
   let user: User | null = null
-  let profile: { role: string } | null = null
+  let profile: { role?: string | null } | null = null
 
-  if (true) { // Always check if env set
-    const supabase = createServerComponentClient<Database>({ cookies: () => request.cookies })
+  if (hasSupabaseEnv) {
+    const supabase = createServerComponentClient(request.cookies as any)
 
     const profileData = await getUserProfile(supabase)
     if (profileData) {
       user = profileData.user
-      profile = profileData.profile
+      profile = profileData.profile as any
     }
   }
 
@@ -36,22 +34,17 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Role-based redirects for protected routes
-  if (user && profile) {
+  if (user && profile?.role) {
     if (pathname === '/' && profile.role === 'scout') {
       return NextResponse.redirect(new URL('/scout/search', request.url))
     }
     if (pathname === '/' && profile.role === 'athlete') {
       return NextResponse.redirect(new URL('/athlete/profile', request.url))
     }
-  }
-
-  // Role-based redirects for protected routes
-  if (user && profile) {
-    if (pathname.startsWith('/scout/') && profile.role !== 'scout') {
+    if (pathname.startsWith('/scout/') && profile.role !== 'scout' && profile.role !== 'admin') {
       return NextResponse.redirect(new URL('/athlete/profile', request.url))
     }
-    if (pathname.startsWith('/athlete/profile') && profile.role !== 'athlete') {
+    if (pathname.startsWith('/athlete/profile') && profile.role !== 'athlete' && profile.role !== 'admin') {
       return NextResponse.redirect(new URL('/scout/search', request.url))
     }
   }

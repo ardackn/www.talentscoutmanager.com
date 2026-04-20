@@ -4,6 +4,8 @@ import Image from 'next/image'
 import { motion, useInView } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 import { talents as topTalents } from '@/lib/talent-data';
+import PricingSection from '@/components/sections/Pricing';
+
 
 export default function HomePage() {
   const statsRef = useRef(null);
@@ -42,20 +44,26 @@ export default function HomePage() {
   const howItWorksCards = [
     {
       icon: '📱',
-      title: '01 Upload Video',
+      title: '01 Upload Video', 
       description: 'Record 60s highlight from your phone. Upload instantly worldwide.'
     },
     {
       icon: '🤖',
       title: '02 AI Analysis',
-      description: 'GPT-4o scores speed, technique, intelligence &amp; potential.'
+      description: 'GPT-4o scores speed, technique, intelligence & potential.'
     },
     {
       icon: '🔍',
       title: '03 Get Discovered',
       description: 'Pro scouts worldwide find you through advanced filters.'
+    },
+    {
+      icon: '⭐',
+      title: '04 Pro Scout Access', 
+      description: 'Connect directly with elite scouts & agencies globally.'
     }
   ];
+
 
   return (
     <>
@@ -162,8 +170,12 @@ export default function HomePage() {
           </motion.div>
         </section>
 
+        {/* PRICING */}
+        <PricingSection />
+        
         {/* STATS */}
         <section ref={statsRef} className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-[var(--red-primary)]/3 to-[var(--gold-primary)]/3 backdrop-blur-xl border-b border-white/10">
+
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
