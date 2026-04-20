@@ -1,9 +1,12 @@
+"use client"
+
 import { useState, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { Upload, Loader2, Circle, BarChart3, MessageSquare } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 // Mock skills matching talent-data.ts
 const mockSkills = [

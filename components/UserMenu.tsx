@@ -3,6 +3,8 @@
 import { useSession } from '@/hooks/use-session'
 import { createClientComponentClient } from '@/lib/supabase-client'
 import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 

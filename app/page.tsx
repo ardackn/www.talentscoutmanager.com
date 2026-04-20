@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import { motion, useInView } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 import { talents as topTalents } from '@/lib/talent-data';
@@ -310,10 +311,13 @@ export default function HomePage() {
                   whileHover={{ scale: 1.05, rotateY: 10 }}
                 >
                   <div className="relative mb-6 overflow-hidden rounded-2xl">
-                    <img 
+                    <Image 
                       src={`https://i.pravatar.cc/300?u=${talent.id}`} 
                       alt={talent.name}
+                      width={300}
+                      height={400}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                      unoptimized
                     />
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 bg-[var(--red-primary)]/90 text-white text-sm font-bold rounded-full font-clash">{talent.aiScore}</span>
