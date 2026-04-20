@@ -93,23 +93,25 @@ export default function HomePage() {
         {/* HERO */}
         <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
           {/* Video Background */}
-          <video 
-            src="/v1.mp4"
-            autoPlay 
-            muted 
-            loop 
+          <video
+            autoPlay
+            muted
+            loop
             playsInline
-            className="absolute top-0 left-0 w-full h-full object-cover z-0"
-          />
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+          >
+            <source src="/v1.mp4" type="video/mp4" />
+          </video>
           {/* Dark Overlay */}
-          <div className="absolute inset-0 bg-black/60 z-10" />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 1 }} />
 
 
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="max-w-7xl mx-auto text-center relative z-10"
+            className="max-w-7xl mx-auto text-center"
+            style={{ position: 'relative', zIndex: 2 }}
           >
             <motion.h1 
               className="font-clash text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-black leading-tight mb-8 bg-gradient-to-r from-[var(--red-primary)] via-red-400 to-[var(--gold-primary)] bg-clip-text text-transparent drop-shadow-2xl tracking-tight"

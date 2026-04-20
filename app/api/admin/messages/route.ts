@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { talents, getUnreadMessages } from '@/lib/talent-data'
+import { talents } from '@/lib/talent-data'
 
 export async function GET() {
-  const unread = getUnreadMessages()
-  return NextResponse.json({ messages: unread })
+  const unreadMessages = talents.flatMap(t => t.messages.filter(m => !m.replied))
+  return NextResponse.json({ messages: unreadMessages })
 }
 
 export async function POST(request: NextRequest) {

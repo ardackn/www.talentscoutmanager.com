@@ -42,7 +42,6 @@ export const talents: Talent[] = [
       }
     ]
   },
-  // Add more sample talents
   {
     id: '2',
     name: 'Ahmed Khalil',
@@ -58,4 +57,8 @@ export const talents: Talent[] = [
 
 export function getTalentById(id: string): Talent | undefined {
   return talents.find(t => t.id === id)
+}
+
+export function getUnreadMessages(): Message[] {
+  return talents.flatMap(t => t.messages.filter(m => !m.replied))
 }

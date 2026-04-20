@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerComponentClient } from '@/lib/supabase-clean'
-import { cookies } from 'next/headers'
 import type { Database } from '@/types/supabase'
 import { eq } from 'drizzle-orm' // optional, using raw for now
 
@@ -18,7 +17,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing athleteId or content' }, { status: 400 })
     }
 
-    const supabase = createServerComponentClient()
+    const supabase = createServerComponentClient({ cookies: () => request.cookies })
 
     // Get current user (scout)
     const { data: { user } } = await supabase.auth.getUser()

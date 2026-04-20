@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@/lib/supabase'
+import { createClientComponentClient } from '@/lib/supabase-client'
 import { AthletePublic } from '@/types/athlete'
 import { t } from '@/lib/i18n'
 import Link from 'next/link'

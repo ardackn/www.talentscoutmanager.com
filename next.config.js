@@ -1,6 +1,9 @@
 const nextConfig = {
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
+  experimental: {
+    serverComponentsExternalPackages: ['@supabase/ssr']
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
@@ -8,6 +11,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'image.mux.com' },
       { protocol: 'https', hostname: 'i.pravatar.cc' },
       { protocol: 'https', hostname: 'picsum.photos' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
     ]
   },
   async headers() {
