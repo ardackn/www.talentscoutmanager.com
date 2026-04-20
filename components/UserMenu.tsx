@@ -1,15 +1,8 @@
 "use client"
 
 import { useSession } from '@/hooks/use-session'
-import { createClientComponentClient } from '@/lib/supabase'
+import { createClientComponentClient } from '@/lib/supabase-client'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu' // Add shadcn dropdown later
-import { Avatar, AvatarFallback } from '@/components/ui/avatar' // Add later
 import { LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 

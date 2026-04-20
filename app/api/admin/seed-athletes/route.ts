@@ -1,11 +1,11 @@
 import { createServerComponentClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase'
+import { createClientComponentClient } from '@/lib/supabase-clean'
 import type { AthletePublic } from '@/types/athlete'
 
 async function createAdminClient() {
-  const supabase = createClient()
+  const supabase = createClientComponentClient()
   const { data: { user } } = await supabase.auth.getUser()
   return { supabase, user }
 }
@@ -177,4 +177,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to seed athletes' }, { status: 500 })
   }
 }
-

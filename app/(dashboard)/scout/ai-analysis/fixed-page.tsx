@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -88,7 +90,7 @@ export default function ScoutAIAnalysisPage() {
           <BarChart3 className="w-4 h-4 mr-1" /> AI Analiz Araçları
         </span>
         <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-4">
-          Video Yükle &amp; AI Analizi
+          Video Yükle & AI Analizi
         </h1>
         <p className="text-base text-slate-300 max-w-2xl">
           Oyuncu videosu yükleyin, temel bilgileri girin ve yapay zeka anında beceri analizi yapsın.
@@ -96,7 +98,7 @@ export default function ScoutAIAnalysisPage() {
       </section>
 
       <div className="grid lg:grid-cols-2 gap-8 mb-12">
-        {/* Upload &amp; Form */}
+        {/* Upload & Form */}
         <div className="space-y-8">
           {/* Video Upload */}
           <Card className="group hover:border-white/20 transition-all overflow-hidden border-white/10">
@@ -122,7 +124,7 @@ export default function ScoutAIAnalysisPage() {
                   <>
                     <Upload className="w-12 h-12 mx-auto mb-4 text-slate-400" />
                     <div>
-                      <p className="text-lg font-semibold mb-1">Drag &amp; drop video</p>
+                      <p className="text-lg font-semibold mb-1">Drag & drop video</p>
                       <p className="text-sm text-slate-400">veya buraya tıklayın</p>
                     </div>
                   </>
@@ -243,7 +245,7 @@ export default function ScoutAIAnalysisPage() {
                   <div 
                     className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-r from-slate-800/50 to-slate-900/50 border-8 border-white/10 shadow-2xl"
                   />
-                  <svg viewBox="0 0 36 36" className="absolute inset-4 md:inset-6 w-full h- full animate-pulse">
+                  <svg viewBox="0 0 36 36" className="absolute inset-4 md:inset-6 w-full h-full animate-pulse">
                     <path d="M18 2.0845
                       a 15.9155 15.9155 0 0 1 0 31.831
                       a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#E94560" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="100, 100" strokeDashoffset="0" pathLength="1" className="origin-center -rotate-90 transition-all duration-1000" style={{ '--dashoffset': ((1 - results.aiScore / 100) * 100) + '%' }} />

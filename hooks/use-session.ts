@@ -1,4 +1,4 @@
-import { createClientComponentClient } from '@/lib/supabase'
+import { createClientComponentClient } from '@/lib/supabase-clean'
 import { User } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 

@@ -1,7 +1,7 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { createServerComponentClient, getUserProfile } from '@/lib/supabase'
+import { createServerComponentClient } from '@/lib/supabase-clean'
+import { getUserProfile } from '@/lib/supabase-clean'
 import type { User } from '@supabase/supabase-js'
 
 export async function middleware(request: NextRequest) {
@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
   let profile: { role: string } | null = null
 
   if (true) { // Always check if env set
-    const supabase = createServerComponentClient()
+    const supabase = createServerComponentClient<Database>({ cookies: () => request.cookies })
 
     const profileData = await getUserProfile(supabase)
     if (profileData) {

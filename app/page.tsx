@@ -1,8 +1,8 @@
+"use client"
+
 import { motion, useInView } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
-import { createClientComponentClient } from '@/lib/supabase';
-import { AthletePublic } from '@/types/athlete';
-import { t } from '@/lib/i18n';
+import { talents as topTalents } from '@/lib/talent-data';
 
 export default function HomePage() {
   const statsRef = useRef(null);
@@ -88,14 +88,21 @@ export default function HomePage() {
         </div>
       </nav>
 
-      <main className="pt-16 min-h-screen bg-[var(--bg-primary)] text-white overflow-hidden">
+      <main className="pt-16 min-h-screen text-white overflow-hidden">
         {/* HERO */}
         <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--red-primary)]/5 via-transparent to-[var(--gold-primary)]/5 animate-pulse"></div>
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-[var(--red-primary)]/10 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
-            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[var(--gold-primary)]/5 rounded-full blur-3xl animate-[float_8s_ease-in-out_infinite_reverse]"></div>
-          </div>
+          {/* Video Background */}
+          <video 
+            src="/v1.mp4"
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+            className="absolute top-0 left-0 w-full h-full object-cover z-0"
+          />
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-black/60 z-10" />
+
 
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
@@ -321,13 +328,13 @@ export default function HomePage() {
                     </div>
                     <div className="text-xs text-slate-500 font-dm">{talent.age}yo | {talent.height}</div>
                   </div>
-                  <a 
+                  <motion.a 
                     href="/scout/overview"
                     className="w-full block rounded-2xl bg-gradient-to-r from-[var(--red-primary)] to-red-500 py-4 px-6 font-bold text-white text-center font-clash hover:from-red-500 hover:shadow-lg hover:shadow-[var(--red-primary)]/25 transition-all backdrop-blur-sm"
                     whileHover={{ scale: 1.02 }}
                   >
                     View Profile →
-                  </a>
+                  </motion.a>
                 </motion.div>
               ))}
             </div>

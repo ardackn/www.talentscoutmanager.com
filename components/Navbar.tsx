@@ -1,9 +1,9 @@
+"use client"
+
 import Link from 'next/link'
 import { useSession } from '@/hooks/use-session'
 import { UserMenu } from '@/components/UserMenu'
-import { t } from '@/lib/i18n'
-
-"use client"
+import { t } from '@/lib/i18n' 
 
 export default function Navbar() {
   const { loading } = useSession()

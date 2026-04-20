@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerComponentClient } from '@/lib/supabase'
+import { createServerComponentClient } from '@/lib/supabase-clean'
 import { cookies } from 'next/headers'
 import type { Database } from '@/types/supabase'
 import { eq } from 'drizzle-orm' // optional, using raw for now
