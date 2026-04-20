@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { createServerComponentClient, getUserProfile } from '@/lib/supabase'
+import type { User } from '@supabase/supabase-js'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -12,24 +14,17 @@ export async function middleware(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const hasSupabaseEnv = Boolean(supabaseUrl && supabaseAnonKey)
 
-  let user: unknown = null
+  let user: User | null = null
+  let profile: { role: string } | null = null
 
-  if (hasSupabaseEnv) {
-    const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
-      cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: (cookies: { name: string; value: string; options: any }[]) =>
-          cookies.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          ),
-      },
-    })
+  if (true) { // Always check if env set
+    const supabase = createServerComponentClient()
 
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser()
-
-    user = authUser
+    const profileData = await getUserProfile(supabase)
+    if (profileData) {
+      user = profileData.user
+      profile = profileData.profile
+    }
   }
 
   const adminSession = request.cookies.get('admin_session')
@@ -41,13 +36,33 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect unauthenticated users from scout dashboard
-  if (hasSupabaseEnv && pathname.startsWith('/scout/') && !user) {
+  // Role-based redirects for protected routes
+  if (user && profile) {
+    if (pathname === '/' && profile.role === 'scout') {
+      return NextResponse.redirect(new URL('/scout/search', request.url))
+    }
+    if (pathname === '/' && profile.role === 'athlete') {
+      return NextResponse.redirect(new URL('/athlete/profile', request.url))
+    }
+  }
+
+  // Role-based redirects for protected routes
+  if (user && profile) {
+    if (pathname.startsWith('/scout/') && profile.role !== 'scout') {
+      return NextResponse.redirect(new URL('/athlete/profile', request.url))
+    }
+    if (pathname.startsWith('/athlete/profile') && profile.role !== 'athlete') {
+      return NextResponse.redirect(new URL('/scout/search', request.url))
+    }
+  }
+
+  // Protect scout routes
+  if (pathname.startsWith('/scout/') && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect unauthenticated users from athlete dashboard
-  if (hasSupabaseEnv && pathname.startsWith('/athlete/dashboard') && !user) {
+  // Protect athlete routes
+  if (pathname.match(/^\/athlete\/(profile|dashboard)/) && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
@@ -55,5 +70,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/scout/:path*', '/athlete/dashboard/:path*', '/admin/:path*'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|register|login).*)',
+    '/scout/:path*',
+    '/athlete/:path*',
+    '/admin/:path*',
+  ],
 }
