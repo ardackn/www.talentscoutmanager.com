@@ -7,6 +7,6 @@
 - [x] 4. Create app/refund-policy/page.tsx with RefundPolicy
 - [x] 5. Restore app/page.tsx to Home page (HeroBanner + AthleteSearch + Pricing)
 
-- [ ] 6. Clean misplaced files: components/page.tsx, components/athlete/page.tsx
-- [ ] 7. Verify Footer links and i18n loading
-- [ ] 8. Test pages in dev server
+- [x] 6. Clean misplaced files: components/page.tsx, components/athlete/page.tsx
+- [x] 7. Verify Footer links and i18n loading
+- [x] 8. Test pages in dev server
