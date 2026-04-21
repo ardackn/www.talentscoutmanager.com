@@ -41,7 +41,68 @@ export default function AthleteDashboardPage() {
   })
 const [aiResults, setAiResults] = useState<any>(null)
   const [analyzing, setAnalyzing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null)
+const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setVideoFile(e.target.files[0]);
+    }
+  };
+
+  const handleVideoDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setVideoFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleAnalyze = async () => {
+    if (!analyzeData.height || !analyzeData.weight || !analyzeData.age || !analyzeData.position) {
+      alert('Lütfen tüm alanları doldurun');
+      return;
+    }
+
+    setAnalyzing(true);
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...analyzeData,
+          videoId: videoFile ? videoFile.name : null,
+          athleteId: talent?.id,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAiResults(data);
+      } else {
+        alert('Analiz hatası: ' + data.error);
+      }
+    } catch (error) {
+      alert('Bağlantı hatası');
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const handleUploadVideo = async () => {
+    if (!videoFile) return;
+    setUploading(true);
+    try {
+      const res = await fetch('/api/mux/upload-url', {
+        method: 'POST',
+        body: JSON.stringify({ file: videoFile.name }),
+      });
+      const { url } = await res.json();
+      // Simulate upload
+      alert('Video yüklendi: ' + url);
+    } catch {
+      alert('Yükleme hatası');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     // Demo: assume first talent or from session

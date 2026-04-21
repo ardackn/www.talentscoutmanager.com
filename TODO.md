@@ -1,12 +1,9 @@
-# TODO List for Legal & i18n Fixes
+# Task: Fix parallel pages error and athlete dashboard issues
 
-## Step 6: Legal & i18n Fixes
-- [x] 1. Fix duplicate resources in components/i18n.ts (already correct)
-- [x] 2. Create app/terms/page.tsx with TermsOfService (useTranslation 'legal')
-- [x] 3. Create app/privacy/page.tsx with i18n PrivacyPolicy
-- [x] 4. Create app/refund-policy/page.tsx with RefundPolicy
-- [x] 5. Restore app/page.tsx to Home page (HeroBanner + AthleteSearch + Pricing)
+## Steps:
+- [ ] 1. Implement missing functions in app/athlete/dashboard/page.tsx (handleAnalyze, handleUploadVideo, handleVideoSelect, handleVideoDrop)
+- [ ] 2. Verify no duplicate page.tsx files (app/scout/search/page.tsx absent)
+- [ ] 3. Run `npm run build` to confirm no errors
+- [ ] 4. Create branch `blackboxai/fix-parallel-pages`, commit, push
+- [ ] 5. Create GitHub PR and merge to main
 
-- [x] 6. Clean misplaced files: components/page.tsx, components/athlete/page.tsx
-- [x] 7. Verify Footer links and i18n loading
-- [x] 8. Test pages in dev server
