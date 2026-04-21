@@ -16,6 +16,12 @@ export interface AthletePublic {
     breakdown: Record<string, number>
     recommendation: string
   }
+  videos?: Array<{
+    id: string
+    title: string
+    mux_playback_id: string
+    thumbnail_url: string
+  }>
 }
 
 export interface AthletePrivate {
@@ -38,3 +44,27 @@ export type Position =
 
 // Combined for admin/full access
 export interface AthleteFull extends AthletePublic, AthletePrivate {}
+
+// AI Analysis Result
+export interface AiScores {
+  scoutScore: number;
+  breakdown: {
+    bmi: number;
+    agility: number;
+    power: number;
+    endurance: number;
+    positionMatch: number;
+  };
+  recommendation: string;
+}
+
+// Video
+export interface AthleteVideo {
+  id: string;
+  athlete_id: string;
+  title: string;
+  mux_playback_id: string;
+  thumbnail_url: string;
+  created_at: string;
+}
+

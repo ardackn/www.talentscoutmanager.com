@@ -7,7 +7,8 @@ import type { AthletePublic } from '@/types/athlete'
 import { Position } from '@/types/athlete'
 import { useSession } from '@/hooks/use-session'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter, Badge } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Loader2, Upload, Video, BarChart3, MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { talents } from '@/lib/talent-data'
@@ -38,12 +39,13 @@ export default function AthleteDashboardPage() {
     age: '',
     position: '' as Position
   })
-  const [aiResults, setAiResults] = useState<any>(null)
+const [aiResults, setAiResults] = useState<any>(null)
+  const [analyzing, setAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     // Demo: assume first talent or from session
-    const demoTalent = talents[0] as AthletePublic
+    const demoTalent = talents[0]
     setTalent(demoTalent)
     setMessages(demoTalent?.messages || [])
   }, [])
@@ -53,14 +55,14 @@ export default function AthleteDashboardPage() {
 
     // POST to scout or general message API
     try {
-      const res = await fetch('/api/scout/message', {
+      const formData = new FormData();
+      formData.append('athleteId', talent.id);
+      formData.append('content', reply);
+      formData.append('scoutName', profile?.name || 'Athlete Reply');
+      const res = await fetch('/api/scout/contact', {
         method: 'POST',
-        body: JSON.stringify({
-          talentId: 'scout-reply', // reverse
-          content: reply,
-          scout: 'Athlete Reply'
-        })
-      })
+        body: formData
+      });
       if (res.ok) {
         alert('Yanıt gönderildi!')
         setReply('')
@@ -188,7 +190,7 @@ export default function AthleteDashboardPage() {
                   <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-[#E94560] to-purple-600 rounded-full transition-all" 
-                      style={{ width: `${Math.min(100, value)}%` }}
+                      style={{ width: `${Math.min(100, value as number)}%` }}
                     />
                   </div>
                   <span className="w-12 font-mono font-bold text-white">{Math.round(value)}</span>
@@ -294,7 +296,7 @@ export default function AthleteDashboardPage() {
 
             <Button 
               onClick={handleAnalyze}
-              disabled={!analyzeData.height || !analyzeData.weight || !analyzeData.age || !analyzeData.position}
+disabled={!analyzeData.height || !analyzeData.weight || !analyzeData.age || !analyzeData.position || analyzing}
               className="w-full h-16 text-xl font-bold bg-gradient-to-r from-[#E94560] to-purple-600 hover:from-red-500 shadow-2xl"
               size="lg"
             >
@@ -336,78 +338,13 @@ export default function AthleteDashboardPage() {
   )
 }
 
-const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0]
-  if (file && file.type.startsWith('video/')) {
-    setVideoFile(file)
-  }
-}
 
-const handleVideoDrop = (e: React.DragEvent) => {
-  e.preventDefault()
-  const file = e.dataTransfer.files[0]
-  if (file && file.type.startsWith('video/')) {
-    setVideoFile(file)
-  }
-}
 
-const handleAnalyze = async () => {
-  if (!analyzeData.height || !analyzeData.weight || !analyzeData.age || !analyzeData.position) return
 
-  setAnalyzing(true)
-  try {
-    const res = await fetch('/api/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        height: parseFloat(analyzeData.height),
-        weight: parseFloat(analyzeData.weight),
-        age: parseInt(analyzeData.age),
-        position: analyzeData.position as Position
-      })
-    })
 
-    if (res.ok) {
-      const data = await res.json()
-      setAiResults(data)
-    } else {
-      alert('Analiz hatası: ' + (await res.text()))
-    }
-  } catch (error) {
-    console.error(error)
-    alert('Bağlantı hatası')
-  } finally {
-    setAnalyzing(false)
-  }
-}
 
-const handleUploadVideo = async () => {
-  if (!videoFile || !session) return
 
-  setUploading(true)
-  try {
-    const fileExt = videoFile.name.split('.').pop()
-    const filePath = `${session.user.id}/${Math.random().toString(36).substring(7)}.${fileExt}`
 
-    const { data, error } = await supabase.storage
-      .from('athlete-videos')
-      .upload(filePath, videoFile, {
-        cacheControl: '3600',
-        upsert: false
-      })
 
-    if (error) throw error
 
-    alert(`Video yüklendi: ${data.path}`)
-    // TODO: Update profile with video_url
-  } catch (error) {
-    console.error('Upload error:', error)
-    alert('Yükleme hatası')
-  } finally {
-    setUploading(false)
-  }
-}
-
-const analyzing = false // Add this state
-const fileInputRef = useRef<HTMLInputElement>(null)
 

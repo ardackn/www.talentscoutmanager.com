@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerComponentClient } from '@/lib/supabase-server';
 import type { Position } from '@/types/athlete';
 import { cookies } from 'next/headers';
+import { createMuxUpload } from '@/lib/mux';
+import { analyzeAthleteVideo } from '@/lib/openai/analyze-athlete';
 
 interface AnalyzeRequest {
   height: number; // cm
@@ -71,28 +73,91 @@ function calculateScores(data: AnalyzeRequest): AiScores {
 
 export async function POST(request: NextRequest) {
   try {
-    const body: AnalyzeRequest = await request.json();
-    
-    if (!body.height || !body.weight || !body.age || !body.position) {
-      return NextResponse.json({ error: 'Missing required fields: height(cm), weight(kg), age, position' }, { status: 400 });
+    const formData = await request.formData();
+    const file = formData.get('video') as File;
+    const height = formData.get('height') as string;
+    const weight = formData.get('weight') as string;
+    const age = formData.get('age') as string;
+    const position = formData.get('position') as Position;
+    const athleteId = formData.get('athleteId') as string;
+
+    if (!file || !height || !weight || !age || !position) {
+      return NextResponse.json({ error: 'Missing required fields: video, height(cm), weight(kg), age, position' }, { status: 400 });
     }
 
-    const scores = calculateScores(body);
+    // Step 1: Create Mux upload URL
+    const { uploadUrl } = await createMuxUpload();
 
-    // Optional: Save to Supabase athlete_profiles (requires auth)
+    // Step 2: Upload to Mux (client-side) then get playback ID from webhook or poll
+    // For now, assume client uploads and sends playback ID in second request
+
+    // Step 3: Basic BMI calculation
+    const bmi = (parseFloat(weight) / ((parseFloat(height) / 100) ** 2)).toFixed(1);
+    const bmiScore = 85; // placeholder
+
+    // Step 4: Save basic analysis to DB
     const cookieStore = cookies();
     const supabase = createServerComponentClient({ cookies: () => cookieStore });
-    // Uncomment if saving: await supabase.from('athlete_profiles').update({ ai_scores: scores }).eq('id', athleteId);
+    await supabase.from('analysis_reports').insert({
+      athlete_id: athleteId,
+      mode: 'basic',
+      payload: {
+        height,
+        weight,
+        age,
+        position,
+        bmi,
+        upload_url: uploadUrl
+      }
+    });
 
     return NextResponse.json({ 
       success: true, 
-      scores,
-      message: 'AI analysis complete' 
+      uploadUrl,
+      message: 'Upload URL created. Upload video to Mux then call /analyze/video with playbackId' 
     });
 
   } catch (error) {
     console.error('AI Analyze error:', error);
     return NextResponse.json({ error: 'Analysis failed' }, { status: 500 });
+  }
+}
+
+export async function POST_video(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { muxPlaybackId, athleteId, playerName = 'Player', matchInfo = 'Training', sport = 'football' } = body;
+
+    if (!muxPlaybackId || !athleteId) {
+      return NextResponse.json({ error: 'Missing muxPlaybackId or athleteId' }, { status: 400 });
+    }
+
+    // Call OpenAI vision analysis
+    const aiResult = await analyzeAthleteVideo({
+      muxPlaybackId,
+      playerName,
+      matchInfo,
+      sport
+    });
+
+    // Save to DB
+    const cookieStore = cookies();
+    const supabase = createServerComponentClient({ cookies: () => cookieStore });
+    await supabase.from('analysis_reports').insert({
+      athlete_id: athleteId,
+      mode: 'ai_vision',
+      payload: aiResult
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      analysis: aiResult,
+      message: 'Full AI video analysis complete' 
+    });
+
+  } catch (error) {
+    console.error('Video AI Analyze error:', error);
+    return NextResponse.json({ error: 'Video analysis failed' }, { status: 500 });
   }
 }
 

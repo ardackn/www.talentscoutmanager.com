@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import { useSession } from '@/hooks/use-session'
+import { useTranslation } from 'react-i18next'
 import { UserMenu } from '@/components/UserMenu'
-import { t } from '@/lib/i18n' 
 
 export default function Navbar() {
+  const { t, i18n } = useTranslation('common')
   const { loading } = useSession()
-
   if (loading) {
     return (
       <nav className="border-b border-slate-800/50 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-50">
@@ -31,7 +31,7 @@ export default function Navbar() {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-3xl font-black bg-gradient-to-r from-white via-slate-100 to-transparent bg-clip-text">
-            TalentScout
+            TSM.
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/scout/overview" className="px-6 py-2 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-slate-300 hover:bg-white/20 hover:text-white font-semibold transition-all">
@@ -40,6 +40,15 @@ export default function Navbar() {
             <Link href="/athlete/dashboard" className="px-6 py-2 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-slate-300 hover:bg-white/20 hover:text-white font-semibold transition-all">
               {t('nav.athlete')} ({t('nav.yetenek')})
             </Link>
+            <Link href="#pricing" className="px-6 py-2 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-slate-300 hover:bg-white/20 hover:text-white font-semibold transition-all">
+              {t('nav.pricing')}
+            </Link>
+            <button
+              onClick={() => i18n.changeLanguage(i18n.language === 'tr' ? 'en' : 'tr')}
+              className="px-3 py-2 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-slate-300 hover:bg-white/20 hover:text-white font-semibold transition-all text-sm"
+            >
+              {i18n.language === 'tr' ? 'EN' : 'TR'}
+            </button>
             <UserMenu />
           </div>
         </div>
@@ -47,4 +56,3 @@ export default function Navbar() {
     </nav>
   )
 }
-

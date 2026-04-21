@@ -1,33 +1,12 @@
-# Talent Scout Manager - AI Analysis & Video Upload Complete ✅
+# TODO List for Legal & i18n Fixes
 
-## Completed Steps:
+## Step 6: Legal & i18n Fixes
+- [x] 1. Fix duplicate resources in components/i18n.ts (already correct)
+- [x] 2. Create app/terms/page.tsx with TermsOfService (useTranslation 'legal')
+- [x] 3. Create app/privacy/page.tsx with i18n PrivacyPolicy
+- [x] 4. Create app/refund-policy/page.tsx with RefundPolicy
+- [x] 5. Restore app/page.tsx to Home page (HeroBanner + AthleteSearch + Pricing)
 
-### 1. Homepage Restructure (app/page.tsx) ✅
-- Vertical flow: Hero → Features → Pricing → Stats → Footer
-- Updated buttons/links
-
-### 2. Pricing Section ✅
-- components/sections/Pricing.tsx: Starter $0, Pro $49, Enterprise $149
-
-### 3. AI Analysis API ✅
-- app/api/analyze/route.ts: Full Scout Score (BMI + position benchmarks)
-
-### 4. Athlete Video Upload & AI Integration ✅
-- app/athlete/dashboard/page.tsx: Supabase upload + /api/analyze call + results UI
-- Scout AI page: Real analysis integration
-
-### 5. Checkout Flow ✅
-- Mock Stripe success pages
-
-### 6. Types & Testing ✅
-- types/athlete.ts extended with ai_scores
-
-## Test Instructions:
-```
-npm run dev
-```
-1. Go to /athlete/dashboard → Upload video, fill metrics, Analyze → See Scout Score!
-2. /scout/ai-analysis → Test scout-side analysis
-3. No more API limits - pure math scoring!
-
-**Ready for production demo! 🚀**
+- [ ] 6. Clean misplaced files: components/page.tsx, components/athlete/page.tsx
+- [ ] 7. Verify Footer links and i18n loading
+- [ ] 8. Test pages in dev server
