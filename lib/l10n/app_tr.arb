@@ -1,0 +1,17 @@
+{
+    "@@locale": "tr",
+    "explore": "Keşfet",
+    "messages": "Mesajlar",
+    "editProfile": "Profili Düzenle",
+    "settings": "Ayarlar",
+    "logout": "Çıkış Yap",
+    "anErrorOccurred": "Bir şeyler ters gitti.",
+    "noTalentFound": "Gösterilecek yetenek bulunamadı.",
+    "helloUser": "Merhaba, {userName}!",
+    "@helloUser": {
+        "description": "Kullanıcıyı ismiyle selamlayan bir karşılama mesajı.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}

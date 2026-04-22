@@ -1,0 +1,61 @@
+name: talescout_virsual_code
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations: # Eklendi
+    sdk: flutter # Eklendi
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.2.0  # Ekle veya güncelle
+  firebase_auth: ^5.1.4  # Ekle veya güncelle
+  cloud_firestore: ^5.0.3  # Ekle veya güncelle
+  firebase_storage: ^12.1.0
+  firebase_messaging: ^15.0.3
+  image_picker: ^1.1.2
+  firebase_crashlytics: ^4.0.3 # Eklendi
+  intl: ^0.19.0 # Flutter SDK ile uyumlu
+  provider: ^6.1.2
+  google_sign_in: ^6.2.1
+  video_player: ^2.8.6
+  cached_network_image: ^3.3.1
+  share_plus: ^9.0.0
+  cloud_functions: ^5.0.3
+  firebase_dynamic_links: ^6.0.3
+  connectivity_plus: ^6.0.3
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_native_splash: ^2.3.11
+
+flutter:
+  generate: true # Eklendi
+  uses-material-design: true
+  assets:
+    - assets/images/logopng.jpg
+
+
+flutter_native_splash:
+  # Açılış ekranının arka plan rengi.
+  color: "#FFFFFF" # Beyaz renk
+  # Açılış ekranında gösterilecek logo.
+  image: assets/images/logopng.jpg
+
+  # Karanlık mod için farklı bir renk ve logo belirleyebilirsiniz.
+  color_dark: "#121212" # Koyu gri
+  image_dark: assets/images/logopng.jpg # Karanlık mod için farklı bir logonuz varsa burayı güncelleyin.
+
+  android_12:
+    image: assets/images/logopng.jpg
+    color: "#FFFFFF"
+    image_dark: assets/images/logopng.jpg
+    color_dark: "#121212"
