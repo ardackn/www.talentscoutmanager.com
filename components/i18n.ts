@@ -3,12 +3,12 @@ import { initReactI18next } from 'react-i18next';
 
 const resources = {
   en: {
-    common: require('../public/locales/en/common.json'),
-    legal: require('../public/locales/en/legal.json')
+    common: require('@/locales/en/common.json'),
+    legal: require('@/locales/en/legal.json')
   },
   tr: {
-    common: require('../public/locales/tr/common.json'),
-    legal: require('../public/locales/tr/legal.json')
+    common: require('@/locales/tr/common.json'),
+    legal: require('@/locales/tr/legal.json')
   }
 };
 
