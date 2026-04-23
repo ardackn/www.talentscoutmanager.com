@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +10,12 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get('X-Signature') as string;
 
     // Verify webhook signature
-    const hmac = crypto.createHmac('sha256', process.env.LEMONSQUEEZY_WEBHOOK_SECRET!);
+    if (!process.env.LEMONSQUEEZY_WEBHOOK_SECRET) {
+      console.error('Missing LEMONSQUEEZY_WEBHOOK_SECRET');
+      return NextResponse.json({ error: 'Webhook secret missing' }, { status: 500 });
+    }
+
+    const hmac = crypto.createHmac('sha256', process.env.LEMONSQUEEZY_WEBHOOK_SECRET);
     const digest = Buffer.from(hmac.update(rawBody).digest('hex'), 'utf8');
     const signatureBuffer = Buffer.from(signature, 'utf8');
 
@@ -27,6 +29,16 @@ export async function POST(req: NextRequest) {
     const tier = event.meta.custom_data?.tier as 'pro' | 'elite';
 
     if (!userId) return NextResponse.json({ received: true });
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('Missing Supabase env vars');
+      return NextResponse.json({ error: 'Supabase config missing' }, { status: 500 });
+    }
+
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
 
     switch (eventName) {
       case 'subscription_created':
@@ -73,28 +85,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true });
   }
 }
-</xai:function_call name="create_file"> 
-
-Wait, format error. Need one tool or multiple separate.
-
-No, can multiple.
-
-Now LemonSqueezy priority 3 done (lib + 2 API routes).
-
-Shadcn still running, types updated successfully (all 4 edits worked).
-
-Next: AI OpenAI integration (Prompt 6), since priority 2 AI dashboard.
-
-Create lib/openai/analyze-athlete.ts with GPT-4o.
-
-But first check existing AI: app/api/analyze/route.ts, lib/gemini/analyze.ts?
-
-Read those to integrate.
-
-Also Mux routes.
-
-Proceed step-by-step.
-</thinking> 
-
-<xai:function_call name="read_file">
-<parameter name="path">app/api/analyze/route.ts

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createMuxUpload } from '@/lib/mux';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const upload = await createMuxUpload();
@@ -13,4 +15,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Mux upload failed' }, { status: 500 });
   }
 }
-

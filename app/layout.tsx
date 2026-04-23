@@ -7,8 +7,7 @@ import Navbar from '@/components/Navbar'
 import { Toaster } from '@/components/ui/toaster'
 import Footer from '@/components/Footer'
 import SupabaseProvider from '@/components/SupabaseProvider'
-import { I18nextProvider } from 'react-i18next'
-import i18n from '@/components/i18n' // i18n.ts dosyasının yolu güncellendi
+import ClientProviders from '@/components/ClientProviders'
 import Script from 'next/script';
 import type { ReactNode } from 'react'
 import { cn } from "@/lib/utils";
@@ -45,16 +44,11 @@ export default function RootLayout({
     )}>
       <body className="bg-[#0D0D1A] text-white min-h-screen flex flex-col dark">
         <Script src="https://assets.lemonsqueezy.com/lemon.js" strategy="lazyOnload" />
-        <I18nextProvider i18n={i18n}>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem enableColorScheme>
-            <SupabaseProvider>
-              <Navbar />
-              <Toaster />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </SupabaseProvider>
-          </ThemeProvider>
-        </I18nextProvider>
+        <ClientProviders>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ClientProviders>
       </body>
     </html>
   )
