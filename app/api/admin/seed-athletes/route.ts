@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+export const dynamic = 'force-dynamic'
 import { createServerComponentClient } from '@/lib/supabase-clean'
 import type { AthletePublic } from '@/types/athlete'
 
