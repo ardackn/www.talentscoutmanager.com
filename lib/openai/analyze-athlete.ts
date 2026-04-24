@@ -1,15 +1,12 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY! 
-});
-
 export async function analyzeAthleteVideo(params: {
   muxPlaybackId: string
   playerName: string
   matchInfo: string
   sport: string
 }) {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
   const frameTimestamps = [5, 15, 30, 60, 90, 120, 150, 180, 210, 240]; // seconds
   
   const frameUrls = frameTimestamps.map(t =>
