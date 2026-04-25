@@ -1,3 +1,4 @@
+﻿export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { createTSMCheckout } from '@/lib/lemonsqueezy';
 import { cookies } from 'next/headers';
