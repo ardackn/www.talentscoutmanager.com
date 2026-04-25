@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { createServerComponentClient } from '@/lib/supabase-server'
 import AthleteProfile from '@/components/athlete/AthleteProfile'
 import MessageManagerModalClient from './page_client'
