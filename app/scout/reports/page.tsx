@@ -1,5 +1,5 @@
-﻿"use client"
-export const dynamic = 'force-dynamic'
+"use client"
+
 
 import { useSession } from '@/hooks/use-session'
 import { useRouter } from 'next/navigation'
@@ -84,4 +84,3 @@ export default function ReportsPage() {
     </div>
   )
 }
-

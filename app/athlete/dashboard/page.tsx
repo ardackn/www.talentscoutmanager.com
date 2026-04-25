@@ -1,5 +1,5 @@
-﻿"use client"
-export const dynamic = 'force-dynamic'
+"use client"
+
 
 import { useState, useEffect, useRef } from 'react'
 import { createClientComponentClient } from '@/lib/supabase-client'
@@ -399,7 +399,6 @@ disabled={!analyzeData.height || !analyzeData.weight || !analyzeData.age || !ana
     </main>
   )
 }
-
 
 
 

@@ -1,4 +1,5 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server';
 import { createTSMCheckout } from '@/lib/lemonsqueezy';
 import { cookies } from 'next/headers';
@@ -34,4 +35,3 @@ return NextResponse.json({ url: checkout.data?.url || checkout.url });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-

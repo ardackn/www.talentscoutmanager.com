@@ -1,4 +1,5 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
@@ -80,4 +81,3 @@ export default function PrivacyPolicy() {
     </div>
   )
 }
-

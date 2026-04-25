@@ -1,7 +1,8 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server';
 import { createMuxUpload } from '@/lib/mux';
 
-export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {

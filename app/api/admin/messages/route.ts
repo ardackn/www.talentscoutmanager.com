@@ -1,4 +1,5 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { talents } from '@/lib/talent-data'
 
@@ -12,4 +13,3 @@ export async function POST(request: NextRequest) {
   // Simplified
   return NextResponse.json({ success: true })
 }
-

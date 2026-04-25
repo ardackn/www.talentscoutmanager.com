@@ -1,5 +1,6 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server';
-export const dynamic = 'force-dynamic';
 import { createServerComponentClient } from '@/lib/supabase-server';
 import type { Position } from '@/types/athlete';
 import { cookies } from 'next/headers';
@@ -161,4 +162,3 @@ export async function POST_video(request: NextRequest) {
     return NextResponse.json({ error: 'Video analysis failed' }, { status: 500 });
   }
 }
-

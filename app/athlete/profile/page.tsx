@@ -1,5 +1,5 @@
-﻿"use client"
-export const dynamic = 'force-dynamic'
+"use client"
+
 
 export default function AthleteProfilePage() {
   return (
@@ -18,4 +18,3 @@ export default function AthleteProfilePage() {
     </main>
   )
 }
-

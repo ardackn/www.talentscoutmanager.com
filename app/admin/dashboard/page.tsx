@@ -1,5 +1,5 @@
-﻿"use client"
-export const dynamic = 'force-dynamic'
+"use client"
+
 
 import { useState, useEffect } from 'react'
 
@@ -43,9 +43,9 @@ export default function AdminDashboardPage() {
       setReplyText('')
       setReplyingId(null)
       fetchMessages() // Refresh
-      alert('Yanıt gönderildi!')
+      alert('YanÄ±t gÃ¶nderildi!')
     } catch (error) {
-      alert('Hata oluştu')
+      alert('Hata oluÅŸtu')
     }
   }
 
@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
   ]
 
   if (loading) {
-    return <div className="container py-16 text-center">Yükleniyor...</div>
+    return <div className="container py-16 text-center">YÃ¼kleniyor...</div>
   }
 
   return (
@@ -73,7 +73,7 @@ export default function AdminDashboardPage() {
                 Operasyon Merkezi & Mesaj Kutusu
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">
-                Yeni scout mesajlarını görüntüleyin ve yanıtlayın. Sistem durumu özeti.
+                Yeni scout mesajlarÄ±nÄ± gÃ¶rÃ¼ntÃ¼leyin ve yanÄ±tlayÄ±n. Sistem durumu Ã¶zeti.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -81,7 +81,7 @@ export default function AdminDashboardPage() {
                 Ana Sayfa
               </a>
               <a href="/api/admin/logout" className="rounded-full bg-[#E94560] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#ff6b6b]">
-                Çıkış
+                Ã‡Ä±kÄ±ÅŸ
               </a>
             </div>
           </div>
@@ -101,14 +101,14 @@ export default function AdminDashboardPage() {
         <section className="lg:col-span-full">
           <div className="card p-8">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-              📥 Mesaj Kutusu 
+              ğŸ“¥ Mesaj Kutusu 
               <span className="px-3 py-1 rounded-full bg-[#E94560]/20 text-[#E94560] text-sm font-semibold">
-                {messages.filter(m => !m.replied).length} Okunmamış
+                {messages.filter(m => !m.replied).length} OkunmamÄ±ÅŸ
               </span>
             </h2>
             {messages.length === 0 ? (
               <div className="text-center py-12 text-slate-500">
-                Henüz mesaj yok. Scoutlar yeteneklere mesaj gönderdikçe burada görünecek.
+                HenÃ¼z mesaj yok. Scoutlar yeteneklere mesaj gÃ¶nderdikÃ§e burada gÃ¶rÃ¼necek.
               </div>
             ) : (
               <div className="space-y-4 max-h-96 overflow-y-auto">
@@ -121,7 +121,7 @@ export default function AdminDashboardPage() {
                     <p className="text-slate-200 mb-4">{msg.content}</p>
                     {msg.replied ? (
                       <div className="text-xs text-green-400 bg-green-500/10 p-2 rounded-xl">
-                        ✅ Yanıtlandı
+                        âœ… YanÄ±tlandÄ±
                       </div>
                     ) : (
                       <div>
@@ -130,7 +130,7 @@ export default function AdminDashboardPage() {
                             <textarea
                               value={replyText}
                               onChange={(e) => setReplyText(e.target.value)}
-                              placeholder="Yanıt yazın..."
+                              placeholder="YanÄ±t yazÄ±n..."
                               className="w-full h-20 rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-slate-500 focus:border-[#E94560] focus:outline-none resize-none"
                             />
                             <div className="flex gap-3 pt-1">
@@ -138,14 +138,14 @@ export default function AdminDashboardPage() {
                                 onClick={() => { setReplyingId(null); setReplyText(''); }}
                                 className="flex-1 py-2 px-4 rounded-xl border border-white/20 bg-slate-800/50 text-white hover:bg-slate-700 transition text-sm"
                               >
-                                İptal
+                                Ä°ptal
                               </button>
                               <button
                                 onClick={() => sendReply(msg.id)}
                                 disabled={!replyText.trim()}
                                 className="flex-1 py-2 px-4 rounded-xl bg-[#E94560] text-white hover:bg-[#ff6b6b] disabled:opacity-50 disabled:cursor-not-allowed transition text-sm font-semibold"
                               >
-                                Yanıt Gönder
+                                YanÄ±t GÃ¶nder
                               </button>
                             </div>
                           </div>
@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
                             onClick={() => setReplyingId(msg.id)}
                             className="rounded-xl bg-[#E94560] px-5 py-2 font-semibold text-white hover:bg-[#ff6b6b] transition text-sm"
                           >
-                            Yanıtla
+                            YanÄ±tla
                           </button>
                         )}
                       </div>
@@ -164,7 +164,7 @@ export default function AdminDashboardPage() {
               </div>
             )}
             <div className="mt-6 pt-6 border-t border-white/10 text-center text-sm text-slate-500">
-              Mesajlar scout'lardan yeteneklere gönderilenler. Admin tüm konuşmaları yönetir.
+              Mesajlar scout'lardan yeteneklere gÃ¶nderilenler. Admin tÃ¼m konuÅŸmalarÄ± yÃ¶netir.
             </div>
           </div>
         </section>
@@ -172,22 +172,22 @@ export default function AdminDashboardPage() {
         {/* Quick Links */}
         <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
           <article className="card p-8">
-            <h2 className="text-xl font-bold text-white mb-6">Son Güncellemeler</h2>
+            <h2 className="text-xl font-bold text-white mb-6">Son GÃ¼ncellemeler</h2>
             <ul className="space-y-4 text-sm leading-7 text-slate-300">
-              <li>• Homepage TSM landing page olarak yeniden tasarlandı</li>
-              <li>• Scout mesaj gönderme sistemi aktif</li>
-              <li>• Admin mesaj kutusu ve yanıt sistemi eklendi</li>
-              <li>• Yetenek verileri uluslararası + AI skorları güncellendi</li>
+              <li>â€¢ Homepage TSM landing page olarak yeniden tasarlandÄ±</li>
+              <li>â€¢ Scout mesaj gÃ¶nderme sistemi aktif</li>
+              <li>â€¢ Admin mesaj kutusu ve yanÄ±t sistemi eklendi</li>
+              <li>â€¢ Yetenek verileri uluslararasÄ± + AI skorlarÄ± gÃ¼ncellendi</li>
             </ul>
           </article>
           <article className="card p-8">
-            <h2 className="text-xl font-bold text-white">Hızlı Geçişler</h2>
+            <h2 className="text-xl font-bold text-white">HÄ±zlÄ± GeÃ§iÅŸler</h2>
             <div className="mt-6 grid gap-3">
               <a href="/scout/overview" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-white transition hover:bg-white/10">
                 Scout Workspace
               </a>
               <a href="/login" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-white transition hover:bg-white/10">
-                Scout Girişi
+                Scout GiriÅŸi
               </a>
               <a href="/" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-white transition hover:bg-white/10">
                 Ana Sayfa
@@ -199,4 +199,3 @@ export default function AdminDashboardPage() {
     </main>
   )
 }
-

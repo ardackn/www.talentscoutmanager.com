@@ -1,4 +1,5 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
+
 export default function AdminLoginPage() {
   return (
     <main className="container py-10 md:py-16">
