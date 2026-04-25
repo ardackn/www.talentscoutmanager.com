@@ -1,5 +1,5 @@
-﻿export const dynamic = 'force-dynamic'
-"use client"
+﻿"use client"
+export const dynamic = 'force-dynamic'
 
 import { useSession } from '@/hooks/use-session'
 import { useRouter } from 'next/navigation'
