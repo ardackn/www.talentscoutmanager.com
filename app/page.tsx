@@ -221,8 +221,57 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. KİMLER KULLANABİLİR & PRICING CTA */}
-      <section className="py-24">
+      {/* 7. KİM KULLANABİLİR? (HERKES İÇİN ÇÖZÜM) */}
+      <section id="solutions" className="py-24">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="text-center mb-16">
+            <h3 className="text-[#00D26A] font-bold tracking-wider mb-2">HERKES İÇİN ÇÖZÜM</h3>
+            <h2 className="text-4xl font-black mb-4">Kim Kullanabilir?</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">TSM, futbol ekosistemindeki tüm aktörler için özelleştirilmiş araçlar sunar.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white/5 border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-colors">
+              <h3 className="text-2xl font-bold mb-4 text-[#00D26A]">Scout</h3>
+              <p className="text-gray-300 mb-6 text-sm">Maçları izle, oyuncu raporları yaz ve en iyi yetenekleri keşfet. Tüm scouting notlarını dijital olarak sakla ve paylaş.</p>
+              <ul className="space-y-2 text-sm text-gray-400 mb-6">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Rapor Yazma</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Oyuncu Takibi</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Maç Planı</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-colors">
+              <h3 className="text-2xl font-bold mb-4 text-[#00D26A]">Kulüp Yöneticisi / TD</h3>
+              <p className="text-gray-300 mb-6 text-sm">Scoutlarınızın raporlarını inceleyin, oyuncu karşılaştırmaları yapın ve transfer kararlarınızı veri odaklı alın.</p>
+              <ul className="space-y-2 text-sm text-gray-400 mb-6">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Rapor İnceleme</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Karşılaştırma</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Transfer Kararı</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-colors">
+              <h3 className="text-2xl font-bold mb-4 text-[#00D26A]">Oyuncu / Futbolcu</h3>
+              <p className="text-gray-300 mb-6 text-sm">Profilinizi oluşturun, performans istatistiklerinizi takip edin ve potansiyel kulüplerden ilgi alın.</p>
+              <ul className="space-y-2 text-sm text-gray-400 mb-6">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Profil Oluştur</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> İstatistik Takip</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Kulüp İlgisi</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-colors">
+              <h3 className="text-2xl font-bold mb-4 text-[#00D26A]">Akademi Yöneticisi</h3>
+              <p className="text-gray-300 mb-6 text-sm">Genç yeteneklerin gelişimini takip edin, dönem raporları oluşturun ve en umut verici oyuncuları öne çıkarın.</p>
+              <ul className="space-y-2 text-sm text-gray-400 mb-6">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Gelişim Takibi</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Dönem Raporu</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Yetenek Tanımlama</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. PRICING CTA */}
+      <section className="py-24 bg-white/5 border-y border-white/5">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="bg-gradient-to-br from-[#00D26A]/10 via-transparent to-transparent rounded-3xl border border-[#00D26A]/20 p-10 md:p-16 text-center">
             <h2 className="text-3xl md:text-5xl font-black mb-6">Her Bütçeye Uygun Planlar</h2>

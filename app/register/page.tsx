@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createClientComponentClient } from '@/lib/supabase-client'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 const registerSchema = z.object({
   email: z.string().email('Geçerli bir e-posta adresi girin'),
@@ -59,7 +60,6 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterForm) => {
     setLoading(true)
     try {
-      // 1. Sign up user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -78,14 +78,12 @@ export default function RegisterPage() {
 
       if (authError) throw authError
 
-      // 2. Upload profile picture if available and user is created
       if (authData?.user && data.profilePicture?.[0]) {
         const file = data.profilePicture[0]
         const fileExt = file.name.split('.').pop()
         const filePath = `${authData.user.id}/avatar.${fileExt}`
         
         await supabase.storage.from('avatars').upload(filePath, file, { upsert: true })
-        // In a real app, you would save the public URL back to the user's profile here
       }
 
       toast.success('Kayıt başarılı! Lütfen giriş yapın.')
@@ -99,112 +97,120 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="container min-h-screen py-16 flex items-center justify-center">
-      <section className="card mx-auto max-w-2xl w-full p-10 md:p-12 rounded-3xl shadow-2xl backdrop-blur-xl bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-950/80 border border-white/10">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-black bg-gradient-to-r from-white via-slate-200 to-slate-100 bg-clip-text text-transparent mb-4">
-            TalentScout'a Katıl
-          </h1>
-          <p className="text-lg text-slate-300">Profilini oluştur ve AI destekli yetenek keşfine başla.</p>
-        </div>
+    <div className="relative min-h-screen bg-[#050806] flex items-center justify-center">
+      {/* Dynamic Background Image */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1459865264687-595d652de67e?q=80&w=2070&auto=format&fit=crop" 
+          alt="Soccer Field" 
+          className="w-full h-full object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050806] via-[#050806]/90 to-transparent"></div>
+      </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* İletişim Bilgileri */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-slate-200 mb-2">Ad Soyad</label>
-              <input {...register('fullName')} className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:ring-1 focus:ring-[#00D26A] outline-none transition-all" />
-              {errors.fullName && <p className="text-sm text-red-400 mt-1">{errors.fullName.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-200 mb-2">E-posta</label>
-              <input type="email" {...register('email')} className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:ring-1 focus:ring-[#00D26A] outline-none transition-all" />
-              {errors.email && <p className="text-sm text-red-400 mt-1">{errors.email.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-200 mb-2">Telefon</label>
-              <input type="tel" {...register('phone')} className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:ring-1 focus:ring-[#00D26A] outline-none transition-all" placeholder="+90 555 555 5555" />
-              {errors.phone && <p className="text-sm text-red-400 mt-1">{errors.phone.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-200 mb-2">Şifre (min 6 karakter)</label>
-              <input type="password" {...register('password')} className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:ring-1 focus:ring-[#00D26A] outline-none transition-all" />
-              {errors.password && <p className="text-sm text-red-400 mt-1">{errors.password.message}</p>}
-            </div>
+      <main className="container relative z-10 py-24 flex items-center justify-center pt-32">
+        <section className="mx-auto max-w-2xl w-full p-10 md:p-12 rounded-3xl shadow-2xl backdrop-blur-xl bg-black/60 border border-white/10">
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-black text-white mb-4">
+              TalentScout'a Katıl
+            </h1>
+            <p className="text-sm text-gray-400">Profilini oluştur ve AI destekli yetenek keşfine başla.</p>
           </div>
 
-          {/* Profil Resmi */}
-          <div>
-             <label className="block text-sm font-semibold text-slate-200 mb-2">Profil Resmi (Zorunlu)</label>
-             <div className="flex items-center gap-4">
-                {previewImage && <img src={previewImage} alt="Preview" className="w-16 h-16 rounded-full object-cover border-2 border-[#00D26A]" />}
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  {...register('profilePicture')}
-                  onChange={(e) => {
-                    register('profilePicture').onChange(e);
-                    handleImageChange(e);
-                  }}
-                  className="w-full text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#00D26A] file:text-black hover:file:bg-[#00e676]" 
-                />
-             </div>
-             {errors.profilePicture && <p className="text-sm text-red-400 mt-1">{errors.profilePicture.message}</p>}
-          </div>
-
-          {/* Rol Seçimi */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-200 mb-2">Rolünüz</label>
-            <select {...register('role')} className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:ring-1 focus:ring-[#00D26A] outline-none transition-all">
-              <option value="athlete">⚽ Sporcu (Yetenek)</option>
-              <option value="scout">🏆 Scout (Yetenek Avcısı)</option>
-            </select>
-          </div>
-
-          {/* Şarta Bağlı Alanlar */}
-          {selectedRole === 'athlete' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 border border-[#00D26A]/30 rounded-2xl bg-[#00D26A]/5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm text-slate-300 mb-2">Yaş</label>
-                <input type="number" {...register('age')} className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white" />
-                {errors.age && <p className="text-sm text-red-400 mt-1">{errors.age.message}</p>}
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Ad Soyad</label>
+                <input {...register('fullName')} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:outline-none transition-all" />
+                {errors.fullName && <p className="text-xs text-red-400 mt-1.5">{errors.fullName.message}</p>}
               </div>
               <div>
-                <label className="block text-sm text-slate-300 mb-2">Pozisyon</label>
-                <input type="text" {...register('position')} placeholder="Örn: Forvet" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white" />
-                {errors.position && <p className="text-sm text-red-400 mt-1">{errors.position.message}</p>}
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">E-posta</label>
+                <input type="email" {...register('email')} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:outline-none transition-all" />
+                {errors.email && <p className="text-xs text-red-400 mt-1.5">{errors.email.message}</p>}
               </div>
               <div>
-                <label className="block text-sm text-slate-300 mb-2">Uyruk</label>
-                <input type="text" {...register('nationality')} placeholder="Örn: TC" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white" />
-                {errors.nationality && <p className="text-sm text-red-400 mt-1">{errors.nationality.message}</p>}
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Telefon</label>
+                <input type="tel" {...register('phone')} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:outline-none transition-all" placeholder="+90 555 555 5555" />
+                {errors.phone && <p className="text-xs text-red-400 mt-1.5">{errors.phone.message}</p>}
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Şifre (min 6)</label>
+                <input type="password" {...register('password')} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:outline-none transition-all" />
+                {errors.password && <p className="text-xs text-red-400 mt-1.5">{errors.password.message}</p>}
               </div>
             </div>
-          )}
 
-          {selectedRole === 'scout' && (
-             <div className="p-4 border border-[#00D26A]/30 rounded-2xl bg-[#00D26A]/5">
-               <label className="block text-sm text-slate-300 mb-2">Bağlı Olduğunuz Kulüp / Ajans</label>
-               <input type="text" {...register('agency')} className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white" placeholder="Örn: Galatasaray SK" />
-               {errors.agency && <p className="text-sm text-red-400 mt-1">{errors.agency.message}</p>}
-             </div>
-          )}
+            <div>
+               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Profil Resmi (Zorunlu)</label>
+               <div className="flex items-center gap-4">
+                  {previewImage && <img src={previewImage} alt="Preview" className="w-16 h-16 rounded-full object-cover border-2 border-[#00D26A]" />}
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    {...register('profilePicture')}
+                    onChange={(e) => {
+                      register('profilePicture').onChange(e);
+                      handleImageChange(e);
+                    }}
+                    className="w-full text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#00D26A] file:text-black hover:file:bg-[#00e676] transition-colors" 
+                  />
+               </div>
+               {errors.profilePicture && <p className="text-xs text-red-400 mt-1.5">{errors.profilePicture.message}</p>}
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full bg-[#00D26A] py-4 text-lg font-black text-black shadow-[0_0_15px_rgba(0,210,106,0.5)] hover:bg-[#00e676] transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50"
-          >
-            {loading ? 'Kayıt Ediliyor...' : 'Kayıt Ol ve Başla'}
-          </button>
-        </form>
+            <div>
+              <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rolünüz</label>
+              <select {...register('role')} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white focus:border-[#00D26A] focus:outline-none transition-all">
+                <option value="athlete">⚽ Sporcu (Yetenek)</option>
+                <option value="scout">🏆 Scout (Yetenek Avcısı)</option>
+              </select>
+            </div>
 
-        <div className="mt-8 text-center">
-          <a href="/login" className="text-slate-400 text-sm hover:text-[#00D26A] transition-colors">
-            Zaten hesabınız var mı? Giriş yapın.
-          </a>
-        </div>
-      </section>
-    </main>
+            {selectedRole === 'athlete' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-5 border border-[#00D26A]/30 rounded-2xl bg-[#00D26A]/5">
+                <div>
+                  <label className="block text-xs text-gray-300 mb-2">Yaş</label>
+                  <input type="number" {...register('age')} className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-2 text-white" />
+                  {errors.age && <p className="text-xs text-red-400 mt-1">{errors.age.message}</p>}
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-300 mb-2">Pozisyon</label>
+                  <input type="text" {...register('position')} placeholder="Örn: Forvet" className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-2 text-white" />
+                  {errors.position && <p className="text-xs text-red-400 mt-1">{errors.position.message}</p>}
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-300 mb-2">Uyruk</label>
+                  <input type="text" {...register('nationality')} placeholder="Örn: TC" className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-2 text-white" />
+                  {errors.nationality && <p className="text-xs text-red-400 mt-1">{errors.nationality.message}</p>}
+                </div>
+              </div>
+            )}
+
+            {selectedRole === 'scout' && (
+               <div className="p-5 border border-[#00D26A]/30 rounded-2xl bg-[#00D26A]/5">
+                 <label className="block text-xs text-gray-300 mb-2">Bağlı Olduğunuz Kulüp / Ajans</label>
+                 <input type="text" {...register('agency')} className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-2 text-white" placeholder="Örn: Galatasaray SK" />
+                 {errors.agency && <p className="text-xs text-red-400 mt-1">{errors.agency.message}</p>}
+               </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-4 rounded-2xl bg-[#00D26A] py-4 text-black font-black hover:bg-[#00e676] shadow-[0_0_20px_rgba(0,210,106,0.3)] transition-all disabled:opacity-50"
+            >
+              {loading ? 'Kayıt Ediliyor...' : 'KAYIT OL VE BAŞLA'}
+            </button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <Link href="/login" className="text-gray-400 text-sm hover:text-[#00D26A] transition-colors">
+              Zaten hesabınız var mı? Giriş yapın.
+            </Link>
+          </div>
+        </section>
+      </main>
+    </div>
   )
 }

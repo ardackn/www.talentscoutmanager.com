@@ -3,11 +3,9 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSession } from '@/hooks/use-session'
-import { useTranslation } from 'react-i18next'
 import { UserMenu } from '@/components/UserMenu'
 
 export default function Navbar() {
-  const { t, i18n } = useTranslation('common')
   const { session, loading } = useSession()
   const [scrolled, setScrolled] = useState(false)
 
@@ -37,24 +35,18 @@ export default function Navbar() {
         </Link>
         
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-          <Link href="/scout/overview" className="hover:text-white transition-colors">{t('nav.scout') || 'For Scouts'}</Link>
-          <Link href="/athlete/dashboard" className="hover:text-white transition-colors">{t('nav.athlete') || 'For Athletes'}</Link>
-          <Link href="/#pricing" className="hover:text-white transition-colors">{t('nav.pricing') || 'Pricing'}</Link>
+          <Link href="/about" className="hover:text-white transition-colors">Biz Kimiz</Link>
+          <Link href="/#solutions" className="hover:text-white transition-colors">Herkes İçin Çözüm</Link>
+          <Link href="#contact" className="hover:text-white transition-colors">İletişim</Link>
+          <Link href="/pricing" className="hover:text-white transition-colors">Fiyatlandırma</Link>
         </div>
 
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => i18n.changeLanguage(i18n.language === 'tr' ? 'en' : 'tr')}
-            className="text-xs font-bold text-gray-400 hover:text-white transition-colors"
-          >
-            {i18n.language === 'tr' ? 'EN' : 'TR'}
-          </button>
-
           {!session ? (
             <>
-              <Link href="/login" className="text-sm font-medium text-gray-300 hover:text-white transition-colors hidden sm:inline-block">Login</Link>
+              <Link href="/login" className="text-sm font-medium text-gray-300 hover:text-white transition-colors hidden sm:inline-block">Giriş Yap</Link>
               <Link href="/register" className="bg-[#00D26A] text-black text-sm font-bold px-5 py-2.5 rounded-full hover:bg-[#00e676] transition-transform hover:scale-105 shadow-[0_0_15px_rgba(0,210,106,0.3)]">
-                Start Free
+                Kayıt Ol
               </Link>
             </>
           ) : (
