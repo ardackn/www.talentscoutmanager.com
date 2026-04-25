@@ -1,6 +1,7 @@
 export interface AthletePublic {
   id: string
   name: string
+  age: number
   position: Position
   nationality: string
   current_team: string  // 'Amateur' if none

@@ -181,8 +181,23 @@ export default function AdminDashboardPage() {
             </ul>
           </article>
           <article className="card p-8">
-            <h2 className="text-xl font-bold text-white">HÄ±zlÄ± GeÃ§iÅŸler</h2>
+            <h2 className="text-xl font-bold text-white">Hızlı Geçişler & Araçlar</h2>
             <div className="mt-6 grid gap-3">
+              <button 
+                onClick={async () => {
+                  if(confirm('Tüm mevcut veriler silinecek ve CSV data (25 kişi) eklenecek. Emin misiniz?')) {
+                    try {
+                      const res = await fetch('/api/admin/seed-athletes', { method: 'POST' });
+                      const data = await res.json();
+                      if(data.success) alert(data.message);
+                      else alert('Hata: ' + data.error);
+                    } catch(e) { alert('İstek başarısız'); }
+                  }
+                }}
+                className="rounded-2xl border-2 border-gold bg-gold/10 px-4 py-4 text-sm font-bold text-gold transition hover:bg-gold/20"
+              >
+                📥 Seed Data (25 Kişi Ekle)
+              </button>
               <a href="/scout/overview" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-white transition hover:bg-white/10">
                 Scout Workspace
               </a>
