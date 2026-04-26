@@ -30,7 +30,7 @@ export default function Navbar() {
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#050806]/90 backdrop-blur-md border-b border-white/5 py-4' : 'bg-transparent py-6'}`}>
       <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-[#00D26A] font-black text-2xl tracking-tighter">TSM</span>
+          <img src="/data/logo.png" alt="TSM Logo" className="h-10 w-auto" />
           <span className="text-white/70 font-semibold text-xs tracking-widest uppercase mt-1 hidden sm:inline-block">PLATFORM</span>
         </Link>
         

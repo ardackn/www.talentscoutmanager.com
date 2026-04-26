@@ -39,7 +39,7 @@ export default function Footer() {
         {/* Company Info */}
         <div className="col-span-1">
           <div className="flex items-center gap-2 mb-6">
-            <span className="text-[#00D26A] font-black text-3xl tracking-tighter">TSM</span>
+            <img src="/data/logo.png" alt="TSM Logo" className="h-12 w-auto" />
           </div>
           <p className="text-sm text-gray-400 mb-6">
             Yetenek Avcısı Yöneticisi — Coğrafi engelleri aşarak yetenekleri dünyaya açıyor.
