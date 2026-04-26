@@ -73,28 +73,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true });
   }
 }
-</xai:function_call name="create_file"> 
-
-Wait, format error. Need one tool or multiple separate.
-
-No, can multiple.
-
-Now LemonSqueezy priority 3 done (lib + 2 API routes).
-
-Shadcn still running, types updated successfully (all 4 edits worked).
-
-Next: AI OpenAI integration (Prompt 6), since priority 2 AI dashboard.
-
-Create lib/openai/analyze-athlete.ts with GPT-4o.
-
-But first check existing AI: app/api/analyze/route.ts, lib/gemini/analyze.ts?
-
-Read those to integrate.
-
-Also Mux routes.
-
-Proceed step-by-step.
-</thinking> 
-
-<xai:function_call name="read_file">
-<parameter name="path">app/api/analyze/route.ts
