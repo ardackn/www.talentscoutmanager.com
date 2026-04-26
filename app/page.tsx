@@ -226,7 +226,7 @@ export default function HomePage() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="/data/tsm_scout.png" alt="Scout" className="w-full h-48 object-cover" />
+              <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop" alt="Scout" className="w-full h-48 object-cover" />
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Scout</h3>
                 <p className="text-gray-400 mb-4 text-sm flex-1">Maçları izle, oyuncu raporları yaz ve en iyi yetenekleri keşfet. Tüm scouting notlarını dijital olarak sakla.</p>
@@ -238,7 +238,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=600&auto=format&fit=crop" alt="Kulüp Yöneticisi" className="w-full h-48 object-cover" />
+              <img src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=800&auto=format&fit=crop" alt="Kulüp Yöneticisi" className="w-full h-48 object-cover" />
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Kulüp Yöneticisi / TD</h3>
                 <p className="text-gray-400 mb-4 text-sm flex-1">Scout raporlarını inceleyin, oyuncu karşılaştırmaları yapın ve veri odaklı transfer kararları alın.</p>
@@ -250,7 +250,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1511886929837-354d827aae26?q=80&w=600&auto=format&fit=crop" alt="Futbolcu" className="w-full h-48 object-cover" />
+              <img src="https://images.unsplash.com/photo-1516567727245-ad8c68f3ec1c?q=80&w=800&auto=format&fit=crop" alt="Futbolcu" className="w-full h-48 object-cover" />
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Oyuncu / Futbolcu</h3>
                 <p className="text-gray-400 mb-4 text-sm flex-1">Profilinizi oluşturun, AI destekli performans puanınızı görün ve kulüplerden teklif alın.</p>
@@ -262,7 +262,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1431324155629-1a6fb1ce8f4d?q=80&w=600&auto=format&fit=crop" alt="Akademi" className="w-full h-48 object-cover" />
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" alt="Akademi" className="w-full h-48 object-cover" />
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Akademi Yöneticisi</h3>
                 <p className="text-gray-400 mb-4 text-sm flex-1">Genç yeteneklerin gelişimini takip edin, analiz raporları oluşturun ve en iyi oyuncuları öne çıkarın.</p>
