@@ -73,7 +73,7 @@ export default function Footer() {
           <ul className="space-y-3 text-sm text-gray-400">
             <li><Link href="/privacy" className="hover:text-[#00D26A] transition-colors">Gizlilik Politikası</Link></li>
             <li><Link href="/terms" className="hover:text-[#00D26A] transition-colors">Hizmet Şartları</Link></li>
-            <li><Link href="/refund" className="hover:text-[#00D26A] transition-colors">İade ve İptal Politikası</Link></li>
+            <li><Link href="/refund-policy" className="hover:text-[#00D26A] transition-colors">İade ve İptal Politikası</Link></li>
           </ul>
         </div>
 

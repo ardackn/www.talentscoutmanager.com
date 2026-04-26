@@ -1,1 +1,37 @@
-{"terms_title":"Terms of Service","terms_section1_title":"1. User Accounts","terms_section1_content":"Users are responsible for the accuracy of information provided when registering for the TSM platform. Account security and password confidentiality are the user's responsibility.","terms_section2_title":"2. AI Analysis Disclaimer","terms_section2_content":"AI scores and talent analyses provided by our platform are predictive data generated based on uploaded videos and information. These scores do not constitute professional advice or a definitive guarantee of success. TSM cannot be held responsible for transfer or investment decisions made based on these analyses.","terms_section3_title":"3. Intellectual Property of Videos","terms_section3_content":"The ownership of videos uploaded by athletes belongs to the athlete. However, by uploading these videos to the TSM platform, the athlete is deemed to have granted TSM the right (license) to analyze this content, present it to scouts, and use it for platform promotion.","terms_section4_title":"4. Termination of Service","terms_section4_content":"TSM reserves the right to suspend or terminate accounts that violate platform rules without prior notice.","privacy_title":"Privacy Policy","privacy_section1_title":"Data Collection","privacy_section1_content":"Personal and physical data of athletes such as height, weight, position, and performance videos are collected for evaluation by our professional scouting network.","privacy_section2_title":"Data Storage and Security","privacy_section2_content":"All your data is stored on **Supabase** infrastructure with AES-256 encryption methods, adhering to the highest security standards. Your data security is our priority, and we fully comply with GDPR standards.","privacy_section3_title":"Sharing with Third Parties","privacy_section3_content":"Your data is shared only with authorized scouts and sports clubs that you approve through the platform. Your data is never sold to third parties for advertising purposes.","privacy_section4_title":"Your Rights","privacy_section4_content":"Under GDPR, you have the right to access, correct, or request the deletion of your data. Under the 'right to be forgotten,' your data is permanently removed from our systems when you delete your account.","refund_title":"Refund and Cancellation Policy","refund_section1_title":"Digital Service Scope","refund_section1_content":"TSM is an instantly accessible digital SaaS (Software as a Service) platform. Due to the digital nature of purchased packages, the right of withdrawal is limited once service use has commenced.","refund_section2_title":"Refund Conditions","refund_section2_item1":"Refunds are not issued for packages where AI analysis has started or premium data access has been provided.","refund_section2_item2":"In cases where the service cannot be provided due to a technical malfunction, requests are evaluated within 14 days.","refund_section2_item3":"Refund requests are meticulously reviewed on a case-by-case basis, considering the specific circumstances of each situation.","contact_us_title":"Contact Us","contact_us_text":"For all your questions and support requests:","address":"Address:","address_value":"İzzetpaşa, Şişli/İstanbul","email":"Email:","email_value":"dcctsm@gmail.com","last_updated":"Last Updated:","last_updated_date":"March 2025"}
+{
+  "terms_title": "Hizmet Kullanım Şartları",
+  "terms_section1_title": "1. Genel Hükümler ve Üyelik",
+  "terms_section1_content": "Talent Scout Manager (TSM) platformuna üye olan her kullanıcı, bu sözleşme şartlarını peşinen kabul etmiş sayılır. Kullanıcılar, kayıt esnasında sağladıkları bilgilerin (isim, iletişim, sporcu verileri vb.) güncelliğinden ve doğruluğundan bizzat sorumludur. Hesap bilgilerinin üçüncü şahıslarla paylaşılması yasaktır.",
+  "terms_section2_title": "2. Yapay Zeka (AI) Analiz Sistemi",
+  "terms_section2_content": "Platformda sunulan AI tabanlı performans analizleri, teknolojik algoritmalar kullanılarak hazırlanan veri setleridir. Bu analizler bir tavsiye niteliğindedir ve herhangi bir spor kulübü veya akademi için kesin bir transfer taahhüdü içermez. TSM, bu verilere dayanarak yapılan ticari veya profesyonel tercihlerden doğabilecek zararlardan sorumlu tutulamaz.",
+  "terms_section3_title": "3. İçerik ve Fikri Mülkiyet Hakları",
+  "terms_section3_content": "Kullanıcılar tarafından yüklenen tüm video ve görsel materyallerin yasal mülkiyeti kullanıcıya aittir. Kullanıcı, içeriği platforma yükleyerek; TSM'ye bu içeriği analiz etme, veritabanında saklama ve yetkili scouting (izci) ağlarına sunma konusunda sınırsız ve bedelsiz bir kullanım lisansı vermiş olur.",
+  "terms_section4_title": "4. Hizmetin Durdurulması ve Fesih",
+  "terms_section4_content": "Telif haklarını ihlal eden, etik dışı içerik paylaşan veya platformun teknik işleyişine zarar veren hesaplar, TSM yönetimi tarafından tek taraflı olarak, herhangi bir iade yapılmaksızın kalıcı olarak kapatılabilir.",
+  "privacy_title": "Gizlilik ve Veri Güvenliği Politikası",
+  "privacy_section1_title": "Veri Toplama ve İşleme Amaçları",
+  "privacy_section1_content": "TSM, sporcuların fiziksel özelliklerini, performans istatistiklerini ve videolarını sadece scouting faaliyetleri kapsamında işler. Bu veriler, KVKK ve GDPR uyumlu olarak, platformun temel işlevi olan 'yetenek keşfi' amacıyla kullanılmaktadır.",
+  "privacy_section2_title": "Veri Güvenliği ve Şifreleme",
+  "privacy_section2_content": "Kullanıcı verileri, endüstri standardı olan AES-256 şifreleme ile Supabase bulut altyapısında korunmaktadır. Veri transferleri TLS 1.3 protokolü ile gerçekleştirilir. Kişisel verileriniz, izniniz olmadan asla reklam veya pazarlama amacıyla üçüncü taraflara satılmaz.",
+  "privacy_section3_title": "Üçüncü Taraflarla Paylaşım",
+  "privacy_section3_content": "Kullanıcı verileri yalnızca platforma kayıtlı ve kimlik doğrulaması yapılmış profesyonel spor kulüpleri, lisanslı menajerler ve scouting ajansları ile paylaşılır. Veri paylaşım kapsamı, kullanıcının seçtiği üyelik paketi ve izinleri ile sınırlıdır.",
+  "privacy_section4_title": "Kullanıcı Hakları (KVKK/GDPR)",
+  "privacy_section4_content": "Her kullanıcı, dilediği zaman verilerinin silinmesini (Unutulma Hakkı), düzeltilmesini veya bir kopyasının kendisine iletilmesini talep edebilir. Talepleriniz 30 gün içerisinde işleme alınır.",
+  "refund_title": "İade ve İptal Koşulları",
+  "refund_section1_title": "Dijital Ürün ve Cayma Hakkı",
+  "refund_section1_content": "TSM tarafından sunulan Pro ve Elite paketleri, 'Anında İfa Edilen Dijital Hizmetler' kapsamındadır. Mesafeli Sözleşmeler Yönetmeliği gereği, dijital içeriklerin kullanımı (AI analizinin başlatılması veya veritabanı erişimi) ile birlikte cayma hakkı sona ermektedir.",
+  "refund_section2_title": "İade Süreci ve İstisnalar",
+  "refund_section2_item1": "Kullanıcının teknik bir hata nedeniyle hizmete erişemediği ve bu hatanın TSM kaynaklı olduğu durumlarda, 14 gün içerisinde tam iade yapılır.",
+  "refund_section2_item2": "Abonelik iptalleri bir sonraki fatura dönemi için geçerlidir. Mevcut dönemin ücreti iade edilmez, ancak dönem sonuna kadar hizmet kullanımı devam eder.",
+  "refund_section2_item3": "Hatalı veya mükerrer ödemeler, bildirim yapıldıktan sonra 7 iş günü içerisinde asıl ödeme yöntemine iade edilir.",
+  "contact_us_title": "Kurumsal İletişim",
+  "contact_us_text": "Resmi yazışmalar ve destek talepleriniz için bize ulaşabilirsiniz:",
+  "address": "Resmi Adres:",
+  "address_value": "Nurol Kulesi, İzzet Paşa Mah. Yeni Yol Cd. No:3, 34387 Şişli/İstanbul, Türkiye",
+  "email": "E-posta:",
+  "email_value": "hello@talentscoutmanager.com",
+  "last_updated": "Son Güncelleme Tarihi:",
+  "last_updated_date": "26 Nisan 2026"
+}
+
+

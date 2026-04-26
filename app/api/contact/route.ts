@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
@@ -8,10 +11,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'E-posta ve mesaj zorunludur.' }, { status: 400 });
     }
 
-    // In a real application, you would integrate a mailer like Resend or NodeMailer here
-    // Example: await resend.emails.send({ from: '...', to: 'dcctsm@gmail.com', subject: 'Yeni İletişim Formu', html: `...` })
+    // Send email to the manager
+    await resend.emails.send({
+      from: 'TSM Platform <onboarding@resend.dev>',
+      to: 'dcctsm@gmail.com',
+      subject: 'Yeni İletişim Formu Mesajı',
+      html: `
+        <h2>Yeni İletişim Formu Mesajı</h2>
+        <p><strong>E-posta:</strong> ${email}</p>
+        <p><strong>Telefon:</strong> ${phone || 'Belirtilmedi'}</p>
+        <p><strong>Mesaj:</strong></p>
+        <p>${message}</p>
+      `,
+    });
 
-    console.log('Yeni İletişim Mesajı Alındı:', { email, phone, message });
+    console.log('Yeni İletişim Mesajı Alındı ve Gönderildi:', { email, phone, message });
 
     return NextResponse.json({ success: true, message: 'Mesajınız başarıyla gönderildi.' });
   } catch (error) {

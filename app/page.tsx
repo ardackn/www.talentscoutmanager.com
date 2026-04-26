@@ -27,7 +27,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#050806] text-white font-sans selection:bg-[#00D26A] selection:text-black overflow-x-hidden">
+    <div className="min-h-screen bg-[#0d1b2a] text-white font-sans selection:bg-[#00e5cc] selection:text-black overflow-x-hidden">
       
       {/* 1. HERO SECTION WITH VIDEO */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -52,15 +52,23 @@ export default function HomePage() {
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
             Dünyanın ilk yapay zeka destekli küresel futbol yetenek keşif platformu. Sadece telefonunuzla performansınızı kaydedin ve dünyaya açılın.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register" className="bg-[#00D26A] text-black font-black text-lg px-10 py-5 rounded-full hover:bg-[#00e676] hover:scale-105 transition-all shadow-[0_0_30px_rgba(0,210,106,0.5)]">
-              Ücretsiz Profil Oluştur
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link
+              href="/player-register"
+              className="inline-flex items-center justify-center gap-2 font-black text-lg text-[#0d1b2a] transition-all hover:scale-105"
+              style={{ backgroundColor: '#00e5cc', borderRadius: '8px', padding: '18px 36px', boxShadow: '0 0 20px rgba(0,229,204,0.4)' }}
+            >
+              ⚽ Oyuncu Olarak Katıl — ÜCRETSİZ
             </Link>
-            <Link href="/pricing" className="bg-transparent border-2 border-white/20 text-white font-bold text-lg px-10 py-5 rounded-full hover:bg-white/10 transition-all backdrop-blur-sm">
-              Kulüpler İçin İncele
+            <Link
+              href="/scout-login"
+              className="inline-flex items-center justify-center gap-2 font-bold text-lg transition-all hover:scale-105"
+              style={{ border: '2px solid #f5a623', color: '#f5a623', background: 'transparent', borderRadius: '8px', padding: '18px 36px' }}
+            >
+              🔍 İzci Olarak Giriş Yap
             </Link>
           </div>
-          <p className="mt-6 text-sm text-gray-400">Sonsuza dek ücretsiz · Kredi kartı gerekmez · 2 dakikada hazır</p>
+          <p className="mt-8 text-sm text-gray-400">Sonsuza dek ücretsiz · Kredi kartı gerekmez · 2 dakikada hazır</p>
         </div>
       </section>
 
@@ -180,28 +188,67 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-12 relative">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00D26A]/30 to-transparent hidden md:block -translate-y-1/2 z-0"></div>
             
-            <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
-              <img src="https://images.unsplash.com/photo-1516567727245-ad8c68f3ec1c?q=80&w=800&auto=format&fit=crop" alt="Videonuzu Yükleyin" className="w-full h-48 object-cover opacity-80" />
+            {/* Step 01: Video Upload - Phone Mockup */}
+            <div className="relative z-10 bg-[#0d1b2a] rounded-3xl border border-[#00e5cc]/20 hover:border-[#00e5cc]/60 transition-all overflow-hidden flex flex-col group">
+              <div className="h-48 bg-gradient-to-br from-[#0d1b2a] to-[#001a15] flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at 50% 50%, #00e5cc 1px, transparent 1px)', backgroundSize: '30px 30px'}}></div>
+                <div className="relative flex flex-col items-center gap-3">
+                  <div className="w-16 h-28 rounded-2xl border-2 border-[#00e5cc]/60 bg-[#0d1b2a] flex items-center justify-center shadow-[0_0_30px_rgba(0,229,204,0.3)] group-hover:shadow-[0_0_50px_rgba(0,229,204,0.5)] transition-all">
+                    <svg className="w-8 h-8 text-[#00e5cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.069A1 1 0 0121 8.867v6.266a1 1 0 01-1.447.899L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div className="flex gap-1">
+                    <span className="w-2 h-2 rounded-full bg-[#00e5cc] animate-bounce" style={{animationDelay:'0ms'}}></span>
+                    <span className="w-2 h-2 rounded-full bg-[#00e5cc] animate-bounce" style={{animationDelay:'150ms'}}></span>
+                    <span className="w-2 h-2 rounded-full bg-[#00e5cc] animate-bounce" style={{animationDelay:'300ms'}}></span>
+                  </div>
+                </div>
+              </div>
               <div className="p-8 relative">
-                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">01</div>
+                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full font-black text-2xl flex items-center justify-center border-4 border-[#0d1b2a] shadow-[0_0_20px_rgba(0,229,204,0.5)]" style={{background:'#00e5cc', color:'#0d1b2a'}}>01</div>
                 <h3 className="text-2xl font-bold mb-4 mt-4">Videonuzu Yükleyin</h3>
                 <p className="text-gray-400">Performans videonuzu platforma ekleyin. Akıllı telefonla çekilmiş olması yeterlidir.</p>
               </div>
             </div>
-            
-            <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
-              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" alt="AI Puanınızı Alın" className="w-full h-48 object-cover opacity-80" />
+
+            {/* Step 02: AI Analysis - Waveform */}
+            <div className="relative z-10 bg-[#0d1b2a] rounded-3xl border border-[#00e5cc]/20 hover:border-[#00e5cc]/60 transition-all overflow-hidden flex flex-col group">
+              <div className="h-48 bg-gradient-to-br from-[#0d1b2a] to-[#0a1020] flex items-center justify-center relative overflow-hidden">
+                <div className="flex items-end gap-1 h-24">
+                  {[30,55,40,70,50,85,45,65,35,80,50,40,75,55,30,65,45,80,35,60].map((h, i) => (
+                    <div
+                      key={i}
+                      className="w-2 rounded-full bg-[#00e5cc] opacity-80"
+                      style={{ height: `${h}%`, animation: `pulse 1.5s ease-in-out ${i * 0.07}s infinite alternate`, boxShadow: '0 0 6px rgba(0,229,204,0.6)' }}
+                    ></div>
+                  ))}
+                </div>
+                <div className="absolute bottom-4 left-0 right-0 text-center text-[10px] font-bold tracking-widest" style={{color:'#00e5cc'}}>AI ANALYSIS RUNNING...</div>
+              </div>
               <div className="p-8 relative">
-                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">02</div>
+                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full font-black text-2xl flex items-center justify-center border-4 border-[#0d1b2a] shadow-[0_0_20px_rgba(0,229,204,0.5)]" style={{background:'#00e5cc', color:'#0d1b2a'}}>02</div>
                 <h3 className="text-2xl font-bold mb-4 mt-4">AI Puanınızı Alın</h3>
                 <p className="text-gray-400">Yapay zekâ sistemimiz videonuzu analiz eder ve aktivite, hız, konumlandırma puanı üretir.</p>
               </div>
             </div>
-            
-            <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
-              <img src="https://images.unsplash.com/photo-1526232341456-62182ce97211?q=80&w=800&auto=format&fit=crop" alt="Küresel Olun" className="w-full h-48 object-cover opacity-80" />
+
+            {/* Step 03: Global - World Map */}
+            <div className="relative z-10 bg-[#0d1b2a] rounded-3xl border border-[#00e5cc]/20 hover:border-[#00e5cc]/60 transition-all overflow-hidden flex flex-col group">
+              <div className="h-48 bg-gradient-to-br from-[#0d1b2a] to-[#001025] flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0" style={{backgroundImage: 'radial-gradient(circle, #00e5cc 1.5px, transparent 1.5px)', backgroundSize: '18px 18px', opacity: 0.15}}></div>
+                <svg viewBox="0 0 200 120" className="w-40 opacity-70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="100" cy="60" rx="95" ry="55" stroke="#00e5cc" strokeWidth="0.8" strokeDasharray="4 3" />
+                  <line x1="100" y1="5" x2="100" y2="115" stroke="#00e5cc" strokeWidth="0.5" strokeDasharray="3 3" />
+                  <line x1="5" y1="60" x2="195" y2="60" stroke="#00e5cc" strokeWidth="0.5" strokeDasharray="3 3" />
+                  {[[30,35],[80,25],[150,40],[55,70],[130,75],[90,55],[165,55],[40,85]].map(([cx,cy],i) => (
+                    <circle key={i} cx={cx} cy={cy} r="3" fill="#00e5cc" className="animate-pulse" style={{animationDelay:`${i*200}ms`, filter:'drop-shadow(0 0 4px #00e5cc)'}} />
+                  ))}
+                </svg>
+                <div className="absolute bottom-4 left-0 right-0 text-center text-[10px] font-bold tracking-widest" style={{color:'#00e5cc'}}>47 ACTIVE COUNTRIES</div>
+              </div>
               <div className="p-8 relative">
-                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">03</div>
+                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full font-black text-2xl flex items-center justify-center border-4 border-[#0d1b2a] shadow-[0_0_20px_rgba(0,229,204,0.5)]" style={{background:'#00e5cc', color:'#0d1b2a'}}>03</div>
                 <h3 className="text-2xl font-bold mb-4 mt-4">Küresel Olun</h3>
                 <p className="text-gray-400">Dünyanın dört bir yanındaki yetenek avcıları profilinizi ve puanınızı anında görür.</p>
               </div>
@@ -225,35 +272,44 @@ export default function HomePage() {
             <p className="text-gray-400 max-w-2xl mx-auto">TSM, futbol ekosistemindeki tüm aktörler için özelleştirilmiş araçlar sunar.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop" alt="Scout" className="w-full h-48 object-cover" />
+            {/* Scout Card */}
+            <div className="rounded-3xl overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer flex flex-col" style={{background:'linear-gradient(135deg, #0d1b2a 0%, #0a1f2e 60%, #003d3d 100%)', border:'1px solid rgba(0,229,204,0.2)'}}>
+              <div className="h-40 flex items-center justify-center" style={{background:'linear-gradient(135deg, rgba(0,229,204,0.1), rgba(0,229,204,0.02))'}}>
+                <span className="text-7xl" style={{filter:'drop-shadow(0 0 20px rgba(0,229,204,0.6))'}}>🔍</span>
+              </div>
               <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Scout</h3>
-                <p className="text-gray-400 mb-4 text-sm flex-1">Maçları izle, oyuncu raporları yaz ve en iyi yetenekleri keşfet. Tüm scouting notlarını dijital olarak sakla.</p>
+                <h3 className="text-xl font-bold mb-3" style={{color:'#00e5cc'}}>Scout</h3>
+                <p className="text-gray-400 mb-4 text-sm flex-1">Maçları izle, oyuncu raporları yaz ve en iyi yetenekleri keşfet.</p>
                 <ul className="space-y-2 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Rapor Yazma</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Oyuncu Takibi</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" style={{color:'#00e5cc'}} /> Rapor Yazma</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" style={{color:'#00e5cc'}} /> Oyuncu Takibi</li>
                 </ul>
               </div>
             </div>
 
-            <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=800&auto=format&fit=crop" alt="Kulüp Yöneticisi" className="w-full h-48 object-cover" />
+            {/* Club Manager Card */}
+            <div className="rounded-3xl overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer flex flex-col" style={{background:'linear-gradient(135deg, #0d1b2a 0%, #1f1000 60%, #3d1e00 100%)', border:'1px solid rgba(245,166,35,0.2)'}}>
+              <div className="h-40 flex items-center justify-center" style={{background:'linear-gradient(135deg, rgba(245,166,35,0.1), rgba(245,166,35,0.02))'}}>
+                <span className="text-7xl" style={{filter:'drop-shadow(0 0 20px rgba(245,166,35,0.6))'}}>🏆</span>
+              </div>
               <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Kulüp Yöneticisi / TD</h3>
-                <p className="text-gray-400 mb-4 text-sm flex-1">Scout raporlarını inceleyin, oyuncu karşılaştırmaları yapın ve veri odaklı transfer kararları alın.</p>
+                <h3 className="text-xl font-bold mb-3" style={{color:'#f5a623'}}>Kulüp Yöneticisi / TD</h3>
+                <p className="text-gray-400 mb-4 text-sm flex-1">Scout raporlarını inceleyin, veri odaklı transfer kararları alın.</p>
                 <ul className="space-y-2 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Rapor İnceleme</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Veri Analizi</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" style={{color:'#f5a623'}} /> Rapor İnceleme</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" style={{color:'#f5a623'}} /> Veri Analizi</li>
                 </ul>
               </div>
             </div>
 
-            <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1516567727245-ad8c68f3ec1c?q=80&w=800&auto=format&fit=crop" alt="Futbolcu" className="w-full h-48 object-cover" />
+            {/* Player Card */}
+            <div className="rounded-3xl overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer flex flex-col" style={{background:'linear-gradient(135deg, #0d1b2a 0%, #001a0d 60%, #003d1a 100%)', border:'1px solid rgba(0,210,106,0.2)'}}>
+              <div className="h-40 flex items-center justify-center" style={{background:'linear-gradient(135deg, rgba(0,210,106,0.1), rgba(0,210,106,0.02))'}}>
+                <span className="text-7xl" style={{filter:'drop-shadow(0 0 20px rgba(0,210,106,0.6))'}}>⚽</span>
+              </div>
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Oyuncu / Futbolcu</h3>
-                <p className="text-gray-400 mb-4 text-sm flex-1">Profilinizi oluşturun, AI destekli performans puanınızı görün ve kulüplerden teklif alın.</p>
+                <p className="text-gray-400 mb-4 text-sm flex-1">Profilinizi oluşturun, AI puanınızı görün ve kulüplerden teklif alın.</p>
                 <ul className="space-y-2 text-sm text-gray-500">
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Profil Oluşturma</li>
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Teklif Alma</li>
@@ -261,14 +317,17 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" alt="Akademi" className="w-full h-48 object-cover" />
+            {/* Academy Card */}
+            <div className="rounded-3xl overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer flex flex-col" style={{background:'linear-gradient(135deg, #0d1b2a 0%, #0f0020 60%, #200040 100%)', border:'1px solid rgba(139,92,246,0.2)'}}>
+              <div className="h-40 flex items-center justify-center" style={{background:'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(139,92,246,0.02))'}}>
+                <span className="text-7xl" style={{filter:'drop-shadow(0 0 20px rgba(139,92,246,0.6))'}}>🎓</span>
+              </div>
               <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Akademi Yöneticisi</h3>
-                <p className="text-gray-400 mb-4 text-sm flex-1">Genç yeteneklerin gelişimini takip edin, analiz raporları oluşturun ve en iyi oyuncuları öne çıkarın.</p>
+                <h3 className="text-xl font-bold mb-3 text-purple-400">Akademi Yöneticisi</h3>
+                <p className="text-gray-400 mb-4 text-sm flex-1">Genç yeteneklerin gelişimini takip edin ve en iyileri öne çıkarın.</p>
                 <ul className="space-y-2 text-sm text-gray-500">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Gelişim Takibi</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#00D26A]" /> Yetenek Analizi</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-purple-400" /> Gelişim Takibi</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-purple-400" /> Yetenek Analizi</li>
                 </ul>
               </div>
             </div>
