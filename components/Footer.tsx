@@ -64,9 +64,10 @@ export default function Footer() {
         <div>
           <h4 className="font-bold text-lg mb-6">Platform</h4>
           <ul className="space-y-3 text-sm text-gray-400">
-            <li><Link href="/login" className="hover:text-[#00D26A] transition-colors">Giriş Yap</Link></li>
-            <li><Link href="/register" className="hover:text-[#00D26A] transition-colors">Kayıt Ol</Link></li>
-            <li><Link href="/pricing" className="hover:text-[#00D26A] transition-colors">Fiyatlandırma</Link></li>
+            <li><Link href="/player-login" className="hover:text-[#00e5cc] transition-colors">⚽ Oyuncu Girişi</Link></li>
+            <li><Link href="/scout-login" className="hover:text-[#f5a623] transition-colors">🔍 İzci Girişi</Link></li>
+            <li><Link href="/player-register" className="hover:text-[#00e5cc] transition-colors">Ücretsiz Kayıt</Link></li>
+            <li><Link href="/pricing" className="hover:text-white transition-colors">Fiyatlandırma</Link></li>
           </ul>
           
           <h4 className="font-bold text-lg mb-4 mt-8">Yasal</h4>

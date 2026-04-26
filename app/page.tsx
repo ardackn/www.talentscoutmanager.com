@@ -80,7 +80,7 @@ export default function HomePage() {
               <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
               Canlı Platform Etkinliği
             </h2>
-            <Link href="/register" className="text-[#00D26A] hover:underline text-sm font-semibold flex items-center mt-2 md:mt-0">
+            <Link href="/player-register" className="hover:underline text-sm font-semibold flex items-center mt-2 md:mt-0" style={{color:'#00e5cc'}}>
               Yeni Katılanları Gör <ChevronRight className="w-4 h-4 ml-1" />
             </Link>
           </div>
@@ -171,7 +171,7 @@ export default function HomePage() {
                 <div className="relative z-10">
                   <h3 className="text-2xl font-bold text-white mb-1">{player.name}</h3>
                   <p className="text-gray-400 text-sm mb-4">{player.pos} · {player.team}</p>
-                  <Link href="/register" className="text-sm font-semibold text-[#00D26A] flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <Link href="/player-register" className="text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all" style={{color:'#00e5cc'}}>
                     Profili İncele <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -256,8 +256,12 @@ export default function HomePage() {
           </div>
           
           <div className="mt-16">
-            <Link href="/register" className="inline-block bg-white text-black font-black text-lg px-12 py-5 rounded-full hover:bg-gray-200 hover:scale-105 transition-all">
-              Şimdi Profilinizi Oluşturun
+            <Link
+              href="/player-register"
+              className="inline-flex items-center gap-2 font-black text-lg text-[#0d1b2a] hover:scale-105 transition-all"
+              style={{ backgroundColor: '#00e5cc', borderRadius: '8px', padding: '18px 40px', boxShadow: '0 0 20px rgba(0,229,204,0.4)' }}
+            >
+              ⚽ Şimdi Profilinizi Oluşturun
             </Link>
           </div>
         </div>
@@ -344,11 +348,19 @@ export default function HomePage() {
               Bağımsız yetenek avcılarından dev federasyonlara kadar, ihtiyacınız olan veri odaklı scouting araçları tek platformda. Üstelik 14 gün ücretsiz deneme fırsatıyla.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/pricing" className="bg-[#00D26A] text-black font-black text-lg px-10 py-5 rounded-full hover:bg-[#00e676] hover:scale-105 transition-all shadow-[0_0_30px_rgba(0,210,106,0.5)]">
+              <Link
+                href="/pricing"
+                className="font-black text-lg px-10 py-5 hover:scale-105 transition-all"
+                style={{ background: '#00e5cc', color: '#0d1b2a', borderRadius: '8px', boxShadow: '0 0 20px rgba(0,229,204,0.4)' }}
+              >
                 Fiyatlandırmayı İncele
               </Link>
-              <Link href="/register?role=scout" className="bg-white/10 text-white font-bold text-lg px-10 py-5 rounded-full hover:bg-white/20 transition-all">
-                İzci Olarak Başla
+              <Link
+                href="/scout-register"
+                className="font-bold text-lg px-10 py-5 hover:scale-105 transition-all"
+                style={{ border: '2px solid #f5a623', color: '#f5a623', background: 'transparent', borderRadius: '8px' }}
+              >
+                🔍 İzci Olarak Başla
               </Link>
             </div>
           </div>

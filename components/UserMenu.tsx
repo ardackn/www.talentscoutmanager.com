@@ -25,14 +25,14 @@ export function UserMenu() {
   if (!session) {
     return (
       <div className="flex gap-2">
-        <Link href="/login">
+        <Link href="/player-login">
           <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
-            Giriş
+            ⚽ Oyuncu
           </Button>
         </Link>
-        <Link href="/register">
-          <Button size="sm" className="bg-gradient-to-r from-gold to-yellow-500 text-slate-900 hover:from-yellow-400">
-            Katıl
+        <Link href="/scout-login">
+          <Button size="sm" style={{background:'#f5a623', color:'#0d1b2a'}} className="font-bold hover:opacity-90">
+            🔍 İzci
           </Button>
         </Link>
       </div>
