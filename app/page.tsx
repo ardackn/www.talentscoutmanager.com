@@ -181,7 +181,7 @@ export default function HomePage() {
             <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00D26A]/30 to-transparent hidden md:block -translate-y-1/2 z-0"></div>
             
             <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
-              <img src="https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=600&auto=format&fit=crop" alt="Videonuzu Yükleyin" className="w-full h-48 object-cover opacity-80" />
+              <img src="https://images.unsplash.com/photo-1516567727245-ad8c68f3ec1c?q=80&w=800&auto=format&fit=crop" alt="Videonuzu Yükleyin" className="w-full h-48 object-cover opacity-80" />
               <div className="p-8 relative">
                 <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">01</div>
                 <h3 className="text-2xl font-bold mb-4 mt-4">Videonuzu Yükleyin</h3>
@@ -199,7 +199,7 @@ export default function HomePage() {
             </div>
             
             <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
-              <img src="https://images.unsplash.com/photo-1508344928928-7165b67de128?q=80&w=600&auto=format&fit=crop" alt="Küresel Olun" className="w-full h-48 object-cover opacity-80" />
+              <img src="https://images.unsplash.com/photo-1526232341456-62182ce97211?q=80&w=800&auto=format&fit=crop" alt="Küresel Olun" className="w-full h-48 object-cover opacity-80" />
               <div className="p-8 relative">
                 <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">03</div>
                 <h3 className="text-2xl font-bold mb-4 mt-4">Küresel Olun</h3>
