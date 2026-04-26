@@ -5,16 +5,16 @@ import Link from 'next/link'
 import { Play, CheckCircle2, Globe, Users, TrendingUp, Shield, ChevronRight, Star } from 'lucide-react'
 
 const LIVE_ACTIVITY = [
-  { id: 1, name: 'Alperen Aktaş', pos: 'Kaleci', loc: 'İstanbul', score: 74, time: 'Şu anda', initials: 'AA' },
-  { id: 2, name: 'Can Demir', pos: 'Stoper', loc: 'Ankara', score: 66, time: '2 dk önce', initials: 'CD' },
-  { id: 3, name: 'İsmail Kara', pos: 'Sol Bek', loc: 'İzmir', score: 77, time: '8 dk önce', initials: 'İK' },
-  { id: 4, name: 'Semih Kılıç', pos: 'Sağ Bek', loc: 'Bursa', score: 79, time: '14 dk önce', initials: 'SK' },
+  { id: 1, name: 'Alperen Aktaş', pos: 'Kaleci', loc: 'İstanbul', score: 74, time: 'Şu anda', image: '/data/player1.png' },
+  { id: 2, name: 'Can Demir', pos: 'Stoper', loc: 'Ankara', score: 66, time: '2 dk önce', image: '/data/player2.png' },
+  { id: 3, name: 'İsmail Kara', pos: 'Sol Bek', loc: 'İzmir', score: 77, time: '8 dk önce', image: '/data/player3.png' },
+  { id: 4, name: 'Semih Kılıç', pos: 'Sağ Bek', loc: 'Bursa', score: 79, time: '14 dk önce', image: '/data/player1.png' },
 ]
 
 const TOP_PLAYERS = [
-  { rank: 1, name: 'Uğur Çetin', pos: 'Kaleci', team: 'Sivasspor U21', score: 84 },
-  { rank: 2, name: 'Berk Güler', pos: 'Sol Kanat', team: 'Ankaragücü U21', score: 84 },
-  { rank: 3, name: 'Arda Kaya', pos: 'Sağ Kanat', team: 'Ümraniyespor U21', score: 84 },
+  { rank: 1, name: 'Uğur Çetin', pos: 'Kaleci', team: 'Sivasspor U21', score: 84, image: '/data/player2.png' },
+  { rank: 2, name: 'Berk Güler', pos: 'Sol Kanat', team: 'Ankaragücü U21', score: 84, image: '/data/player3.png' },
+  { rank: 3, name: 'Arda Kaya', pos: 'Sağ Kanat', team: 'Ümraniyespor U21', score: 84, image: '/data/player1.png' },
 ]
 
 export default function HomePage() {
@@ -79,8 +79,8 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {LIVE_ACTIVITY.map((player) => (
               <div key={player.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4 hover:bg-white/10 transition-colors cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00D26A] to-blue-600 flex items-center justify-center text-black font-black shrink-0">
-                  {player.initials}
+                <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-[#00D26A]/50 relative">
+                  <img src={player.image} alt={player.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <div className="font-bold text-white text-sm">{player.name}</div>
@@ -155,6 +155,9 @@ export default function HomePage() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#00D26A]/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
                 <div className="flex justify-between items-start mb-6 relative z-10">
                   <div className="text-[#00D26A] font-black text-xl">#{player.rank}</div>
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20 shadow-lg relative -mt-2">
+                    <img src={player.image} alt={player.name} className="w-full h-full object-cover" />
+                  </div>
                   <div className="bg-white/10 px-3 py-1 rounded-full text-sm font-bold">{player.score} AI</div>
                 </div>
                 <div className="relative z-10">
@@ -177,22 +180,31 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-12 relative">
             <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00D26A]/30 to-transparent hidden md:block -translate-y-1/2 z-0"></div>
             
-            <div className="relative z-10 bg-[#050806] p-8 rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all">
-              <div className="w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(0,210,106,0.4)]">01</div>
-              <h3 className="text-2xl font-bold mb-4">Videonuzu Yükleyin</h3>
-              <p className="text-gray-400">Performans videonuzu platforma ekleyin. Akıllı telefonla çekilmiş olması yeterlidir.</p>
+            <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
+              <img src="https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=600&auto=format&fit=crop" alt="Videonuzu Yükleyin" className="w-full h-48 object-cover opacity-80" />
+              <div className="p-8 relative">
+                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">01</div>
+                <h3 className="text-2xl font-bold mb-4 mt-4">Videonuzu Yükleyin</h3>
+                <p className="text-gray-400">Performans videonuzu platforma ekleyin. Akıllı telefonla çekilmiş olması yeterlidir.</p>
+              </div>
             </div>
             
-            <div className="relative z-10 bg-[#050806] p-8 rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all">
-              <div className="w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(0,210,106,0.4)]">02</div>
-              <h3 className="text-2xl font-bold mb-4">AI Puanınızı Alın</h3>
-              <p className="text-gray-400">Yapay zekâ sistemimiz videonuzu analiz eder ve aktivite, hız, konumlandırma puanı üretir.</p>
+            <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" alt="AI Puanınızı Alın" className="w-full h-48 object-cover opacity-80" />
+              <div className="p-8 relative">
+                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">02</div>
+                <h3 className="text-2xl font-bold mb-4 mt-4">AI Puanınızı Alın</h3>
+                <p className="text-gray-400">Yapay zekâ sistemimiz videonuzu analiz eder ve aktivite, hız, konumlandırma puanı üretir.</p>
+              </div>
             </div>
             
-            <div className="relative z-10 bg-[#050806] p-8 rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all">
-              <div className="w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(0,210,106,0.4)]">03</div>
-              <h3 className="text-2xl font-bold mb-4">Küresel Olun</h3>
-              <p className="text-gray-400">Dünyanın dört bir yanındaki yetenek avcıları profilinizi ve puanınızı anında görür.</p>
+            <div className="relative z-10 bg-[#0a0f0c] rounded-3xl border border-white/10 hover:border-[#00D26A]/50 transition-all overflow-hidden flex flex-col">
+              <img src="https://images.unsplash.com/photo-1508344928928-7165b67de128?q=80&w=600&auto=format&fit=crop" alt="Küresel Olun" className="w-full h-48 object-cover opacity-80" />
+              <div className="p-8 relative">
+                <div className="absolute -top-8 left-8 w-16 h-16 rounded-full bg-[#00D26A] text-black font-black text-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,210,106,0.4)] border-4 border-[#0a0f0c]">03</div>
+                <h3 className="text-2xl font-bold mb-4 mt-4">Küresel Olun</h3>
+                <p className="text-gray-400">Dünyanın dört bir yanındaki yetenek avcıları profilinizi ve puanınızı anında görür.</p>
+              </div>
             </div>
           </div>
           
@@ -238,7 +250,7 @@ export default function HomePage() {
             </div>
 
             <div className="bg-[#0a0f0c] border border-white/10 rounded-3xl overflow-hidden hover:border-[#00D26A]/50 transition-colors flex flex-col">
-              <img src="https://images.unsplash.com/photo-1518605368461-1e1e38ce8058?q=80&w=600&auto=format&fit=crop" alt="Futbolcu" className="w-full h-48 object-cover" />
+              <img src="https://images.unsplash.com/photo-1511886929837-354d827aae26?q=80&w=600&auto=format&fit=crop" alt="Futbolcu" className="w-full h-48 object-cover" />
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold mb-3 text-[#00D26A]">Oyuncu / Futbolcu</h3>
                 <p className="text-gray-400 mb-4 text-sm flex-1">Profilinizi oluşturun, AI destekli performans puanınızı görün ve kulüplerden teklif alın.</p>

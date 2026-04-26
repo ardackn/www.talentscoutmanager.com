@@ -88,7 +88,7 @@ export default function Footer() {
           >
             {/* Using a professional placeholder map image */}
             <img 
-              src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+              src="/data/map_nurol.png" 
               alt="Google Maps Nurol Kulesi" 
               className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
             />
