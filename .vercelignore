@@ -1,0 +1,40 @@
+# Exclude Flutter source code (not needed for static web deploy)
+lib/
+android/
+ios/
+linux/
+macos/
+windows/
+test/
+
+# Exclude build artifacts (except web output)
+build/
+
+# Exclude Flutter tooling
+.dart_tool/
+.idea/
+.kilocode/
+flutterfire/
+deploy_tmp/
+
+# Exclude large JS files that are already in root (Flutter web build)
+# Keep: index.html, main.dart.js, flutter.js, flutter_bootstrap.js, etc.
+
+# Exclude source assets (already compiled into main.dart.js)
+# assets/ - needed for fonts/images, keep it
+
+# Exclude platform-specific dirs
+canvaskit/
+
+# Exclude dev files
+*.dart
+pubspec.yaml
+pubspec.lock
+analysis_options.yaml
+l10n.yaml
+generate_l10n.js
+copyArtifacts.js
+copyImages.js
+.metadata
+.last_build_id
+vercel_settings.json
