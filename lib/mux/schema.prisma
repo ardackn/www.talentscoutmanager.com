@@ -1,0 +1,21 @@
+generator client {
+  provider = "postgresql"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id          String   @id @default(cuid())
+  name        String
+  surname     String
+  nationality String
+  position    String
+  team        String   @default("Amateur")
+  age         Int
+  speed       Int
+  technique   Int
+  strength    Int
+  videoUrl    String?

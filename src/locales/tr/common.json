@@ -1,0 +1,21 @@
+{
+  "welcome": "Hoş Geldiniz",
+  "home": "Ana Sayfa",
+  "athletes": "Sporcular",
+  "scouts": "İzciler",
+  "pricing": "Fiyatlandırma",
+  "login": "Giriş",
+  "register": "Kayıt Ol",
+  "logout": "Çıkış",
+  "dashboard": "Panel",
+  "profile": "Profil",
+  "settings": "Ayarlar",
+  "search": "Arama",
+  "filter": "Filtre",
+  "save": "Kaydet",
+  "cancel": "İptal",
+  "submit": "Gönder",
+  "loading": "Yükleniyor",
+  "error": "Hata",
+  "success": "Başarılı"
+}
