@@ -134,7 +134,19 @@ class _ScoutRegistrationPageState extends State<ScoutRegistrationPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text('İzci (Scout) Kayıt', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const Icon(Icons.search, color: Color(0xFF3B82F6), size: 64),
+                const SizedBox(height: 16),
+                const Text(
+                  'YARININ YILDIZLARINI KEŞFET',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'En yetenekli gençleri yapay zeka ile anında filtrele.',
+                  style: TextStyle(fontSize: 16, color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _nameController,
@@ -157,16 +169,13 @@ class _ScoutRegistrationPageState extends State<ScoutRegistrationPage> {
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   value: _selectedMembership,
-                  decoration: const InputDecoration(labelText: 'Üyelik Seçeneği', border: OutlineInputBorder()),
+                  decoration: const InputDecoration(labelText: 'Üyelik Paketi', border: OutlineInputBorder()),
                   items: const [
-                    DropdownMenuItem(value: 'Free', child: Text('Free (Ücretsiz - Sadece görüntüleme)')),
-                    DropdownMenuItem(value: 'Premium', child: Text('Premium (Filtreleme, Mesajlaşma)')),
+                    DropdownMenuItem(value: 'Free', child: Text('Free (Ücretsiz)')),
+                    DropdownMenuItem(value: 'Premium', child: Text('Premium (299₺/ay)')),
+                    DropdownMenuItem(value: 'Gold', child: Text('Gold (599₺/ay)')),
                   ],
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedMembership = value!;
-                    });
-                  },
+                  onChanged: (value) => setState(() => _selectedMembership = value!),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(

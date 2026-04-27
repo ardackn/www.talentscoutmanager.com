@@ -1,17 +1,41 @@
 {
-    "@@locale": "ko",
-    "explore": "탐색",
-    "messages": "메시지",
-    "editProfile": "프로필 편집",
-    "settings": "설정",
-    "logout": "로그아웃",
-    "anErrorOccurred": "문제가 발생했습니다.",
-    "noTalentFound": "표시할 인재를 찾을 수 없습니다.",
-    "helloUser": "안녕하세요, {userName}님!",
-    "@helloUser": {
-        "description": "A welcome message that greets the user by name.",
-        "placeholders": {
-            "userName": {}
-        }
+  "appTitle": "TSM - Talent Scout Manager",
+  "login": "Login",
+  "register": "Register",
+  "talentLogin": "Talent Login",
+  "scoutLogin": "Scout Login",
+  "howItWorks": "How AI Works?",
+  "advantages": "Advantages",
+  "language": "Language",
+  "email": "Email",
+  "password": "Password",
+  "name": "Name",
+  "surname": "Surname",
+  "age": "Age",
+  "position": "Position",
+  "team": "Team",
+  "country": "Country",
+  "height": "Height",
+  "weight": "Weight",
+  "uploadVideo": "Upload Video",
+  "registerAsTalent": "Register as Talent",
+  "registerAsScout": "Register as Scout",
+  "analysisResult": "AI Analysis Result",
+  "explore": "Explore",
+  "chat": "Chat",
+  "settings": "Settings",
+  "success": "Success",
+  "error": "Error",
+  "helloUser": "Hello {name}",
+  "@helloUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
     }
+  },
+  "messages": "Messages",
+  "editProfile": "Edit Profile",
+  "logout": "Logout",
+  "noTalentFound": "No talents found."
 }

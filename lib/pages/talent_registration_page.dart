@@ -142,9 +142,18 @@ class _TalentRegistrationPageState extends State<TalentRegistrationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                const Icon(Icons.stars, color: Color(0xFF10B981), size: 64),
+                const SizedBox(height: 16),
                 const Text(
-                  'Yetenek Kayıt',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  'DÜNYAYA KENDİNİ GÖSTER',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Yapay zeka analizleriyle scoutların dikkatini çek.',
+                  style: TextStyle(fontSize: 16, color: Colors.white70),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(

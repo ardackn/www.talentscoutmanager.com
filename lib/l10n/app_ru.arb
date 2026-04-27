@@ -1,17 +1,41 @@
 {
-    "@@locale": "ru",
-    "explore": "Исследовать",
-    "messages": "Сообщения",
-    "editProfile": "Редактировать профиль",
-    "settings": "Настройки",
-    "logout": "Выйти",
-    "anErrorOccurred": "Что-то пошло не так.",
-    "noTalentFound": "Таланты для показа не найдены.",
-    "helloUser": "Привет, {userName}!",
-    "@helloUser": {
-        "description": "A welcome message that greets the user by name.",
-        "placeholders": {
-            "userName": {}
-        }
+  "appTitle": "TSM - Talent Scout Manager",
+  "login": "Login",
+  "register": "Register",
+  "talentLogin": "Talent Login",
+  "scoutLogin": "Scout Login",
+  "howItWorks": "How AI Works?",
+  "advantages": "Advantages",
+  "language": "Language",
+  "email": "Email",
+  "password": "Password",
+  "name": "Name",
+  "surname": "Surname",
+  "age": "Age",
+  "position": "Position",
+  "team": "Team",
+  "country": "Country",
+  "height": "Height",
+  "weight": "Weight",
+  "uploadVideo": "Upload Video",
+  "registerAsTalent": "Register as Talent",
+  "registerAsScout": "Register as Scout",
+  "analysisResult": "AI Analysis Result",
+  "explore": "Explore",
+  "chat": "Chat",
+  "settings": "Settings",
+  "success": "Success",
+  "error": "Error",
+  "helloUser": "Hello {name}",
+  "@helloUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
     }
+  },
+  "messages": "Messages",
+  "editProfile": "Edit Profile",
+  "logout": "Logout",
+  "noTalentFound": "No talents found."
 }
