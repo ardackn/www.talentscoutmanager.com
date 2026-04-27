@@ -2,6 +2,9 @@
   "version": 2,
   "public": true,
   "name": "talescout-virsual-code",
+  "buildCommand": null,
+  "installCommand": null,
+  "outputDirectory": ".",
   "rewrites": [
     {
       "source": "/(.*)",

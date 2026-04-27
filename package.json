@@ -1,0 +1,8 @@
+{
+  "name": "talescout-ai-portal",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Static build...'",
+    "vercel-build": "echo 'Static build...'"
+  }
+}
