@@ -11,6 +11,7 @@ import ClientProviders from '@/components/ClientProviders'
 import Script from 'next/script';
 import type { ReactNode } from 'react'
 import { cn } from "@/lib/utils";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -49,6 +50,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </ClientProviders>
+        <SpeedInsights />
       </body>
     </html>
   )
