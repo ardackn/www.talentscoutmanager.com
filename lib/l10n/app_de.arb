@@ -1,0 +1,17 @@
+{
+    "@@locale": "de",
+    "explore": "Erkunden",
+    "messages": "Nachrichten",
+    "editProfile": "Profil bearbeiten",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "anErrorOccurred": "Etwas ist schiefgelaufen.",
+    "noTalentFound": "Kein Talent zum Anzeigen gefunden.",
+    "helloUser": "Hallo, {userName}!",
+    "@helloUser": {
+        "description": "A welcome message that greets the user by name.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}

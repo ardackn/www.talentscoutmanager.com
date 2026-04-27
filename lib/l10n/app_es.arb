@@ -1,0 +1,17 @@
+{
+    "@@locale": "es",
+    "explore": "Explorar",
+    "messages": "Mensajes",
+    "editProfile": "Editar perfil",
+    "settings": "Ajustes",
+    "logout": "Cerrar sesión",
+    "anErrorOccurred": "Algo salió mal.",
+    "noTalentFound": "No se encontró talento para mostrar.",
+    "helloUser": "¡Hola, {userName}!",
+    "@helloUser": {
+        "description": "A welcome message that greets the user by name.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}

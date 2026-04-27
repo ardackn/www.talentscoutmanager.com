@@ -83,6 +83,7 @@ class MyApp extends StatelessWidget {
               AppLocalizations.of(context)!.explore, // Uygulama başlığı
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
+          locale: themeProvider.locale,
           title: 'Taledis',
           navigatorKey: navigatorKey, // NavigatorKey'i MaterialApp'e atıyoruz.
           theme: ThemeData(
@@ -169,22 +170,38 @@ class _HomePageState extends State<HomePage> {
   late VideoPlayerController _controller;
   bool _isVideoInitialized = false;
 
-  // Buraya kendi video URL'nizi yazabilirsiniz
-  static const String _videoUrl =
-      'https://videos.pexels.com/video-files/856397/856397-hd_1920_1080_25fps.mp4';
+  // Arka plan videosu için yerel asset yolu. 
+  // Videoyu 'assets/videos/background.mp4' olarak kaydedin.
+  static const String _assetVideoPath = 'assets/videos/background.mp4';
+  
+  // Yedek video URL'si (Futbol temalı)
+  static const String _fallbackVideoUrl =
+      'https://videos.pexels.com/video-files/3958742/3958742-hd_1920_1080_24fps.mp4';
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(_videoUrl))
-      ..initialize().then((_) {
-        if (mounted) {
-          setState(() => _isVideoInitialized = true);
-          _controller.setLooping(true);
-          _controller.setVolume(0.0);
-          _controller.play();
-        }
-      });
+    _initializeVideo();
+  }
+
+  Future<void> _initializeVideo() async {
+    // Önce yerel videoyu dene, yoksa yedek URL'yi kullan
+    _controller = VideoPlayerController.asset(_assetVideoPath);
+    
+    try {
+      await _controller.initialize();
+    } catch (e) {
+      print("Yerel video bulunamadı, ağ videosu kullanılıyor: $e");
+      _controller = VideoPlayerController.networkUrl(Uri.parse(_fallbackVideoUrl));
+      await _controller.initialize();
+    }
+
+    if (mounted) {
+      setState(() => _isVideoInitialized = true);
+      _controller.setLooping(true);
+      _controller.setVolume(0.0);
+      _controller.play();
+    }
   }
 
   @override
@@ -241,6 +258,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _showInfoDialog(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Kapat'),
+          ),
+        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+    );
+  }
+
   Widget _buildNavbar(BuildContext context) {
     return Container(
       height: 64,
@@ -252,32 +286,50 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Logo
-          RichText(
-            text: const TextSpan(
-              children: [
-                TextSpan(
-                  text: 'TSM',
-                  style: TextStyle(
-                    color: Color(0xFF2563EB),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    letterSpacing: 1,
-                  ),
-                ),
-                TextSpan(
-                  text: '  Görünmez Devler',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
+          Image.asset(
+            'assets/images/logo.png',
+            height: 40,
+            fit: BoxFit.contain,
           ),
           const Spacer(),
+          // Dil Seçici
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return DropdownButton<String>(
+                value: themeProvider.locale?.languageCode ?? 'en',
+                dropdownColor: Colors.black87,
+                style: const TextStyle(color: Colors.white70),
+                underline: const SizedBox(),
+                icon: const Icon(Icons.language, color: Colors.white70, size: 20),
+                items: const [
+                  DropdownMenuItem(value: 'en', child: Text('EN')),
+                  DropdownMenuItem(value: 'es', child: Text('ES')),
+                  DropdownMenuItem(value: 'fr', child: Text('FR')),
+                  DropdownMenuItem(value: 'it', child: Text('IT')),
+                  DropdownMenuItem(value: 'tr', child: Text('TR')),
+                  DropdownMenuItem(value: 'ru', child: Text('RU')),
+                  DropdownMenuItem(value: 'de', child: Text('DE')),
+                  DropdownMenuItem(value: 'ar', child: Text('AR')),
+                  DropdownMenuItem(value: 'zh', child: Text('ZH')),
+                  DropdownMenuItem(value: 'ja', child: Text('JA')),
+                  DropdownMenuItem(value: 'ko', child: Text('KO')),
+                ],
+                onChanged: (String? newLang) {
+                  if (newLang != null) {
+                    themeProvider.setLocale(Locale(newLang));
+                  }
+                },
+              );
+            },
+          ),
+          const SizedBox(width: 8),
           // Nav linkleri
           TextButton(
-            onPressed: () {},
+            onPressed: () => _showInfoDialog(
+              context, 
+              'Yapay Zeka Nasıl Çalışır?', 
+              'Yapay zeka sistemimiz, yüklediğiniz performans videolarını saniyeler içinde analiz eder. Oyuncunun hızı, isabeti, pozisyon alma yeteneği gibi birçok parametreyi değerlendirerek profesyonel bir rapor oluşturur.'
+            ),
             child: const Text(
               'Yapay Zeka Nasıl Çalışır?',
               style: TextStyle(color: Colors.white70, fontSize: 14),
@@ -285,7 +337,11 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(width: 8),
           TextButton(
-            onPressed: () {},
+            onPressed: () => _showInfoDialog(
+              context, 
+              'Avantajlar', 
+              '• Küresel kulüplere doğrudan erişim.\n• Adil ve tarafsız performans analizi.\n• İzciler için hızlı filtreleme ve doğru yeteneği anında bulma imkanı.'
+            ),
             child: const Text(
               'Avantajlar',
               style: TextStyle(color: Colors.white70, fontSize: 14),
@@ -359,46 +415,46 @@ class _HomePageState extends State<HomePage> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 64), // Increased spacing
             Wrap(
-              spacing: 16,
-              runSpacing: 16,
+              spacing: 24, // More distinct spacing
+              runSpacing: 24,
               alignment: WrapAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: () =>
                       Navigator.pushNamed(context, '/talent-registration'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB),
+                    backgroundColor: const Color(0xFF10B981), // Distinct Green Color for Talent
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 18),
+                        horizontal: 40, vertical: 20),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    elevation: 4,
+                        borderRadius: BorderRadius.circular(12)),
+                    elevation: 8,
                   ),
                   child: const Text(
                     'YETENEK GİRİŞİ  →',
                     style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
-                OutlinedButton(
+                ElevatedButton(
                   onPressed: () =>
                       Navigator.pushNamed(context, '/scout-registration'),
-                  style: OutlinedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF3B82F6), // Distinct Blue Color for Scout
                     foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white70, width: 1.5),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 18),
+                        horizontal: 40, vertical: 20),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    backgroundColor: Colors.black38,
+                        borderRadius: BorderRadius.circular(12)),
+                    elevation: 8,
                   ),
                   child: const Text(
-                    'İZCİ GİRİŞ  →',
+                    'İZCİ GİRİŞİ  →',
                     style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

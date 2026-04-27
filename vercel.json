@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "public": true,
+  "name": "talescout-virsual-code",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

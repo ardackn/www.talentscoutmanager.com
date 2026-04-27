@@ -5,11 +5,11 @@
     "editProfile": "Profili Düzenle",
     "settings": "Ayarlar",
     "logout": "Çıkış Yap",
-    "anErrorOccurred": "Bir şeyler ters gitti.",
+    "anErrorOccurred": "Bir hata oluştu.",
     "noTalentFound": "Gösterilecek yetenek bulunamadı.",
     "helloUser": "Merhaba, {userName}!",
     "@helloUser": {
-        "description": "Kullanıcıyı ismiyle selamlayan bir karşılama mesajı.",
+        "description": "A welcome message that greets the user by name.",
         "placeholders": {
             "userName": {}
         }

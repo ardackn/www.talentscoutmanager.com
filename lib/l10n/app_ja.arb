@@ -1,0 +1,17 @@
+{
+    "@@locale": "ja",
+    "explore": "探索",
+    "messages": "メッセージ",
+    "editProfile": "プロフィールを編集",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "anErrorOccurred": "問題が発生しました。",
+    "noTalentFound": "表示する才能が見つかりません。",
+    "helloUser": "こんにちは、{userName}さん！",
+    "@helloUser": {
+        "description": "A welcome message that greets the user by name.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}

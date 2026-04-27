@@ -1,0 +1,17 @@
+{
+    "@@locale": "ar",
+    "explore": "استكشاف",
+    "messages": "الرسائل",
+    "editProfile": "تعديل الملف الشخصي",
+    "settings": "الإعدادات",
+    "logout": "تسجيل خروج",
+    "anErrorOccurred": "حدث خطأ ما.",
+    "noTalentFound": "لم يتم العثور على موهبة لعرضها.",
+    "helloUser": "مرحباً، {userName}!",
+    "@helloUser": {
+        "description": "A welcome message that greets the user by name.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "@@locale": "it",
+    "explore": "Esplora",
+    "messages": "Messaggi",
+    "editProfile": "Modifica profilo",
+    "settings": "Impostazioni",
+    "logout": "Esci",
+    "anErrorOccurred": "Qualcosa è andato storto.",
+    "noTalentFound": "Nessun talento trovato da mostrare.",
+    "helloUser": "Ciao, {userName}!",
+    "@helloUser": {
+        "description": "A welcome message that greets the user by name.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}

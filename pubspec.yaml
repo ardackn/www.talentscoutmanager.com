@@ -41,21 +41,23 @@ flutter:
   generate: true # Eklendi
   uses-material-design: true
   assets:
-    - assets/images/logopng.jpg
+    - assets/images/logo.png
+    - assets/images/
+    - assets/videos/
 
 
 flutter_native_splash:
   # Açılış ekranının arka plan rengi.
   color: "#FFFFFF" # Beyaz renk
   # Açılış ekranında gösterilecek logo.
-  image: assets/images/logopng.jpg
+  image: assets/images/logo.png
 
   # Karanlık mod için farklı bir renk ve logo belirleyebilirsiniz.
   color_dark: "#121212" # Koyu gri
-  image_dark: assets/images/logopng.jpg # Karanlık mod için farklı bir logonuz varsa burayı güncelleyin.
+  image_dark: assets/images/logo.png # Karanlık mod için farklı bir logonuz varsa burayı güncelleyin.
 
   android_12:
-    image: assets/images/logopng.jpg
+    image: assets/images/logo.png
     color: "#FFFFFF"
-    image_dark: assets/images/logopng.jpg
+    image_dark: assets/images/logo.png
     color_dark: "#121212"

@@ -1,0 +1,17 @@
+{
+    "@@locale": "fr",
+    "explore": "Explorer",
+    "messages": "Messages",
+    "editProfile": "Modifier le profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "anErrorOccurred": "Une erreur est survenue.",
+    "noTalentFound": "Aucun talent trouvé à afficher.",
+    "helloUser": "Bonjour, {userName}!",
+    "@helloUser": {
+        "description": "A welcome message that greets the user by name.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}

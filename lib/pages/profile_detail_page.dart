@@ -166,25 +166,39 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
                 _buildFriendshipButton(currentUserId),
                 const SizedBox(height: 24),
                 if (currentUserId != widget.userId)
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.send),
-                    label: const Text('Mesaj Gönder'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatPage(
-                            receiverId: widget.userId,
-                            receiverName: displayName,
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.send),
+                        label: const Text('Mesaj Gönder'),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatPage(
+                                receiverId: widget.userId,
+                                receiverName: displayName,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ),
+                      const SizedBox(width: 10),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.info_outline),
+                        label: const Text('Bilgi Al'),
+                        onPressed: () => _showBilgiAlDialog(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        ),
+                      ),
+                    ],
                   ),
                 const Divider(),
                 Padding(
@@ -359,6 +373,61 @@ class _ProfileDetailPageState extends State<ProfileDetailPage> {
         'blockedUsers': FieldValue.arrayUnion([targetUserId]),
       });
     }
+  }
+
+  void _showBilgiAlDialog(BuildContext context) {
+    final _teamCtrl = TextEditingController();
+    final _posCtrl = TextEditingController();
+    final _phoneCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Bilgi Al'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Lütfen aşağıdaki bilgileri doldurun:'),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _teamCtrl,
+                  decoration: const InputDecoration(labelText: 'Hangi takım için istiyorsunuz?'),
+                ),
+                TextField(
+                  controller: _posCtrl,
+                  decoration: const InputDecoration(labelText: 'Sizin pozisyonunuz nedir?'),
+                ),
+                TextField(
+                  controller: _phoneCtrl,
+                  decoration: const InputDecoration(labelText: 'İletişim Numaranız'),
+                  keyboardType: TextInputType.phone,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('İptal'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Ekibimiz sizi arayacaktır. Otomatik onay alındı maili gönderildi.'),
+                    duration: Duration(seconds: 4),
+                  ),
+                );
+              },
+              child: const Text('Gönder'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 

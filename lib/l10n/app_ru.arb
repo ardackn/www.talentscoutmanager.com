@@ -1,0 +1,17 @@
+{
+    "@@locale": "ru",
+    "explore": "Исследовать",
+    "messages": "Сообщения",
+    "editProfile": "Редактировать профиль",
+    "settings": "Настройки",
+    "logout": "Выйти",
+    "anErrorOccurred": "Что-то пошло не так.",
+    "noTalentFound": "Таланты для показа не найдены.",
+    "helloUser": "Привет, {userName}!",
+    "@helloUser": {
+        "description": "A welcome message that greets the user by name.",
+        "placeholders": {
+            "userName": {}
+        }
+    }
+}
