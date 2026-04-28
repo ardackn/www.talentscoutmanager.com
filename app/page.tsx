@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ChevronRight, Shield, Dna, Activity, CheckCircle2, Video } from 'lucide-react'
+import { ChevronRight, Shield, Dna, Activity, CheckCircle2, Video, User, Search } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 export default function HomePage() {
@@ -27,15 +27,39 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#05050A] text-white font-sans selection:bg-[#10B981] selection:text-[#05050A] overflow-x-hidden">
       
-      {/* 1. CLEAN NAVBAR (Only Logo) */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'bg-[#05050A]/80 backdrop-blur-2xl border-b border-white/5 py-4' : 'bg-transparent py-6'}`}>
-        <div className="container mx-auto px-6 max-w-7xl flex items-center justify-center">
-          <img 
-            src="/data/logo.png" 
-            alt="TSM Logo" 
-            className="h-16 w-auto cursor-pointer object-contain hover:scale-105 transition-transform drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-            onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
-          />
+      {/* 1. NAVBAR (Logo Left, Links Center, Buttons Right) */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'bg-[#05050A]/90 backdrop-blur-2xl border-b border-white/5 py-3' : 'bg-transparent py-6'}`}>
+        <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
+          
+          {/* Logo Left */}
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+            <img 
+              src="/data/logo.png" 
+              alt="TSM Logo" 
+              className="h-10 w-10 object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+            />
+            <span className="text-2xl font-black tracking-tighter text-white">TSM<span className="text-[#10B981]">.</span></span>
+          </div>
+          
+          {/* Center Links */}
+          <div className="hidden lg:flex items-center gap-8">
+            <button onClick={() => scrollTo('who-we-are')} className="text-[11px] tracking-[0.15em] uppercase font-bold text-gray-300 hover:text-white transition-colors">Who We Are</button>
+            <button onClick={() => scrollTo('vision-mission')} className="text-[11px] tracking-[0.15em] uppercase font-bold text-gray-300 hover:text-white transition-colors">Vision / Mission</button>
+            <button onClick={() => scrollTo('pricing')} className="text-[11px] tracking-[0.15em] uppercase font-bold text-gray-300 hover:text-white transition-colors">Pricing</button>
+            <Link href="/discovery" className="text-[11px] tracking-[0.15em] uppercase font-black text-[#10B981] hover:text-white transition-colors flex items-center gap-1">
+               <Dna className="w-3 h-3"/> Discovery Grid
+            </Link>
+          </div>
+
+          {/* Right Buttons */}
+          <div className="hidden sm:flex items-center gap-4">
+            <Link href="/login" className="flex items-center gap-2 text-[10px] uppercase tracking-[0.1em] font-black bg-[#10B981] text-[#05050A] px-5 py-2.5 rounded-lg hover:bg-[#0e9f6e] transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+              <User className="w-4 h-4" /> Player Login
+            </Link>
+            <Link href="/scout-register" className="flex items-center gap-2 text-[10px] uppercase tracking-[0.1em] font-black bg-[#F59E0B] text-[#05050A] px-5 py-2.5 rounded-lg hover:bg-[#d97706] transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+              <Search className="w-4 h-4" /> Scout Login
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -167,7 +191,7 @@ export default function HomePage() {
       </section>
 
       {/* 5. PRICING CARDS (Readdy Style) */}
-      <section className="py-20 md:py-40 relative z-40 bg-[#05050A] overflow-hidden">
+      <section id="pricing" className="py-20 md:py-40 relative z-40 bg-[#05050A] overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#10B981]/5 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <div className="text-center mb-16 md:mb-24">
