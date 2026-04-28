@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Play, CheckCircle2, Globe, Users, TrendingUp, Shield, ChevronRight, Star, Target, Activity } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Play, CheckCircle2, Globe, Users, TrendingUp, Shield, ChevronRight, Star, Target, Activity, Dna } from 'lucide-react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 const LIVE_ACTIVITY = [
   { id: 1, name: 'D. Okafor', pos: 'ST', team: 'Bundesliga', score: 9.2, image: 'https://i.pravatar.cc/150?img=11' },
@@ -15,6 +15,11 @@ const LIVE_ACTIVITY = [
 
 export default function HomePage() {
   const [scrolled, setScrolled] = useState(false)
+  const { scrollYProgress } = useScroll()
+  
+  // Parallax effects
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
+  const aboutY = useTransform(scrollYProgress, [0, 1], ['0%', '-20%'])
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -23,280 +28,265 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0D0D1A] text-white font-sans selection:bg-[#E94560] selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#05050A] text-white font-sans selection:bg-[#10B981] selection:text-white overflow-x-hidden">
       
       {/* 1. NAVBAR */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#0D0D1A]/80 backdrop-blur-lg border-b border-white/10 py-4' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#05050A]/80 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent py-8'}`}>
         <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-3xl font-black tracking-tighter text-white">TSM<span className="text-[#E94560]">.</span></span>
+            <span className="text-3xl font-black tracking-tighter text-white">TSM<span className="text-[#10B981]">.</span></span>
             <div className="hidden md:block h-6 w-[1px] bg-white/20 mx-2"></div>
-            <span className="hidden md:block text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Talent Scout Manager</span>
+            <span className="hidden md:block text-[10px] uppercase tracking-[0.2em] text-[#10B981] font-bold">Talent Scout Manager</span>
           </div>
           
-          <div className="hidden lg:flex items-center gap-8">
-            <Link href="#features" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Özellikler</Link>
-            <Link href="#users" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Kullanıcılar</Link>
-            <Link href="#demo" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Demo</Link>
-            <Link href="/pricing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Fiyatlandırma</Link>
+          <div className="hidden lg:flex items-center gap-12">
+            <Link href="#who-we-are" className="text-xs tracking-widest uppercase font-bold text-gray-400 hover:text-white transition-colors">Who We Are</Link>
+            <Link href="#vision" className="text-xs tracking-widest uppercase font-bold text-gray-400 hover:text-white transition-colors">Vision</Link>
+            <Link href="#mission" className="text-xs tracking-widest uppercase font-bold text-gray-400 hover:text-white transition-colors">Mission</Link>
+            <Link href="/pricing" className="text-xs tracking-widest uppercase font-bold text-gray-400 hover:text-white transition-colors">Pricing</Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link href="/player-login" className="hidden sm:block text-sm font-bold text-gray-300 hover:text-white px-4 py-2 border border-white/20 rounded-lg hover:bg-white/5 transition-all">Yenek Kaydı / Giriş</Link>
-            <Link href="/scout-register" className="text-sm font-bold bg-[#10B981] hover:bg-[#0ea873] text-white px-6 py-2.5 rounded-lg shadow-[0_4px_15px_rgba(16,185,129,0.3)] transition-all">İzci Kayıt / Giriş</Link>
+          <div className="flex items-center gap-6">
+            <Link href="/player-login" className="hidden sm:block text-xs uppercase tracking-widest font-bold text-gray-300 hover:text-white transition-all">Player Login</Link>
+            <Link href="/scout-register" className="text-xs uppercase tracking-widest font-bold bg-[#10B981] hover:bg-[#0ea873] text-[#05050A] px-8 py-3 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all">
+              Scout Portal
+            </Link>
           </div>
         </div>
       </nav>
 
       {/* 2. HERO SECTION */}
-      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        {/* Pitch Lines Overlay */}
-        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-          <svg width="100%" height="100%" viewBox="0 0 1000 1000" className="w-full h-full">
-            <rect x="50" y="50" width="900" height="900" fill="none" stroke="white" strokeWidth="2" />
-            <line x1="500" y1="50" x2="500" y2="950" stroke="white" strokeWidth="2" />
-            <circle cx="500" cy="500" r="150" fill="none" stroke="white" strokeWidth="2" />
-          </svg>
-        </div>
+      <section className="relative min-h-[120vh] flex items-center pt-20 overflow-hidden perspective-[1000px]">
+        {/* Deep Parallax Background */}
+        <motion.div style={{ y: heroY }} className="absolute inset-0 z-0">
+          <img src="/images/hero_dna_boy.png" alt="Bio-Genetics AI Theme" className="w-full h-full object-cover opacity-40 mix-blend-screen" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#05050A]/80 via-transparent to-[#05050A] backdrop-blur-[2px]"></div>
+        </motion.div>
 
-        <div className="container mx-auto px-6 max-w-7xl grid lg:grid-cols-2 gap-12 items-center relative z-10">
+        <div className="container mx-auto px-6 max-w-7xl grid lg:grid-cols-2 gap-20 items-center relative z-20">
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="pt-20"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E94560]/10 border border-[#E94560]/30 text-[10px] font-black tracking-widest text-[#E94560] uppercase mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#E94560] animate-pulse"></span>
-              Yapay Zeka Destekli Yetenek Keşfi
+            <span className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-xs font-black tracking-[0.2em] text-[#10B981] uppercase mb-12">
+              <Dna className="w-4 h-4 animate-spin-slow" />
+              The Intersection of Bio-Genetics & AI
             </span>
-            <h1 className="text-6xl md:text-[90px] font-black leading-[0.9] mb-8 tracking-tighter uppercase italic">
-              Coğrafyaya <br />
-              <span className="text-white">Meydan Okumak:</span> <br />
-              <span className="text-[#10B981] drop-shadow-[0_0_30px_rgba(16,185,129,0.5)]">Yeteneğiniz</span> <br />
-              Sınır Tanımaz.
+            <h1 className="text-6xl md:text-[100px] font-black leading-[0.85] mb-12 tracking-tighter uppercase">
+              Beyond <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Human</span> <br />
+              <span className="text-[#10B981] drop-shadow-[0_0_40px_rgba(16,185,129,0.4)] italic">Perception.</span>
             </h1>
-            <p className="text-xl text-gray-400 mb-10 max-w-xl leading-relaxed">
-              Dünyanın en gelişmiş yapay zeka scouting sistemi ile tanışın. Sadece bir video yükleyin, verileriniz dünyaya açılsın.
+            <p className="text-xl text-gray-400 mb-16 max-w-xl leading-relaxed font-light">
+              Experience the world's first bio-genetic AI scouting engine. We analyze movements, predict potential, and map the genetic blueprint of future champions.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/player-register" className="group relative px-8 py-4 bg-[#F5A623] hover:bg-[#e09512] text-[#0D0D1A] font-black text-lg rounded-xl transition-all hover:scale-105 flex items-center justify-center gap-2 overflow-hidden shadow-[0_10px_30px_rgba(245,166,35,0.4)]">
-                <span className="relative z-10">OYUNCU OLARAK KATIL</span>
-                <ChevronRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href="/scout-login" className="px-8 py-4 border-2 border-white/20 hover:border-white/40 text-white font-bold text-lg rounded-xl transition-all hover:bg-white/5 text-center flex items-center justify-center gap-2">
-                İzci Girişi
+            <div className="flex flex-col sm:flex-row gap-6">
+              <Link href="/player-register" className="group relative px-10 py-5 bg-white text-[#05050A] font-black text-sm uppercase tracking-[0.2em] rounded-full transition-all hover:scale-105 flex items-center justify-center gap-3 overflow-hidden shadow-[0_10px_40px_rgba(255,255,255,0.1)]">
+                <span className="relative z-10">Upload Your DNA</span>
+                <ChevronRight className="relative z-10 w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </Link>
             </div>
           </motion.div>
 
-          {/* Scout Dashboard Mockup */}
+          {/* Scout Dashboard Mockup Layered */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9, rotateY: -10 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="relative hidden lg:block"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.2, delay: 0.3 }}
+            className="relative hidden lg:block z-30"
           >
-            <div className="bg-[#1A1A2E]/80 backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 shadow-[0_50px_100px_rgba(0,0,0,0.5)] relative z-20 overflow-hidden group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#10B981]/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-[#10B981]/10 transition-colors"></div>
+            <div className="bg-[#0A0A14]/80 backdrop-blur-3xl border border-white/5 rounded-[40px] p-10 shadow-[0_50px_100px_rgba(0,0,0,0.8)] relative overflow-hidden group transform rotate-[-5deg] hover:rotate-0 transition-transform duration-700">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-[#10B981]/10 rounded-full -mr-40 -mt-40 blur-[100px] group-hover:bg-[#10B981]/20 transition-colors duration-1000"></div>
               
-              <div className="flex items-center justify-between mb-10 relative z-10">
+              <div className="flex items-center justify-between mb-12 relative z-10">
                 <div>
-                  <h4 className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mb-1">İzci Kontrol Paneli</h4>
-                  <h3 className="text-xl font-bold">Bu Haftanın Oyuncuları</h3>
+                  <h4 className="text-[10px] uppercase tracking-[0.3em] text-[#10B981] font-black mb-2">Neural Link Active</h4>
+                  <h3 className="text-2xl font-bold tracking-tight">Live Bio-Metrics</h3>
                 </div>
-                <div className="px-3 py-1 rounded-full bg-[#10B981]/20 border border-[#10B981]/30 text-[#10B981] text-[10px] font-black flex items-center gap-1.5 animate-pulse">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
-                  CANLI
+                <div className="px-4 py-2 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-[10px] font-black tracking-widest flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping"></span>
+                  ANALYZING
                 </div>
               </div>
 
-              <div className="space-y-4 relative z-10">
+              <div className="space-y-6 relative z-10">
                 {LIVE_ACTIVITY.map((player, idx) => (
                   <motion.div 
                     key={player.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + (idx * 0.1) }}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer group/item"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 + (idx * 0.1) }}
+                    className="flex items-center gap-6 p-4 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all cursor-pointer group/item"
                   >
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 shrink-0 relative">
-                      <img src={player.image} alt={player.name} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-[#10B981]/20 opacity-0 group-hover/item:opacity-100 transition-opacity"></div>
+                    <div className="w-14 h-14 rounded-full overflow-hidden border border-white/10 shrink-0 relative">
+                      <img src={player.image} alt={player.name} className="w-full h-full object-cover grayscale group-hover/item:grayscale-0 transition-all duration-500" />
                     </div>
                     <div className="flex-1">
-                      <div className="font-bold text-white group-hover/item:text-[#10B981] transition-colors">{player.name}</div>
-                      <div className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{player.pos} → {player.team}</div>
+                      <div className="font-bold text-white tracking-wide mb-1">{player.name}</div>
+                      <div className="flex gap-2">
+                        <span className="text-[9px] text-[#10B981] font-bold uppercase tracking-widest px-2 py-1 rounded bg-[#10B981]/10">{player.pos}</span>
+                        <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest px-2 py-1 rounded bg-white/5">{player.team}</span>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[#10B981] font-black text-lg">{player.score}</div>
+                      <div className="text-xl font-black italic">{player.score}</div>
+                      <div className="text-[8px] uppercase tracking-widest text-gray-500">Genetic Score</div>
                     </div>
                   </motion.div>
                 ))}
               </div>
-
-              <div className="mt-8 pt-8 border-t border-white/5 flex items-center justify-between">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map(i => (
-                    <img key={i} src={`https://i.pravatar.cc/150?img=${i+20}`} className="w-8 h-8 rounded-full border-2 border-[#1A1A2E]" alt="" />
-                  ))}
-                  <div className="w-8 h-8 rounded-full bg-[#10B981] border-2 border-[#1A1A2E] flex items-center justify-center text-[10px] font-black">+12</div>
-                </div>
-                <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Kayıtlı İzci Sayısı: 2.3k</div>
-              </div>
             </div>
-
-            {/* Decorative Elements */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#E94560]/10 rounded-full blur-3xl -z-10 animate-pulse"></div>
-            <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-[#10B981]/10 rounded-full blur-3xl -z-10 animate-pulse" style={{animationDelay: '1s'}}></div>
           </motion.div>
         </div>
       </section>
 
-      {/* 3. HOW IT WORKS */}
-      <section id="features" className="py-32 bg-[#0A0A15] border-y border-white/5">
+      {/* WHO WE ARE */}
+      <section id="who-we-are" className="py-40 relative z-20 bg-[#05050A]">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="text-center mb-24">
-            <h3 className="text-[#10B981] font-black tracking-widest uppercase text-sm mb-4">Süreç</h3>
-            <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">Nasıl <span className="text-white/40">Çalışır?</span></h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { 
-                icon: <Play className="w-8 h-8" />, 
-                title: "Videonuzu Yükleyin", 
-                desc: "Maç veya antrenman görüntülerinizi telefonunuzdan kolayca yükleyin.",
-                color: "#10B981"
-              },
-              { 
-                icon: <Activity className="w-8 h-8" />, 
-                title: "AI Analiz Yapsın", 
-                desc: "GPT-4o Vision teknolojisi ile teknik, hız ve taktik becerileriniz puanlansın.",
-                color: "#E94560"
-              },
-              { 
-                icon: <Target className="w-8 h-8" />, 
-                title: "İzciler Sizi Bulsun", 
-                desc: "Küresel ağımızdaki profesyonel kulüp ve temsilcilerle doğrudan bağlantı kurun.",
-                color: "#F5A623"
-              }
-            ].map((step, i) => (
-              <motion.div 
-                key={i}
-                whileHover={{ y: -10 }}
-                className="p-10 rounded-[32px] bg-[#1A1A2E] border border-white/5 hover:border-white/20 transition-all group"
-              >
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg" style={{ backgroundColor: `${step.color}20`, color: step.color }}>
-                  {step.icon}
+          <div className="grid lg:grid-cols-2 gap-24 items-center">
+            <motion.div style={{ y: aboutY }} className="relative rounded-[40px] overflow-hidden aspect-square border border-white/5">
+              <img src="/images/about_who_we_are.png" alt="Who We Are" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#05050A] via-transparent to-transparent"></div>
+            </motion.div>
+            <div>
+              <h3 className="text-[#10B981] font-black tracking-[0.3em] uppercase text-xs mb-6">Who We Are</h3>
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-12 leading-none">
+                The Architects <br/> of <span className="text-white/20">Tomorrow</span>
+              </h2>
+              <p className="text-gray-400 text-xl leading-relaxed mb-10 font-light">
+                We are a collective of data scientists, bio-geneticists, and elite football scouts. We don't just watch the game; we decode the very fabric of athletic potential.
+              </p>
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <div className="text-4xl font-black text-white mb-2">99.8%</div>
+                  <div className="text-xs uppercase tracking-widest text-gray-500 font-bold">Prediction Accuracy</div>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">{step.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{step.desc}</p>
-              </motion.div>
-            ))}
+                <div>
+                  <div className="text-4xl font-black text-white mb-2">10k+</div>
+                  <div className="text-xs uppercase tracking-widest text-gray-500 font-bold">DNA Profiles Analyzed</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* DISCOVERY SECTION */}
-      <section className="py-32 bg-[#0D0D1A]">
+      {/* VISION & MISSION */}
+      <section className="py-40 bg-[#0A0A14] border-y border-white/5 relative z-30">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <h3 className="text-[#F5A623] font-black tracking-widest uppercase text-sm mb-4">Keşfet</h3>
-              <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase">Elite <span className="text-white/40">Yetenek Havuzu</span></h2>
+          <div className="grid lg:grid-cols-2 gap-16">
+            
+            {/* Vision */}
+            <div id="vision" className="group relative p-12 rounded-[40px] bg-[#05050A] border border-white/5 overflow-hidden transition-all hover:border-[#10B981]/30">
+              <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-1000">
+                <img src="/images/vision_future_football.png" alt="Vision" className="w-full h-full object-cover mix-blend-screen" />
+              </div>
+              <div className="relative z-10 h-full flex flex-col justify-end min-h-[400px]">
+                <h3 className="text-[#10B981] font-black tracking-[0.3em] uppercase text-xs mb-4">Our Vision</h3>
+                <h2 className="text-4xl font-black italic tracking-tighter uppercase mb-6">A World Without <br/> Hidden Talent</h2>
+                <p className="text-gray-400 leading-relaxed font-light text-lg">
+                  To create a global ecosystem where geographical boundaries are erased by artificial intelligence, ensuring every talented individual gets discovered based on their pure genetic and mechanical metrics.
+                </p>
+              </div>
             </div>
-            <Link href="/pricing" className="text-[#10B981] font-bold flex items-center gap-2 hover:gap-3 transition-all">
-              Tüm Oyuncuları Gör <ChevronRight className="w-5 h-5" />
+
+            {/* Mission */}
+            <div id="mission" className="group relative p-12 rounded-[40px] bg-[#05050A] border border-white/5 overflow-hidden transition-all hover:border-white/30">
+              <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-1000">
+                <img src="/images/mission_global_network.png" alt="Mission" className="w-full h-full object-cover mix-blend-screen" />
+              </div>
+              <div className="relative z-10 h-full flex flex-col justify-end min-h-[400px]">
+                <h3 className="text-white font-black tracking-[0.3em] uppercase text-xs mb-4">Our Mission</h3>
+                <h2 className="text-4xl font-black italic tracking-tighter uppercase mb-6">Democratizing <br/> Sports Data</h2>
+                <p className="text-gray-400 leading-relaxed font-light text-lg">
+                  To provide scouts and clubs with the most advanced bio-genetic AI analysis tools, turning raw video data into actionable, deeply analytical intelligence that powers the future of sports transfers.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* DISCOVERY SECTION (DASHBOARD PREVIEW) */}
+      <section className="py-40 bg-[#05050A] relative z-40">
+        <div className="absolute inset-0 z-0">
+          <img src="/images/dashboard_ai_background.png" alt="Dashboard Background" className="w-full h-full object-cover opacity-10" />
+        </div>
+        <div className="container mx-auto px-6 max-w-7xl relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-6">
+            <div>
+              <h3 className="text-[#10B981] font-black tracking-[0.3em] uppercase text-xs mb-6">Explore the Engine</h3>
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none">Global <br/> <span className="text-white/20">Talent Grid</span></h2>
+            </div>
+            <Link href="/pricing" className="px-8 py-4 rounded-full border border-white/10 hover:border-[#10B981] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3">
+              View All Subjects <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: 'Eren Demir', age: 20, pos: 'Football', rating: 94, img: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=400' },
-              { name: 'Alper Yalçın', age: 21, pos: 'Football', rating: 91, img: 'https://images.unsplash.com/photo-1543351611-58f69d7c1781?auto=format&fit=crop&q=80&w=400' },
-              { name: 'Barış Köse', age: 19, pos: 'Football', rating: 89, img: 'https://images.unsplash.com/photo-1518005020250-6859493598c9?auto=format&fit=crop&q=80&w=400' },
-              { name: 'Mustafa Duman', age: 22, pos: 'Football', rating: 88, img: 'https://images.unsplash.com/photo-1526232761682-d26e4f9c6024?auto=format&fit=crop&q=80&w=400' },
+              { name: 'Eren Demir', age: 20, pos: 'ST', rating: 94, code: 'SUB-001' },
+              { name: 'Alper Yalçın', age: 21, pos: 'CM', rating: 91, code: 'SUB-002' },
+              { name: 'Barış Köse', age: 19, pos: 'LW', rating: 89, code: 'SUB-003' },
+              { name: 'Mustafa Duman', age: 22, pos: 'CB', rating: 88, code: 'SUB-004' },
             ].map((player, i) => (
               <motion.div 
                 key={i}
-                whileHover={{ scale: 1.02 }}
-                className="group relative rounded-3xl overflow-hidden aspect-[3/4] bg-white/5 border border-white/10"
+                whileHover={{ y: -10 }}
+                className="group relative rounded-[32px] overflow-hidden bg-[#0A0A14] border border-white/5 hover:border-[#10B981]/50 transition-all p-8"
               >
-                <img src={player.img} alt={player.name} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity group-hover:scale-110 duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D1A] via-[#0D0D1A]/20 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="text-[#F5A623] font-black text-2xl mb-1">{player.rating}</div>
-                  <h4 className="text-xl font-bold text-white mb-1">{player.name}</h4>
-                  <p className="text-sm text-gray-400 font-medium">{player.age} Yaş • {player.pos}</p>
+                <div className="flex justify-between items-start mb-12">
+                  <div className="text-[10px] text-[#10B981] font-black uppercase tracking-widest">{player.code}</div>
+                  <Dna className="w-5 h-5 text-gray-600 group-hover:text-[#10B981] transition-colors" />
                 </div>
-                <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest">
-                  Elite
+                <div className="text-5xl font-black italic mb-6 text-white/20 group-hover:text-white transition-colors">{player.rating}</div>
+                <h4 className="text-2xl font-bold text-white mb-2">{player.name}</h4>
+                <div className="flex gap-3">
+                   <span className="text-[10px] bg-white/5 px-3 py-1 rounded font-bold text-gray-400 uppercase">{player.age} YRS</span>
+                   <span className="text-[10px] bg-white/5 px-3 py-1 rounded font-bold text-gray-400 uppercase">{player.pos}</span>
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. STATS SECTION */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">
-            {[
-              { label: "Oyuncu", value: "10.8k+" },
-              { label: "Profesyonel İzci", value: "2.3k+" },
-              { label: "Aktif Ülke", value: "50+" },
-              { label: "Yıllık Transfer", value: "380+" }
-            ].map((stat, i) => (
-              <div key={i}>
-                <div className="text-4xl md:text-6xl font-black text-white mb-2 italic tracking-tighter">{stat.value}</div>
-                <div className="text-[10px] uppercase tracking-[0.3em] text-[#10B981] font-black">{stat.label}</div>
-              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* 5. FOOTER */}
-      <footer className="py-20 border-t border-white/5 bg-[#0D0D1A]">
+      <footer className="py-24 border-t border-white/5 bg-[#0A0A14] relative z-50">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="grid md:grid-cols-4 gap-12 mb-20">
+          <div className="grid md:grid-cols-4 gap-16 mb-24">
             <div className="col-span-2">
-              <span className="text-4xl font-black tracking-tighter text-white mb-6 block">TSM<span className="text-[#E94560]">.</span></span>
-              <p className="text-gray-500 max-w-sm mb-8 leading-relaxed">
-                Yetenek ve fırsat arasındaki küresel köprü. Spor dünyasında liyakati ve erişilebilirliği yeniden tanımlıyoruz.
+              <span className="text-4xl font-black tracking-tighter text-white mb-8 block">TSM<span className="text-[#10B981]">.</span></span>
+              <p className="text-gray-500 max-w-sm mb-10 leading-relaxed font-light">
+                The global intersection of athletic potential and artificial intelligence. We redefine scouting.
               </p>
-              <div className="flex gap-4">
-                {['twitter', 'instagram', 'linkedin', 'youtube'].map(social => (
-                  <div key={social} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#E94560] transition-colors cursor-pointer border border-white/10">
-                    <span className="sr-only">{social}</span>
-                  </div>
-                ))}
-              </div>
             </div>
             <div>
-              <h4 className="text-sm font-black uppercase tracking-widest text-white mb-8">Platform</h4>
+              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white mb-8">Platform</h4>
               <ul className="space-y-4">
-                <li><Link href="/athletes" className="text-gray-500 hover:text-white transition-colors text-sm font-medium">Yetenekler</Link></li>
-                <li><Link href="/how-it-works" className="text-gray-500 hover:text-white transition-colors text-sm font-medium">Nasıl Çalışır</Link></li>
-                <li><Link href="/pricing" className="text-gray-500 hover:text-white transition-colors text-sm font-medium">Fiyatlandırma</Link></li>
+                <li><Link href="/pricing" className="text-gray-500 hover:text-[#10B981] transition-colors text-sm font-medium">Pricing</Link></li>
+                <li><Link href="/about" className="text-gray-500 hover:text-[#10B981] transition-colors text-sm font-medium">Who We Are</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-black uppercase tracking-widest text-white mb-8">Yasal</h4>
+              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white mb-8">Legal</h4>
               <ul className="space-y-4">
-                <li><Link href="/privacy" className="text-gray-500 hover:text-white transition-colors text-sm font-medium">Gizlilik Politikası</Link></li>
-                <li><Link href="/terms" className="text-gray-500 hover:text-white transition-colors text-sm font-medium">Kullanım Şartları</Link></li>
-                <li><Link href="/kvkk" className="text-gray-500 hover:text-white transition-colors text-sm font-medium">KVKK</Link></li>
+                <li><Link href="/privacy" className="text-gray-500 hover:text-[#10B981] transition-colors text-sm font-medium">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-gray-500 hover:text-[#10B981] transition-colors text-sm font-medium">Terms of Use</Link></li>
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-white/5 text-center">
-            <p className="text-gray-600 text-[10px] uppercase tracking-widest font-bold">© 2024 Talent Scout Manager. All rights reserved.</p>
+          <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-600 text-[10px] uppercase tracking-[0.2em] font-bold">© 2026 Talent Scout Manager. Genetic Data Secured.</p>
+            <div className="flex items-center gap-2 text-gray-600 text-[10px] uppercase tracking-[0.2em] font-bold">
+              <Shield className="w-3 h-3" /> Encrypted by AI
+            </div>
           </div>
         </div>
       </footer>
     </div>
   )
-}
+}

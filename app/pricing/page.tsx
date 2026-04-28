@@ -4,276 +4,190 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { Dna, Activity, Target, Shield, CheckCircle2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const features = [
-  { label: 'Rastgele oyuncu görüntüleme', free: true, premium: true, gold: true },
-  { label: 'Gelişmiş filtreleme', free: false, premium: true, gold: true },
-  { label: 'Oyuncuyla iletişim kurma', free: false, premium: true, gold: true },
-  { label: 'Sınırsız arama', free: false, premium: false, gold: true },
-  { label: 'Video analiz raporları', free: false, premium: false, gold: true },
-  { label: 'AI Maç Raporu', free: false, premium: false, gold: true },
+  { label: 'Basic Genetic Talent Access', free: true, premium: true, gold: true },
+  { label: 'Advanced Bio-metric Filtering', free: false, premium: true, gold: true },
+  { label: 'Direct Subject Communication', free: false, premium: true, gold: true },
+  { label: 'Unlimited Global Database Search', free: false, premium: false, gold: true },
+  { label: 'Deep Video Analysis Reports', free: false, premium: false, gold: true },
+  { label: 'AI Match & Progression Predictor', free: false, premium: false, gold: true },
 ]
 
 export default function PricingPage() {
   const [selectedPlan, setSelectedPlan] = useState<'premium' | 'gold' | null>(null)
-  const [billingCycle, setBillingCycle] = useState<'month' | 'year'>('month')
   const [isPopupOpen, setIsPopupOpen] = useState(false)
-  const router = useRouter()
 
-  const openPopup = (plan: 'premium' | 'gold') => {
-    setSelectedPlan(plan)
-    setIsPopupOpen(true)
-  }
-
-  const handleCheckout = async (interval: 'month' | 'year') => {
-    if (!selectedPlan) return
+  const handleCheckout = async (plan: 'premium' | 'gold') => {
     try {
+      const variantId = plan === 'premium' ? '1532598' : '1532704';
       const response = await fetch('/api/lemonsqueezy/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tier: selectedPlan === 'premium' ? 'pro' : 'elite',
-          variantId: selectedPlan === 'premium'
-            ? (interval === 'month' ? process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_MONTHLY_VARIANT : process.env.NEXT_PUBLIC_LEMONSQUEEZY_PRO_YEARLY_VARIANT)
-            : (interval === 'month' ? process.env.NEXT_PUBLIC_LEMONSQUEEZY_ELITE_MONTHLY_VARIANT : process.env.NEXT_PUBLIC_LEMONSQUEEZY_ELITE_YEARLY_VARIANT),
+          tier: plan === 'premium' ? 'pro' : 'elite',
+          variantId: variantId,
         }),
       })
       const data = await response.json()
       if (data.url) {
         window.location.href = data.url
       } else {
-        toast.error('Ödeme bağlantısı oluşturulamadı.')
+        toast.error('Failed to initialize genetic handshake. Try again.')
       }
     } catch {
-      toast.error('Ödeme sistemine bağlanılamadı.')
+      toast.error('System neural link failed.')
     }
   }
 
   return (
-    <div className="min-h-screen text-white" style={{ background: '#0d1b2a' }}>
+    <div className="min-h-screen text-white bg-[#05050A] selection:bg-[#10B981]">
       {/* Player Banner */}
-      <div className="w-full py-3 px-6 text-center text-sm font-medium" style={{ background: 'rgba(0,229,204,0.1)', borderBottom: '1px solid rgba(0,229,204,0.2)' }}>
-        <span className="text-gray-300">Oyuncu mısınız?</span>{' '}
-        <span style={{ color: '#00e5cc' }}>Oyuncular için her zaman ücretsizdir.</span>{' '}
-        <Link href="/player-register" className="font-bold underline ml-1 hover:opacity-80" style={{ color: '#00e5cc' }}>
-          Ücretsiz Kayıt Ol →
+      <div className="w-full py-4 px-6 text-center text-xs font-black uppercase tracking-widest bg-[#10B981]/5 border-b border-[#10B981]/20">
+        <span className="text-gray-400">Are you an athlete subject?</span>{' '}
+        <span className="text-[#10B981]">Database entry is always free for subjects.</span>{' '}
+        <Link href="/player-register" className="underline ml-2 hover:text-white transition-colors text-[#10B981]">
+          Inject Your DNA →
         </Link>
       </div>
 
-      <main className="pt-28 pb-24">
-        <div className="container mx-auto px-6 max-w-6xl">
+      <main className="pt-32 pb-24 relative overflow-hidden">
+        {/* Background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#10B981]/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div className="container mx-auto px-6 max-w-6xl relative z-10">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-6" style={{ background: 'rgba(245,166,35,0.15)', color: '#f5a623', border: '1px solid rgba(245,166,35,0.3)' }}>
-              🔍 Scout Planları
+          <div className="text-center mb-24">
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full text-xs font-black uppercase tracking-[0.2em] mb-8 bg-white/5 border border-white/10 text-[#10B981]">
+              <Dna className="w-4 h-4 animate-pulse" /> Global Access Plans
             </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
-              <span className="text-white">Geleceğin Yıldızlarını</span><br />
-              <span style={{ background: 'linear-gradient(90deg, #00e5cc, #f5a623)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Keşfetmeye Başla</span>
+            <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter uppercase italic">
+              <span className="text-white">Unlock the</span><br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-blue-500 drop-shadow-[0_0_30px_rgba(16,185,129,0.3)]">Genetic Grid</span>
             </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Yapay zeka destekli filtreleme araçlarıyla dünyanın her köşesindeki yeteneklere ulaş.
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light">
+              Gain access to the world's most advanced bio-metric talent database. Leverage AI to discover subjects before they evolve into stars.
             </p>
           </div>
 
-          {/* Billing Toggle */}
-          <div className="flex justify-center mb-12">
-            <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <button
-                onClick={() => setBillingCycle('month')}
-                className="px-6 py-2.5 rounded-lg text-sm font-bold transition-all"
-                style={{ background: billingCycle === 'month' ? '#00e5cc' : 'transparent', color: billingCycle === 'month' ? '#0d1b2a' : '#9ca3af' }}
-              >
-                Aylık
-              </button>
-              <button
-                onClick={() => setBillingCycle('year')}
-                className="px-6 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center gap-2"
-                style={{ background: billingCycle === 'year' ? '#00e5cc' : 'transparent', color: billingCycle === 'year' ? '#0d1b2a' : '#9ca3af' }}
-              >
-                Yıllık
-                <span className="text-xs px-2 py-0.5 rounded-full font-black" style={{ background: billingCycle === 'year' ? 'rgba(0,0,0,0.2)' : 'rgba(0,229,204,0.2)', color: billingCycle === 'year' ? '#0d1b2a' : '#00e5cc' }}>
-                  %20 İndirim
-                </span>
-              </button>
-            </div>
-          </div>
-
           {/* Pricing Cards */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-24">
 
-            {/* Free Plan */}
-            <div className="rounded-3xl p-8 flex flex-col relative" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-300 mb-1">Ücretsiz İzci</h2>
-                <p className="text-gray-500 text-sm mb-4">Platformu keşfetmek için</p>
-                <div className="flex items-end gap-1">
-                  <span className="text-5xl font-black text-white">$0</span>
-                  <span className="text-gray-400 mb-2">/ay</span>
+            {/* Scout Free */}
+            <div className="rounded-[40px] p-10 flex flex-col relative bg-[#0A0A14] border border-white/5 hover:border-white/20 transition-all">
+              <div className="mb-8">
+                <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-wide">Scout Free</h2>
+                <p className="text-gray-500 text-sm font-medium">Basic neural connection</p>
+                <div className="flex items-end gap-1 mt-6">
+                  <span className="text-6xl font-black text-white italic">$0</span>
                 </div>
               </div>
-              <ul className="space-y-3 mb-8 flex-1 text-sm">
+              <ul className="space-y-4 mb-10 flex-1 text-sm font-medium">
                 <li className="flex items-center gap-3 text-gray-300">
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs" style={{ background: 'rgba(0,229,204,0.2)', color: '#00e5cc' }}>✓</span>
-                  Rastgele oyuncu görüntüleme
+                  <CheckCircle2 className="w-5 h-5 text-[#10B981]" /> Basic Genetic Talent Access
                 </li>
-                <li className="flex items-center gap-3 text-gray-500">
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/20 text-red-400">✗</span>
-                  Filtreleme yok
+                <li className="flex items-center gap-3 text-gray-600">
+                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/10 text-red-500">✗</span> No Advanced Filtering
                 </li>
-                <li className="flex items-center gap-3 text-gray-500">
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/20 text-red-400">✗</span>
-                  İletişim kurma yok
+                <li className="flex items-center gap-3 text-gray-600">
+                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/10 text-red-500">✗</span> No Direct Communication
                 </li>
               </ul>
               <Link
                 href="/scout-register"
-                className="w-full py-4 text-center font-bold text-sm rounded-xl transition-all hover:opacity-80"
-                style={{ border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: '8px' }}
+                className="w-full py-4 text-center font-black text-sm uppercase tracking-widest rounded-full transition-all border border-white/20 hover:bg-white/10"
               >
-                Başla — Ücretsiz
+                Initiate Sequence
               </Link>
             </div>
 
-            {/* Premium Plan */}
-            <div className="rounded-3xl p-8 flex flex-col relative" style={{ background: 'linear-gradient(145deg, rgba(0,80,70,0.5) 0%, rgba(0,229,204,0.08) 100%)', border: '2px solid #00e5cc', boxShadow: '0 0 40px rgba(0,229,204,0.2)' }}>
-              {/* Badge */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider" style={{ background: '#00e5cc', color: '#0d1b2a' }}>
-                ⭐ EN POPÜLER
+            {/* Premium Scout */}
+            <div className="rounded-[40px] p-10 flex flex-col relative bg-[#05050A] border-2 border-[#10B981] shadow-[0_0_50px_rgba(16,185,129,0.15)] transform scale-105 z-10">
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] bg-[#10B981] text-[#05050A] shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+                Most Optimal
               </div>
-              <div className="mb-6 mt-2">
-                <h2 className="text-xl font-bold text-white mb-1">Premium</h2>
-                <p className="text-gray-400 text-sm mb-4">Ciddi yetenek avcıları için</p>
-                <div className="flex items-end gap-1">
-                  <span className="text-5xl font-black text-white">
-                    ${billingCycle === 'year' ? '20' : '25'}
-                  </span>
-                  <span className="text-gray-400 mb-2">/ay</span>
+              <div className="mb-8 mt-4">
+                <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-wide">Premium Scout</h2>
+                <p className="text-gray-400 text-sm font-medium">For serious talent discovery</p>
+                <div className="flex items-end gap-1 mt-6">
+                  <span className="text-6xl font-black text-white italic">$25</span>
+                  <span className="text-gray-500 mb-2 font-bold">/mo</span>
                 </div>
-                {billingCycle === 'year' && <p className="text-xs mt-1" style={{ color: '#00e5cc' }}>Yıllık $240 ($300 yerine)</p>}
               </div>
-              <ul className="space-y-3 mb-8 flex-1 text-sm">
-                {['Rastgele oyuncu görüntüleme', 'Gelişmiş filtreleme', 'Oyuncuyla iletişim kurma'].map(f => (
+              <ul className="space-y-4 mb-10 flex-1 text-sm font-medium">
+                {['Basic Genetic Talent Access', 'Advanced Bio-metric Filtering', 'Direct Subject Communication'].map(f => (
                   <li key={f} className="flex items-center gap-3 text-white">
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs" style={{ background: 'rgba(0,229,204,0.2)', color: '#00e5cc' }}>✓</span>
-                    {f}
+                    <CheckCircle2 className="w-5 h-5 text-[#10B981]" /> {f}
                   </li>
                 ))}
-                {['Sınırsız arama', 'Video analiz raporları', 'AI Maç Raporu'].map(f => (
-                  <li key={f} className="flex items-center gap-3 text-gray-500">
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/20 text-red-400">✗</span>
-                    {f}
+                {['Unlimited Global Search', 'Deep Video Reports', 'AI Match Predictor'].map(f => (
+                  <li key={f} className="flex items-center gap-3 text-gray-600">
+                    <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/10 text-red-500">✗</span> {f}
                   </li>
                 ))}
               </ul>
               <button
-                onClick={() => openPopup('premium')}
-                className="w-full py-4 font-black text-sm rounded-xl transition-all hover:scale-[1.02]"
-                style={{ background: '#00e5cc', color: '#0d1b2a', borderRadius: '8px', boxShadow: '0 0 20px rgba(0,229,204,0.4)' }}
+                onClick={() => handleCheckout('premium')}
+                className="w-full py-4 font-black text-sm uppercase tracking-widest rounded-full transition-all hover:scale-105 bg-[#10B981] text-[#05050A] shadow-[0_10px_30px_rgba(16,185,129,0.3)]"
               >
-                Premium'a Geç
+                Upgrade to Premium
               </button>
             </div>
 
-            {/* Gold Plan */}
-            <div className="rounded-3xl p-8 flex flex-col relative" style={{ background: 'linear-gradient(145deg, rgba(60,30,0,0.6) 0%, rgba(245,166,35,0.1) 100%)', border: '2px solid #f5a623', boxShadow: '0 0 40px rgba(245,166,35,0.2)' }}>
-              {/* Badge */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider" style={{ background: 'linear-gradient(90deg, #f5a623, #ffd166)', color: '#0d1b2a' }}>
-                👑 PRO
+            {/* Gold Scout */}
+            <div className="rounded-[40px] p-10 flex flex-col relative bg-[#0A0A14] border border-blue-500/50 hover:border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.1)] transition-all">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] bg-blue-500 text-white">
+                Apex Tier
               </div>
-              <div className="mb-6 mt-2">
-                <h2 className="text-xl font-bold text-white mb-1">Gold</h2>
-                <p className="text-gray-400 text-sm mb-4">Profesyonel kuruluşlar için</p>
-                <div className="flex items-end gap-1">
-                  <span className="text-5xl font-black text-white">
-                    ${billingCycle === 'year' ? '40' : '50'}
-                  </span>
-                  <span className="text-gray-400 mb-2">/ay</span>
+              <div className="mb-8 mt-2">
+                <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-wide">Gold Scout</h2>
+                <p className="text-gray-400 text-sm font-medium">Full systematic override</p>
+                <div className="flex items-end gap-1 mt-6">
+                  <span className="text-6xl font-black text-white italic">$50</span>
+                  <span className="text-gray-500 mb-2 font-bold">/mo</span>
                 </div>
-                {billingCycle === 'year' && <p className="text-xs mt-1" style={{ color: '#f5a623' }}>Yıllık $480 ($600 yerine)</p>}
               </div>
-              <ul className="space-y-3 mb-8 flex-1 text-sm">
-                {['Rastgele oyuncu görüntüleme', 'Gelişmiş filtreleme', 'Oyuncuyla iletişim kurma', 'Sınırsız arama', 'Video analiz raporları', 'AI Maç Raporu'].map(f => (
+              <ul className="space-y-4 mb-10 flex-1 text-sm font-medium">
+                {['Basic Genetic Talent Access', 'Advanced Bio-metric Filtering', 'Direct Subject Communication', 'Unlimited Global Search', 'Deep Video Reports', 'AI Match Predictor'].map(f => (
                   <li key={f} className="flex items-center gap-3 text-white">
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs" style={{ background: 'rgba(245,166,35,0.2)', color: '#f5a623' }}>✓</span>
-                    {f}
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" /> {f}
                   </li>
                 ))}
               </ul>
               <button
-                onClick={() => openPopup('gold')}
-                className="w-full py-4 font-black text-sm rounded-xl transition-all hover:scale-[1.02]"
-                style={{ background: 'linear-gradient(90deg, #f5a623, #ffd166)', color: '#0d1b2a', borderRadius: '8px', boxShadow: '0 0 20px rgba(245,166,35,0.4)' }}
+                onClick={() => handleCheckout('gold')}
+                className="w-full py-4 font-black text-sm uppercase tracking-widest rounded-full transition-all hover:scale-[1.02] bg-blue-500 text-white shadow-[0_10px_30px_rgba(59,130,246,0.3)]"
               >
-                Gold'a Geç 👑
+                Unlock Apex
               </button>
             </div>
           </div>
 
           {/* Feature Comparison Table */}
-          <div className="max-w-4xl mx-auto rounded-3xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="grid grid-cols-4 px-6 py-4 text-xs font-black uppercase tracking-wider" style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-              <div className="text-gray-400 col-span-1">Özellik</div>
-              <div className="text-center text-gray-400">Ücretsiz</div>
-              <div className="text-center" style={{ color: '#00e5cc' }}>Premium</div>
-              <div className="text-center" style={{ color: '#f5a623' }}>Gold</div>
+          <div className="max-w-4xl mx-auto rounded-[32px] overflow-hidden border border-white/10 bg-[#0A0A14]">
+            <div className="grid grid-cols-4 px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] bg-white/5 border-b border-white/10">
+              <div className="text-gray-400 col-span-1">Metric Module</div>
+              <div className="text-center text-gray-400">Scout Free</div>
+              <div className="text-center text-[#10B981]">Premium Scout</div>
+              <div className="text-center text-blue-500">Gold Scout</div>
             </div>
             {features.map((f, i) => (
               <div
                 key={i}
-                className="grid grid-cols-4 px-6 py-4 text-sm"
+                className="grid grid-cols-4 px-8 py-6 text-sm font-medium"
                 style={{ borderBottom: i < features.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none', background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}
               >
                 <div className="text-gray-300 col-span-1">{f.label}</div>
-                <div className="text-center">{f.free ? <span style={{ color: '#00e5cc' }}>✅</span> : <span className="text-gray-600">❌</span>}</div>
-                <div className="text-center">{f.premium ? <span style={{ color: '#00e5cc' }}>✅</span> : <span className="text-gray-600">❌</span>}</div>
-                <div className="text-center">{f.gold ? <span style={{ color: '#f5a623' }}>✅</span> : <span className="text-gray-600">❌</span>}</div>
+                <div className="text-center">{f.free ? <span className="text-[#10B981]">●</span> : <span className="text-gray-800">●</span>}</div>
+                <div className="text-center">{f.premium ? <span className="text-[#10B981]">●</span> : <span className="text-gray-800">●</span>}</div>
+                <div className="text-center">{f.gold ? <span className="text-blue-500">●</span> : <span className="text-gray-800">●</span>}</div>
               </div>
             ))}
           </div>
-
-          {/* Bottom CTA */}
-          <div className="text-center mt-16">
-            <p className="text-gray-500 text-sm mb-4">Sorularınız mı var?</p>
-            <a href="mailto:hello@talentscoutmanager.com" className="font-bold hover:underline" style={{ color: '#00e5cc' }}>
-              hello@talentscoutmanager.com
-            </a>
-          </div>
         </div>
       </main>
-
-      {/* Billing Period Popup */}
-      {isPopupOpen && selectedPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)' }}>
-          <div className="w-full max-w-md rounded-3xl p-8 text-center" style={{ background: '#0d1b2a', border: `2px solid ${selectedPlan === 'premium' ? '#00e5cc' : '#f5a623'}` }}>
-            <div className="text-5xl mb-4">{selectedPlan === 'premium' ? '⭐' : '👑'}</div>
-            <h3 className="text-2xl font-black text-white mb-2">
-              {selectedPlan === 'premium' ? 'Premium' : 'Gold'} Planı Seç
-            </h3>
-            <p className="text-gray-400 mb-8">Fatura periyodunu seçin</p>
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={() => { setIsPopupOpen(false); handleCheckout('month') }}
-                className="w-full py-4 font-bold rounded-xl transition-all hover:scale-[1.02]"
-                style={{ border: `1px solid ${selectedPlan === 'premium' ? '#00e5cc' : '#f5a623'}`, color: selectedPlan === 'premium' ? '#00e5cc' : '#f5a623', borderRadius: '8px', background: 'transparent' }}
-              >
-                Aylık — ${selectedPlan === 'premium' ? '25' : '50'}/ay
-              </button>
-              <button
-                onClick={() => { setIsPopupOpen(false); handleCheckout('year') }}
-                className="w-full py-4 font-black rounded-xl transition-all hover:scale-[1.02]"
-                style={{ background: selectedPlan === 'premium' ? '#00e5cc' : 'linear-gradient(90deg, #f5a623, #ffd166)', color: '#0d1b2a', borderRadius: '8px' }}
-              >
-                Yıllık — ${selectedPlan === 'premium' ? '20' : '40'}/ay
-                <span className="ml-2 text-xs opacity-70">(%20 İndirim)</span>
-              </button>
-            </div>
-            <button onClick={() => setIsPopupOpen(false)} className="mt-6 text-sm text-gray-500 hover:text-white transition-colors">
-              İptal
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
