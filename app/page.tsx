@@ -27,31 +27,15 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#05050A] text-white font-sans selection:bg-[#10B981] selection:text-[#05050A] overflow-x-hidden">
       
-      {/* 1. CLEAN NAVBAR */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'bg-[#05050A]/80 backdrop-blur-2xl border-b border-white/5 py-4' : 'bg-transparent py-8'}`}>
-        <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-3xl font-black tracking-tighter text-white cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-              TSM<span className="text-[#10B981]">.</span>
-            </span>
-          </div>
-          
-          <div className="hidden lg:flex items-center gap-12">
-            <button onClick={() => scrollTo('who-we-are')} className="text-[10px] tracking-[0.2em] uppercase font-black text-gray-400 hover:text-white transition-colors">Who We Are</button>
-            <button onClick={() => scrollTo('vision-mission')} className="text-[10px] tracking-[0.2em] uppercase font-black text-gray-400 hover:text-white transition-colors">Vision / Mission</button>
-            <Link href="/discovery" className="text-[10px] tracking-[0.2em] uppercase font-black text-[#10B981] hover:text-white transition-colors flex items-center gap-1">
-               <Dna className="w-3 h-3"/> Discovery Grid
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="hidden sm:block text-[10px] uppercase tracking-[0.2em] font-black text-gray-300 hover:text-white transition-all px-4 py-2">
-              Login
-            </Link>
-            <Link href="/register" className="text-[10px] uppercase tracking-[0.2em] font-black bg-white text-[#05050A] px-6 py-3 rounded-full hover:bg-gray-200 hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-              Register
-            </Link>
-          </div>
+      {/* 1. CLEAN NAVBAR (Only Logo) */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'bg-[#05050A]/80 backdrop-blur-2xl border-b border-white/5 py-4' : 'bg-transparent py-6'}`}>
+        <div className="container mx-auto px-6 max-w-7xl flex items-center justify-center">
+          <img 
+            src="/data/logo.png" 
+            alt="TSM Logo" 
+            className="h-16 w-auto cursor-pointer object-contain hover:scale-105 transition-transform drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+            onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}
+          />
         </div>
       </nav>
 
@@ -109,32 +93,32 @@ export default function HomePage() {
       </section>
 
       {/* 3. WHO WE ARE */}
-      <section id="who-we-are" className="py-40 relative z-20 bg-[#05050A]">
+      <section id="who-we-are" className="py-20 md:py-40 relative z-20 bg-[#05050A]">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="grid lg:grid-cols-2 gap-24 items-center">
-            <motion.div style={{ y: aboutY }} className="relative rounded-[40px] overflow-hidden aspect-[4/5] border border-white/5 shadow-[0_0_100px_rgba(16,185,129,0.05)]">
-              {/* New DNA / Bio-gene map digital image requested by user */}
-              <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=2000" alt="Bio-genetic DNA Map" className="w-full h-full object-cover mix-blend-screen opacity-80" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#05050A] via-[#05050A]/50 to-transparent"></div>
+          <div className="grid lg:grid-cols-2 gap-12 md:gap-24 items-center">
+            <motion.div style={{ y: aboutY }} className="relative rounded-[40px] overflow-hidden aspect-[4/5] md:aspect-square border border-white/5 shadow-[0_0_100px_rgba(16,185,129,0.05)] order-2 lg:order-1">
+              {/* Using the new architects image uploaded by user */}
+              <img src="/images/architects.png" alt="Bio-genetic DNA Map" className="w-full h-full object-cover mix-blend-screen opacity-90 hover:scale-105 transition-transform duration-1000" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#05050A] via-[#05050A]/30 to-transparent"></div>
             </motion.div>
-            <div className="relative">
+            <div className="relative order-1 lg:order-2">
               <h3 className="text-[#10B981] font-black tracking-[0.4em] uppercase text-[10px] mb-8 flex items-center gap-4">
                 <span className="w-10 h-[1px] bg-[#10B981]"></span>
                 Who We Are
               </h3>
-              <h2 className="text-5xl md:text-[80px] font-black italic tracking-tighter uppercase mb-12 leading-[0.9]">
+              <h2 className="text-4xl md:text-[60px] lg:text-[80px] font-black italic tracking-tighter uppercase mb-8 md:mb-12 leading-[0.9]">
                 The Architects <br/> of <span className="text-white/20">Tomorrow</span>
               </h2>
-              <p className="text-gray-400 text-xl leading-relaxed mb-10 font-light max-w-lg">
+              <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 font-light max-w-lg">
                 We are a collective of data scientists, bio-geneticists, and elite football scouts. We don't just watch the game; we decode the very fabric of athletic potential.
               </p>
               <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
                 <div>
-                  <div className="text-5xl font-black text-white mb-3 tracking-tighter">99.8%</div>
+                  <div className="text-4xl md:text-5xl font-black text-white mb-3 tracking-tighter">99.8%</div>
                   <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">Prediction Accuracy</div>
                 </div>
                 <div>
-                  <div className="text-5xl font-black text-white mb-3 tracking-tighter">10k+</div>
+                  <div className="text-4xl md:text-5xl font-black text-white mb-3 tracking-tighter">10k+</div>
                   <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">DNA Profiles Analyzed</div>
                 </div>
               </div>
@@ -144,35 +128,35 @@ export default function HomePage() {
       </section>
 
       {/* 4. VISION & MISSION */}
-      <section id="vision-mission" className="py-40 bg-[#0A0A14] border-y border-white/5 relative z-30">
+      <section id="vision-mission" className="py-20 md:py-40 bg-[#0A0A14] border-y border-white/5 relative z-30">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-10">
             
             {/* Vision */}
-            <motion.div style={{ y: imageY }} className="group relative p-10 md:p-16 rounded-[50px] bg-[#05050A] border border-white/5 overflow-hidden transition-all hover:border-[#10B981]/30 min-h-[500px] md:min-h-[600px] flex flex-col justify-end">
+            <motion.div style={{ y: imageY }} className="group relative p-10 md:p-16 rounded-[40px] md:rounded-[50px] bg-[#05050A] border border-white/5 overflow-hidden transition-all hover:border-[#10B981]/30 min-h-[400px] md:min-h-[600px] flex flex-col justify-end">
               <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-all duration-1000 scale-100 group-hover:scale-105">
                 <img src="/images/vision_future_football.png" alt="Vision" className="w-full h-full object-cover mix-blend-screen" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#05050A] via-[#05050A]/50 to-transparent"></div>
               </div>
               <div className="relative z-10">
                 <h3 className="text-[#10B981] font-black tracking-[0.3em] uppercase text-[10px] mb-6">Our Vision</h3>
-                <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase mb-6 leading-none">A World Without <br/> Hidden Talent</h2>
-                <p className="text-gray-400 leading-relaxed font-light text-base md:text-lg">
+                <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter uppercase mb-6 leading-none">A World Without <br/> Hidden Talent</h2>
+                <p className="text-gray-400 leading-relaxed font-light text-sm md:text-lg">
                   To create a global ecosystem where geographical boundaries are erased by artificial intelligence, ensuring every talented individual gets discovered based on their pure genetic and mechanical metrics.
                 </p>
               </div>
             </motion.div>
 
             {/* Mission */}
-            <div className="group relative p-10 md:p-16 rounded-[50px] bg-[#05050A] border border-white/5 overflow-hidden transition-all hover:border-white/30 min-h-[500px] md:min-h-[600px] flex flex-col justify-end mt-10 lg:mt-20">
+            <div className="group relative p-10 md:p-16 rounded-[40px] md:rounded-[50px] bg-[#05050A] border border-white/5 overflow-hidden transition-all hover:border-white/30 min-h-[400px] md:min-h-[600px] flex flex-col justify-end mt-10 lg:mt-20">
               <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-all duration-1000 scale-100 group-hover:scale-105">
                 <img src="/images/mission_global_network.png" alt="Mission" className="w-full h-full object-cover mix-blend-screen" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#05050A] via-[#05050A]/50 to-transparent"></div>
               </div>
               <div className="relative z-10">
                 <h3 className="text-white font-black tracking-[0.3em] uppercase text-[10px] mb-6">Our Mission</h3>
-                <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase mb-6 leading-none">Democratizing <br/> Sports Data</h2>
-                <p className="text-gray-400 leading-relaxed font-light text-base md:text-lg">
+                <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter uppercase mb-6 leading-none">Democratizing <br/> Sports Data</h2>
+                <p className="text-gray-400 leading-relaxed font-light text-sm md:text-lg">
                   To provide scouts and clubs with the most advanced bio-genetic AI analysis tools, turning raw video data into actionable, deeply analytical intelligence that powers the future of sports transfers.
                 </p>
               </div>
@@ -183,22 +167,22 @@ export default function HomePage() {
       </section>
 
       {/* 5. PRICING CARDS (Readdy Style) */}
-      <section className="py-40 relative z-40 bg-[#05050A] overflow-hidden">
+      <section className="py-20 md:py-40 relative z-40 bg-[#05050A] overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#10B981]/5 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
-          <div className="text-center mb-24">
+          <div className="text-center mb-16 md:mb-24">
             <h3 className="text-[#10B981] font-black tracking-[0.4em] uppercase text-[10px] mb-6">Access Tiers</h3>
-            <h2 className="text-5xl md:text-[80px] font-black italic tracking-tighter uppercase leading-none mb-8">Choose Your <br/> <span className="text-white/20">Protocol</span></h2>
+            <h2 className="text-4xl md:text-[80px] font-black italic tracking-tighter uppercase leading-none mb-8">Choose Your <br/> <span className="text-white/20">Protocol</span></h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Scout Free */}
-            <div className="rounded-[40px] p-10 flex flex-col relative bg-[#0A0A14] border border-white/5 hover:border-white/20 transition-all group hover:-translate-y-2">
+            <div className="rounded-[40px] p-8 md:p-10 flex flex-col relative bg-[#0A0A14] border border-white/5 hover:border-white/20 transition-all group hover:-translate-y-2">
               <div className="mb-8">
-                <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-wide">Scout Free</h2>
-                <p className="text-gray-500 text-xs uppercase tracking-widest font-bold">Basic neural connection</p>
+                <h2 className="text-xl md:text-2xl font-black text-white mb-2 uppercase tracking-wide">Scout Free</h2>
+                <p className="text-gray-500 text-[10px] md:text-xs uppercase tracking-widest font-bold">Basic neural connection</p>
                 <div className="flex items-end gap-1 mt-8">
-                  <span className="text-6xl font-black text-white italic">$0</span>
+                  <span className="text-5xl md:text-6xl font-black text-white italic">$0</span>
                 </div>
               </div>
               <ul className="space-y-4 mb-10 flex-1 text-sm font-medium">
@@ -209,21 +193,21 @@ export default function HomePage() {
                   <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/10 text-red-500">✗</span> No Advanced Filtering
                 </li>
               </ul>
-              <Link href="/register" className="w-full py-4 text-center font-black text-xs uppercase tracking-[0.2em] rounded-full transition-all border border-white/20 group-hover:bg-white group-hover:text-black">
+              <Link href="/register" className="w-full py-4 text-center font-black text-[10px] md:text-xs uppercase tracking-[0.2em] rounded-full transition-all border border-white/20 group-hover:bg-white group-hover:text-black">
                 Initiate
               </Link>
             </div>
 
             {/* Premium Scout */}
-            <div className="rounded-[40px] p-10 flex flex-col relative bg-[#05050A] border-2 border-[#10B981] shadow-[0_0_50px_rgba(16,185,129,0.15)] transform md:scale-105 z-10">
+            <div className="rounded-[40px] p-8 md:p-10 flex flex-col relative bg-[#05050A] border-2 border-[#10B981] shadow-[0_0_50px_rgba(16,185,129,0.15)] transform md:scale-105 z-10 mt-8 md:mt-0">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] bg-[#10B981] text-[#05050A] shadow-[0_0_20px_rgba(16,185,129,0.5)] whitespace-nowrap">
                 Most Optimal
               </div>
               <div className="mb-8 mt-4">
-                <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-wide">Premium Scout</h2>
-                <p className="text-[#10B981] text-xs uppercase tracking-widest font-bold">For serious discovery</p>
+                <h2 className="text-xl md:text-2xl font-black text-white mb-2 uppercase tracking-wide">Premium Scout</h2>
+                <p className="text-[#10B981] text-[10px] md:text-xs uppercase tracking-widest font-bold">For serious discovery</p>
                 <div className="flex items-end gap-1 mt-8">
-                  <span className="text-6xl font-black text-white italic">$25</span>
+                  <span className="text-5xl md:text-6xl font-black text-white italic">$25</span>
                   <span className="text-gray-500 mb-2 font-bold uppercase text-[10px] tracking-widest">/mo</span>
                 </div>
               </div>
@@ -231,18 +215,18 @@ export default function HomePage() {
                 <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-5 h-5 text-[#10B981]" /> Advanced Bio-metric Filter</li>
                 <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-5 h-5 text-[#10B981]" /> Direct Subject Comms</li>
               </ul>
-              <Link href="/pricing" className="w-full py-4 text-center font-black text-xs uppercase tracking-[0.2em] rounded-full transition-all hover:scale-105 bg-[#10B981] text-[#05050A] shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
+              <Link href="/pricing" className="w-full py-4 text-center font-black text-[10px] md:text-xs uppercase tracking-[0.2em] rounded-full transition-all hover:scale-105 bg-[#10B981] text-[#05050A] shadow-[0_10px_30px_rgba(16,185,129,0.3)]">
                 Upgrade Now
               </Link>
             </div>
 
             {/* Gold Scout */}
-            <div className="rounded-[40px] p-10 flex flex-col relative bg-[#0A0A14] border border-blue-500/50 hover:border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.1)] transition-all group hover:-translate-y-2 mt-8 md:mt-0">
+            <div className="rounded-[40px] p-8 md:p-10 flex flex-col relative bg-[#0A0A14] border border-blue-500/50 hover:border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.1)] transition-all group hover:-translate-y-2 mt-8 md:mt-0">
               <div className="mb-8">
-                <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-wide">Gold Scout</h2>
-                <p className="text-blue-500 text-xs uppercase tracking-widest font-bold">Full systematic override</p>
+                <h2 className="text-xl md:text-2xl font-black text-white mb-2 uppercase tracking-wide">Gold Scout</h2>
+                <p className="text-blue-500 text-[10px] md:text-xs uppercase tracking-widest font-bold">Full systematic override</p>
                 <div className="flex items-end gap-1 mt-8">
-                  <span className="text-6xl font-black text-white italic">$50</span>
+                  <span className="text-5xl md:text-6xl font-black text-white italic">$50</span>
                   <span className="text-gray-500 mb-2 font-bold uppercase text-[10px] tracking-widest">/mo</span>
                 </div>
               </div>
@@ -250,7 +234,7 @@ export default function HomePage() {
                 <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-5 h-5 text-blue-500" /> Unlimited Global Search</li>
                 <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-5 h-5 text-blue-500" /> AI Match Predictor</li>
               </ul>
-              <Link href="/pricing" className="w-full py-4 text-center font-black text-xs uppercase tracking-[0.2em] rounded-full transition-all bg-blue-500 text-white shadow-[0_10px_30px_rgba(59,130,246,0.3)] hover:scale-105">
+              <Link href="/pricing" className="w-full py-4 text-center font-black text-[10px] md:text-xs uppercase tracking-[0.2em] rounded-full transition-all bg-blue-500 text-white shadow-[0_10px_30px_rgba(59,130,246,0.3)] hover:scale-105">
                 Unlock Apex
               </Link>
             </div>
@@ -259,33 +243,33 @@ export default function HomePage() {
       </section>
 
       {/* 6. FOOTER */}
-      <footer className="py-24 border-t border-white/5 bg-[#05050A] relative z-50">
+      <footer className="py-20 md:py-24 border-t border-white/5 bg-[#05050A] relative z-50">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="grid md:grid-cols-4 gap-16 mb-24">
+          <div className="grid md:grid-cols-4 gap-12 md:gap-16 mb-16 md:mb-24">
             <div className="col-span-2">
-              <span className="text-4xl font-black tracking-tighter text-white mb-8 block">TSM<span className="text-[#10B981]">.</span></span>
-              <p className="text-gray-500 max-w-sm mb-10 leading-relaxed font-light">
+              <img src="/data/logo.png" alt="TSM Logo" className="h-10 w-auto mb-6 opacity-80" />
+              <p className="text-gray-500 max-w-sm mb-10 leading-relaxed font-light text-sm md:text-base">
                 The global intersection of athletic potential and artificial intelligence. We redefine scouting.
               </p>
             </div>
             <div>
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white mb-8">Platform</h4>
               <ul className="space-y-4">
-                <li><Link href="/pricing" className="text-gray-500 hover:text-[#10B981] transition-colors text-xs font-black uppercase tracking-widest">Pricing</Link></li>
-                <li><Link href="/register" className="text-gray-500 hover:text-[#10B981] transition-colors text-xs font-black uppercase tracking-widest">Register</Link></li>
-                <li><Link href="/discovery" className="text-gray-500 hover:text-[#10B981] transition-colors text-xs font-black uppercase tracking-widest">Discovery Grid</Link></li>
+                <li><Link href="/pricing" className="text-gray-500 hover:text-[#10B981] transition-colors text-[10px] md:text-xs font-black uppercase tracking-widest">Pricing</Link></li>
+                <li><Link href="/register" className="text-gray-500 hover:text-[#10B981] transition-colors text-[10px] md:text-xs font-black uppercase tracking-widest">Register</Link></li>
+                <li><Link href="/discovery" className="text-gray-500 hover:text-[#10B981] transition-colors text-[10px] md:text-xs font-black uppercase tracking-widest">Discovery Grid</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white mb-8">Legal</h4>
               <ul className="space-y-4">
-                <li><Link href="/privacy" className="text-gray-500 hover:text-[#10B981] transition-colors text-xs font-black uppercase tracking-widest">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="text-gray-500 hover:text-[#10B981] transition-colors text-xs font-black uppercase tracking-widest">Terms of Use</Link></li>
+                <li><Link href="/privacy" className="text-gray-500 hover:text-[#10B981] transition-colors text-[10px] md:text-xs font-black uppercase tracking-widest">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-gray-500 hover:text-[#10B981] transition-colors text-[10px] md:text-xs font-black uppercase tracking-widest">Terms of Use</Link></li>
               </ul>
             </div>
           </div>
           <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-600 text-[10px] uppercase tracking-[0.2em] font-bold">© 2026 Talent Scout Manager. Genetic Data Secured.</p>
+            <p className="text-gray-600 text-[10px] uppercase tracking-[0.2em] font-bold text-center md:text-left">© 2026 Talent Scout Manager. Genetic Data Secured.</p>
             <div className="flex items-center gap-2 text-gray-600 text-[10px] uppercase tracking-[0.2em] font-bold">
               <Shield className="w-3 h-3" /> Encrypted by AI
             </div>
