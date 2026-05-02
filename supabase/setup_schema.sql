@@ -96,13 +96,18 @@ ALTER TABLE public.analysis_reports ENABLE ROW LEVEL SECURITY;
 
 -- 8. RLS POLICIES
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Users can insert own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 CREATE POLICY "Athlete profiles are viewable by everyone" ON public.athlete_profiles FOR SELECT USING (is_published = true);
-CREATE POLICY "Athletes can update own athlete profile" ON public.athlete_profiles FOR ALL USING (user_id = auth.uid());
+CREATE POLICY "Athletes can insert own athlete profile" ON public.athlete_profiles FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Athletes can update own athlete profile" ON public.athlete_profiles FOR UPDATE USING (user_id = auth.uid());
+CREATE POLICY "Athletes can delete own athlete profile" ON public.athlete_profiles FOR DELETE USING (user_id = auth.uid());
 
 CREATE POLICY "Scout profiles are viewable by everyone" ON public.scout_profiles FOR SELECT USING (is_published = true);
-CREATE POLICY "Scouts can update own scout profile" ON public.scout_profiles FOR ALL USING (user_id = auth.uid());
+CREATE POLICY "Scouts can insert own scout profile" ON public.scout_profiles FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Scouts can update own scout profile" ON public.scout_profiles FOR UPDATE USING (user_id = auth.uid());
+CREATE POLICY "Scouts can delete own scout profile" ON public.scout_profiles FOR DELETE USING (user_id = auth.uid());
 
 CREATE POLICY "Videos are viewable by everyone" ON public.athlete_videos FOR SELECT USING (true);
 CREATE POLICY "Athletes can manage own videos" ON public.athlete_videos FOR ALL USING (

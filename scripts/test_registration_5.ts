@@ -28,6 +28,8 @@ async function testFullRegistration() {
     return
   }
 
+  console.log('Session exists:', !!authData.session)
+
   const userId = authData.user!.id
   console.log('User created:', userId)
   const slug = 'test-athlete-' + Date.now()

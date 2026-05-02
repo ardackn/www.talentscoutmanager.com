@@ -70,6 +70,19 @@ export default function PlayerRegisterPage() {
         throw authError
       }
       if (!authData.user) throw new Error('Kayıt başarısız oldu. Lütfen tekrar deneyin.')
+      
+      // Check if user already exists (Supabase returns user with empty identities if email enumeration protection is on)
+      if (authData.user.identities && authData.user.identities.length === 0) {
+        throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.')
+      }
+
+      // Check if session exists (If email confirmations are enabled, session will be null)
+      if (!authData.session) {
+        // We cannot insert profiles without an active session due to RLS.
+        toast.success('Kayıt başarılı! Lütfen e-postanıza gelen doğrulama bağlantısına tıklayın ve ardından giriş yapın.');
+        router.push('/player-login');
+        return;
+      }
 
       const userId = authData.user.id
 
