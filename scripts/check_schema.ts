@@ -9,15 +9,21 @@ const supabase = createClient(
 )
 
 async function checkSchema() {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .limit(1)
+  const tables = ['profiles', 'athlete_profiles', 'scout_profiles']
   
-  if (error) {
-    console.error('Error fetching profiles:', error)
-  } else {
-    console.log('Profile columns:', data.length > 0 ? Object.keys(data[0]) : 'No rows found')
+  for (const table of tables) {
+    const { data, error } = await supabase
+      .from(table)
+      .select('*')
+      .limit(1)
+    
+    console.log(`Table: ${table}`)
+    if (error) {
+      console.error(`Error fetching ${table}:`, error.message)
+    } else {
+      console.log(`Columns:`, data.length > 0 ? Object.keys(data[0]) : 'No rows found')
+    }
+    console.log('---')
   }
 }
 

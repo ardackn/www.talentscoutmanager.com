@@ -49,11 +49,13 @@ export function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuItem className="focus:bg-white/10">
-          <User className="mr-2 h-4 w-4" />
-          <span>Profil</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleLogout} className="focus:bg-white/10">
+        <Link href="/settings">
+          <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            <span>Hesap Ayarları</span>
+          </DropdownMenuItem>
+        </Link>
+        <DropdownMenuItem onClick={handleLogout} className="focus:bg-white/10 cursor-pointer text-red-400 focus:text-red-300">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Çıkış Yap</span>
         </DropdownMenuItem>

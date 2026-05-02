@@ -9,9 +9,11 @@ import { Dna, Network, Shield } from 'lucide-react'
 
 const COUNTRIES = ['United States', 'United Kingdom', 'Brazil', 'Argentina', 'Nigeria', 'France', 'Germany', 'Spain', 'Portugal', 'Italy', 'Netherlands', 'Belgium', 'Uruguay', 'Colombia', 'Mexico', 'Other']
 
+import { Database } from '@/types/supabase'
+
 export default function ScoutRegisterPage() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient<any>()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
 
@@ -23,30 +25,80 @@ export default function ScoutRegisterPage() {
   const set = (key: string, value: string) => setForm(f => ({ ...f, [key]: value }))
 
   const handleSubmit = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      toast.error('Geçerli bir e-posta adresi giriniz.');
+      return;
+    }
+    if (form.password.length < 6) {
+      toast.error('Şifre en az 6 karakter olmalıdır.');
+      return;
+    }
+
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data: authData, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/scout-login`,
           data: {
             role: 'scout',
             full_name: form.fullName,
-            phone: form.phone,
-            country: form.country,
-            organization: form.organization,
-            experience_years: form.experienceYears,
-            specialization: form.specialization,
-            license_no: form.licenseNo,
-            subscription_tier: 'free',
           }
         }
       })
-      if (error) throw error
-      toast.success('Neural link established! Verify your frequency (email).')
+
+      if (error) {
+        if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+          throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.')
+        }
+        throw error
+      }
+      if (!authData.user) throw new Error('Kayıt başarısız oldu. Lütfen tekrar deneyin.')
+
+      const userId = authData.user.id
+
+      // 1. Create Profile record (upsert handles trigger-created profiles)
+      const { error: profileError } = await supabase.from('profiles').upsert({
+        id: userId,
+        role: 'scout',
+        full_name: form.fullName,
+        email: form.email,
+        phone: form.phone,
+        subscription_tier: 'free',
+        subscription_status: 'inactive'
+      }, { onConflict: 'id' })
+
+      if (profileError && !profileError.code?.includes('23505')) {
+        console.warn('Profile upsert warning:', profileError.message)
+        // Non-fatal
+      }
+
+      // 2. Create Scout Profile
+      const { error: scoutError } = await supabase.from('scout_profiles').insert({
+        user_id: userId,
+        full_name: form.fullName,
+        club_or_agency: form.organization || null,
+        country: form.country,
+        years_experience: parseInt(form.experienceYears) || 0,
+        license_number: form.licenseNo || null,
+      })
+
+      if (scoutError) {
+        if (scoutError.code === '23505') {
+          // Duplicate - likely already exists, not fatal
+          console.warn('Scout profile may already exist:', scoutError.message)
+        } else {
+          throw new Error(`İzci profili oluşturulamadı: ${scoutError.message}`)
+        }
+      }
+
+      toast.success('Kayıt başarılı! Lütfen e-postanızı doğrulamak için gelen kutunuzu kontrol edin.')
       router.push('/scout-login')
     } catch (err: any) {
-      toast.error(err.message || 'Error occurred during registration.')
+      console.error('Scout registration error:', err)
+      toast.error(err.message || 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setLoading(false)
     }
@@ -79,10 +131,10 @@ export default function ScoutRegisterPage() {
             <span className="text-3xl font-black tracking-tighter text-white">TSM<span className="text-[#10B981]">.</span></span>
           </Link>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4 bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/30">
-            <Network className="w-4 h-4" /> Operator Registration
+            <Network className="w-4 h-4" /> İzci (Scout) Kaydı
           </div>
-          <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tighter italic">Establish Access</h1>
-          <p className="text-gray-400 font-light text-sm uppercase tracking-widest">Connect to the global bio-metric grid in 2 steps</p>
+          <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tighter italic">Platforma Katıl</h1>
+          <p className="text-gray-400 font-light text-sm uppercase tracking-widest">2 adımda global yetenek ağına bağlan</p>
         </div>
 
         {/* Progress Bar */}
@@ -100,7 +152,7 @@ export default function ScoutRegisterPage() {
                 {s}
               </div>
               <span className="text-[10px] uppercase tracking-widest font-bold" style={{ color: step >= s ? '#10B981' : '#6b7280' }}>
-                {s === 1 ? 'Operator Identity' : 'Authorization Level'}
+                {s === 1 ? 'Kişisel Bilgiler' : 'Profesyonel Detaylar'}
               </span>
             </div>
           ))}
@@ -123,25 +175,25 @@ export default function ScoutRegisterPage() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label style={labelStyle}>Designation (Full Name) *</label>
-                  <input style={inputStyle} value={form.fullName} onChange={e => set('fullName', e.target.value)} placeholder="John Doe" />
+                  <label style={labelStyle}>Ad Soyad *</label>
+                  <input style={inputStyle} value={form.fullName} onChange={e => set('fullName', e.target.value)} placeholder="Ahmet Yılmaz" />
                 </div>
                 <div>
-                  <label style={labelStyle}>Comms Link (Email) *</label>
-                  <input style={inputStyle} type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="scout@network.com" />
+                  <label style={labelStyle}>E-Posta *</label>
+                  <input style={inputStyle} type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="scout@ornek.com" />
                 </div>
                 <div>
-                  <label style={labelStyle}>Security Key (Password) *</label>
-                  <input style={inputStyle} type="password" value={form.password} onChange={e => set('password', e.target.value)} placeholder="Min 6 characters" />
+                  <label style={labelStyle}>Şifre *</label>
+                  <input style={inputStyle} type="password" value={form.password} onChange={e => set('password', e.target.value)} placeholder="En az 6 karakter" />
                 </div>
                 <div>
-                  <label style={labelStyle}>Direct Link (Phone) *</label>
-                  <input style={inputStyle} value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+1 555 000 0000" />
+                  <label style={labelStyle}>Telefon *</label>
+                  <input style={inputStyle} value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+90 555 000 0000" />
                 </div>
                 <div className="sm:col-span-2">
-                  <label style={labelStyle}>Operational Zone (Country) *</label>
+                  <label style={labelStyle}>Ülke *</label>
                   <select style={{ ...inputStyle, cursor: 'pointer', backgroundColor: '#05050A' }} value={form.country} onChange={e => set('country', e.target.value)}>
-                    <option value="">Select Region</option>
+                    <option value="">Seçiniz</option>
                     {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
@@ -149,14 +201,14 @@ export default function ScoutRegisterPage() {
               <button
                 onClick={() => {
                   if (!form.fullName || !form.email || !form.password || !form.phone || !form.country) {
-                    toast.error('All fields are required to establish link.')
+                    toast.error('Tüm zorunlu alanları doldurmalısınız.')
                     return
                   }
                   setStep(2)
                 }}
                 className="w-full py-4 font-black text-sm uppercase tracking-[0.2em] mt-8 hover:scale-[1.02] transition-all bg-[#10B981] text-[#05050A] rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.3)]"
               >
-                Proceed to Phase 2 →
+                2. Adıma Geç →
               </button>
             </div>
           )}
@@ -175,49 +227,49 @@ export default function ScoutRegisterPage() {
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-white uppercase tracking-wide">Scout Free Protocol Initiated</p>
-                  <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-1">Upgrade to Premium for full matrix access.</p>
+                  <p className="text-sm font-black text-white uppercase tracking-wide">Scout Ücretsiz Plan</p>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-400 mt-1">Daha fazla özellik için Premium'a yükseltebilirsiniz.</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label style={labelStyle}>Organization / Node (Optional)</label>
-                  <input style={inputStyle} value={form.organization} onChange={e => set('organization', e.target.value)} placeholder="Independent / Club" />
+                  <label style={labelStyle}>Kurum / Kulüp (İsteğe Bağlı)</label>
+                  <input style={inputStyle} value={form.organization} onChange={e => set('organization', e.target.value)} placeholder="Bağımsız / Kulüp Adı" />
                 </div>
                 <div>
-                  <label style={labelStyle}>Cycles Active (Years) *</label>
+                  <label style={labelStyle}>Deneyim (Yıl) *</label>
                   <select style={{ ...inputStyle, cursor: 'pointer', backgroundColor: '#05050A' }} value={form.experienceYears} onChange={e => set('experienceYears', e.target.value)}>
-                    <option value="">Select Cycles</option>
-                    <option value="0-1">0-1 Cycles</option>
-                    <option value="2-5">2-5 Cycles</option>
-                    <option value="6-10">6-10 Cycles</option>
-                    <option value="10+">10+ Cycles</option>
+                    <option value="">Seçiniz</option>
+                    <option value="0-1">0-1 Yıl</option>
+                    <option value="2-5">2-5 Yıl</option>
+                    <option value="6-10">6-10 Yıl</option>
+                    <option value="10+">10+ Yıl</option>
                   </select>
                 </div>
                 <div>
-                  <label style={labelStyle}>Primary Vector *</label>
+                  <label style={labelStyle}>Uzmanlık Alanı *</label>
                   <select style={{ ...inputStyle, cursor: 'pointer', backgroundColor: '#05050A' }} value={form.specialization} onChange={e => set('specialization', e.target.value)}>
-                    <option value="">Select Vector</option>
-                    <option value="Youth">Youth Genetics</option>
-                    <option value="Professional">Pro Bio-metrics</option>
-                    <option value="Both">Omni-Scout</option>
+                    <option value="">Seçiniz</option>
+                    <option value="Youth">Altyapı (Genç)</option>
+                    <option value="Professional">Profesyonel (A Takım)</option>
+                    <option value="Both">Her İkisi</option>
                   </select>
                 </div>
                 <div>
-                  <label style={labelStyle}>Clearance ID (License) (Optional)</label>
-                  <input style={inputStyle} value={form.licenseNo} onChange={e => set('licenseNo', e.target.value)} placeholder="FIFA/UEFA ID" />
+                  <label style={labelStyle}>Lisans Numarası (İsteğe Bağlı)</label>
+                  <input style={inputStyle} value={form.licenseNo} onChange={e => set('licenseNo', e.target.value)} placeholder="TFF/UEFA Lisans No" />
                 </div>
               </div>
 
               <div className="flex gap-4 pt-8">
                 <button onClick={() => setStep(1)} className="px-6 py-4 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white/5 transition-all border border-white/20 text-white rounded-full">
-                  ← Revert
+                  ← Geri
                 </button>
                 <button
                   onClick={() => {
                     if (!form.experienceYears || !form.specialization) {
-                      toast.error('Vectors must be defined.')
+                      toast.error('Lütfen zorunlu alanları doldurun.')
                       return
                     }
                     handleSubmit()
@@ -225,7 +277,7 @@ export default function ScoutRegisterPage() {
                   disabled={loading}
                   className="flex-1 py-4 font-black text-sm uppercase tracking-[0.2em] transition-all hover:scale-[1.02] disabled:opacity-50 bg-[#10B981] text-[#05050A] rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.3)]"
                 >
-                  {loading ? 'Processing...' : 'Establish Neural Link'}
+                  {loading ? 'İşleniyor...' : 'Kaydı Tamamla'}
                 </button>
               </div>
             </div>
@@ -233,8 +285,8 @@ export default function ScoutRegisterPage() {
         </div>
 
         <p className="text-center text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em] mt-8">
-          Already an operator?{' '}
-          <Link href="/scout-login" className="text-[#10B981] hover:underline">Access Terminal</Link>
+          Zaten hesabınız var mı?{' '}
+          <Link href="/scout-login" className="text-[#10B981] hover:underline">Giriş Yap</Link>
         </p>
       </div>
     </div>

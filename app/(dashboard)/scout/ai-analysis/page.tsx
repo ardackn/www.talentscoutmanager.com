@@ -21,8 +21,11 @@ const mockSkills = [
 
 interface AnalysisResult {
   aiScore: number
-  skills: Array<{ name: string; value: number; max: number }>
-  comment: string
+  guclu_yonler: string[]
+  zayif_yonler: string[]
+  oyuncu_metrikleri: Array<{ name: string; performance: number; notes: string }>
+  sistem_uyumu: string
+  transfer_onerileri: string[]
 }
 
 export default function ScoutAIAnalysisPage() {
@@ -63,14 +66,30 @@ export default function ScoutAIAnalysisPage() {
     // Mock AI analysis delay
     await new Promise(resolve => setTimeout(resolve, 3000))
     
-    // Mock results
+    // Mock results for Team Analysis
     const mockResult: AnalysisResult = {
-      aiScore: 89,
-      skills: mockSkills.map(skill => ({
-        ...skill,
-        value: Math.floor(Math.random() * 20) + skill.value - 10 // Variation
-      })),
-      comment: `AI Analizi: ${formData.name} (${formData.position}, ${formData.age} yaşında, ${formData.country}). Olağanüstü sprint hızı ve bitiricilik kombinasyonu. Savunma becerilerini geliştirerek elit seviyeye çıkabilir. Teknik mükemmel, oyun zekası üst düzey. Brezilya stili forvet profili - izlemeye değer!`
+      aiScore: 85,
+      guclu_yonler: [
+        "Hızlı hücuma çıkışlar ve kanat organizasyonları",
+        "Merkez orta sahada yüksek pas isabeti (%88)",
+        "Duran toplarda etkili hava hakimiyeti"
+      ],
+      zayif_yonler: [
+        "Defans arkasına atılan toplarda kademe hatası",
+        "İkinci bölgede düşük top kazanma oranı",
+        "70. dakikadan sonra takım halinde dayanıklılık düşüşü"
+      ],
+      oyuncu_metrikleri: [
+        { name: "Oyuncu #7 (Kanat)", performance: 88, notes: "Sprint hızı ve dripling elit seviyede" },
+        { name: "Oyuncu #10 (OOS)", performance: 82, notes: "Kilit paslarda başarılı, defansif katkısı zayıf" },
+        { name: "Oyuncu #4 (Stoper)", performance: 75, notes: "Pozisyon bilgisi iyi, hızlanmada yavaş" }
+      ],
+      sistem_uyumu: "Mevcut 4-3-3 sistemi kanat hücumları için ideal ancak defansif geçişlerde 4-2-3-1 formasyonuna dönülmesi orta saha direncini artırabilir. Mevki uyumsuzluğu olan oyuncu yok.",
+      transfer_onerileri: [
+        "Defansif yönü kuvvetli atletik bir 6 numara",
+        "Rotasyon için hızlı ve çevik bir stoper",
+        "Skor katkısı verebilecek bitirici bir santrafor"
+      ]
     }
     
     setResults(mockResult)
@@ -86,16 +105,16 @@ export default function ScoutAIAnalysisPage() {
   }
 
   return (
-    <main className="container py-10 md:py-16 min-h-screen">
+    <div className="container py-10 md:py-16 min-h-screen">
       <section className="card p-8 md:p-12 mb-12">
         <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70 mb-4">
           <BarChart3 className="w-4 h-4 mr-1" /> AI Analiz Araçları
         </span>
         <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-4">
-          Video Yükle &amp; AI Analizi
+          Takım Analizi & Video Yükleme
         </h1>
         <p className="text-base text-slate-300 max-w-2xl">
-          Oyuncu videosu yükleyin, temel bilgileri girin ve yapay zeka anında beceri analizi yapsın.
+          Takım veya maç videosu yükleyin, yapay zeka takımın genel performansını, güçlü/zayıf yönlerini ve transfer ihtiyaçlarını analiz etsin.
         </p>
       </section>
 
@@ -148,49 +167,48 @@ export default function ScoutAIAnalysisPage() {
             </CardContent>
           </Card>
 
-          {/* Player Info Form */}
+          {/* Team Info Form */}
           <Card className="border-white/10 hover:border-white/20">
             <CardHeader>
-              <CardTitle>Oyuncu Bilgileri</CardTitle>
+              <CardTitle>Takım Bilgileri</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">İsim</label>
+                <label className="block text-sm font-medium mb-2">Takım veya Maç Adı</label>
                 <input
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] focus:outline-none text-white placeholder-slate-400"
-                  placeholder="Oyuncu adı"
+                  placeholder="Örn: U19 Derbi Maçı"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Yaş</label>
+                  <label className="block text-sm font-medium mb-2">Yaş Grubu / Seviye</label>
                   <input
-                    type="number"
                     value={formData.age}
                     onChange={(e) => setFormData({...formData, age: e.target.value})}
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] text-white"
-                    placeholder="17"
+                    placeholder="U19"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Ülke</label>
+                  <label className="block text-sm font-medium mb-2">Bölge / Ülke</label>
                   <input
                     value={formData.country}
                     onChange={(e) => setFormData({...formData, country: e.target.value})}
                     className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] text-white placeholder-slate-400"
-                    placeholder="Brezilya"
+                    placeholder="Türkiye"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Pozisyon</label>
+                <label className="block text-sm font-medium mb-2">Mevcut Formasyon</label>
                 <input
                   value={formData.position}
                   onChange={(e) => setFormData({...formData, position: e.target.value})}
                   className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] text-white placeholder-slate-400"
-                  placeholder="Forvet"
+                  placeholder="4-3-3"
                 />
               </div>
             </CardContent>
@@ -222,7 +240,7 @@ export default function ScoutAIAnalysisPage() {
               )}
             </Button>
             <p className="text-sm text-slate-400 mt-4">
-              {file && formData.name ? 'Hazır!' : 'Video ve oyuncu adı gerekli'}
+              {file && formData.name ? 'Takım Analizi için Hazır!' : 'Video ve takım/maç adı gerekli'}
             </p>
           </CardContent>
         </Card>
@@ -263,55 +281,80 @@ export default function ScoutAIAnalysisPage() {
               </CardContent>
             </Card>
 
-            {/* Skill Bars */}
-            <Card className="md:col-span-1 lg:col-span-2 border-white/20">
-              <CardHeader>
-                <CardTitle>Beceri Analizi</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {results.skills.map((skill, idx) => (
-                    <div key={idx} className="flex items-center gap-4">
-                      <span className="w-28 font-medium text-slate-300 flex-shrink-0">
-                        {skill.name}
-                      </span>
-                      <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-[#E94560] to-purple-600 rounded-full transition-all duration-700 shadow-md"
-                          style={{ width: `${skill.value}%` }}
-                        />
+            {/* Insights and Recommendations */}
+            <div className="md:col-span-1 lg:col-span-2 space-y-6">
+              
+              <Card className="border-white/20 bg-[#10B981]/10">
+                <CardHeader>
+                  <CardTitle className="text-lg text-[#10B981]">Güçlü ve Zayıf Yönler</CardTitle>
+                </CardHeader>
+                <CardContent className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-bold text-white mb-2">✅ Güçlü Yönler</h4>
+                    <ul className="list-disc pl-5 space-y-1 text-slate-300 text-sm">
+                      {results.guclu_yonler.map((item, idx) => <li key={idx}>{item}</li>)}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white mb-2">❌ Zayıf Yönler</h4>
+                    <ul className="list-disc pl-5 space-y-1 text-slate-300 text-sm">
+                      {results.zayif_yonler.map((item, idx) => <li key={idx}>{item}</li>)}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-lg">Sistem / Mevki Uyumu Analizi</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-300 text-sm leading-relaxed">{results.sistem_uyumu}</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-white/20 bg-[#E94560]/10">
+                <CardHeader>
+                  <CardTitle className="text-lg text-[#E94560]">Transfer Önerileri</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="list-disc pl-5 space-y-1 text-slate-300 text-sm">
+                    {results.transfer_onerileri.map((item, idx) => <li key={idx}>{item}</li>)}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card className="border-white/20">
+                <CardHeader>
+                  <CardTitle className="text-lg">Oyuncu Bazlı Performans Metrikleri</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {results.oyuncu_metrikleri.map((player, idx) => (
+                      <div key={idx} className="border-b border-white/10 pb-3 last:border-0 last:pb-0">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-bold text-white">{player.name}</span>
+                          <span className="font-mono font-bold text-[#F7C948]">{player.performance}/100</span>
+                        </div>
+                        <p className="text-xs text-slate-400">{player.notes}</p>
                       </div>
-                      <span className="w-12 font-mono text-sm text-slate-400">
-                        {skill.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+            </div>
           </div>
 
-          {/* AI Comment */}
-          <Card className="border-white/20">
-            <CardHeader className="flex-row items-center gap-3 pb-4">
-              <MessageSquare className="w-6 h-6 text-[#E94560] flex-shrink-0" />
-              <CardTitle className="text-xl">AI Yorumu</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="whitespace-pre-wrap text-slate-200 leading-relaxed">
-                {results.comment}
-              </p>
-            </CardContent>
-            <CardFooter className="pt-0">
-              <Button 
-                variant="outline" 
-                onClick={reset}
-                className="w-full border-white/20 hover:bg-white/10"
-              >
-                Yeni Analiz
-              </Button>
-            </CardFooter>
-          </Card>
+          <div className="mt-8 flex justify-end">
+            <Button 
+              variant="outline" 
+              onClick={reset}
+              className="border-white/20 hover:bg-white/10 text-white"
+            >
+              Yeni Analiz
+            </Button>
+          </div>
         </div>
       )}
 
@@ -324,6 +367,6 @@ export default function ScoutAIAnalysisPage() {
           animation: spin-slow 3s linear infinite;
         }
       `}</style>
-    </main>
+    </div>
   )
 }

@@ -34,13 +34,7 @@ export default function AthleteDashboardPage() {
   // Video upload state
   const [uploading, setUploading] = useState(false)
   const [videoFile, setVideoFile] = useState<File | null>(null)
-  const [analyzeData, setAnalyzeData] = useState({
-    height: '',
-    weight: '',
-    age: '',
-    position: '' as Position
-  })
-const [aiResults, setAiResults] = useState<any>(null)
+  const [aiResults, setAiResults] = useState<any>(null)
   const [analyzing, setAnalyzing] = useState(false);
 const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -58,25 +52,28 @@ const fileInputRef = useRef<HTMLInputElement>(null)
   };
 
   const handleAnalyze = async () => {
-    if (!analyzeData.height || !analyzeData.weight || !analyzeData.age || !analyzeData.position) {
-      alert('Lütfen tüm alanları doldurun');
+    if (!videoFile) {
+      alert('Lütfen önce bir video seçin');
       return;
     }
 
     setAnalyzing(true);
     try {
+      // Simulate Cloudinary upload
+      await new Promise(r => setTimeout(r, 1500));
+      const mockVideoUrl = 'https://res.cloudinary.com/demo/video/upload/sample.mp4';
+      
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...analyzeData,
-          videoId: videoFile ? videoFile.name : null,
-          athleteId: talent?.id,
+          videoUrl: mockVideoUrl,
+          athleteId: session?.user?.id || talent?.id,
         }),
       });
       const data = await res.json();
       if (res.ok) {
-        setAiResults(data);
+        setAiResults(data.analysis);
       } else {
         alert('Analiz hatası: ' + data.error);
       }
@@ -84,24 +81,6 @@ const fileInputRef = useRef<HTMLInputElement>(null)
       alert('Bağlantı hatası');
     } finally {
       setAnalyzing(false);
-    }
-  };
-
-  const handleUploadVideo = async () => {
-    if (!videoFile) return;
-    setUploading(true);
-    try {
-      const res = await fetch('/api/mux/upload-url', {
-        method: 'POST',
-        body: JSON.stringify({ file: videoFile.name }),
-      });
-      const { url } = await res.json();
-      // Simulate upload
-      alert('Video yüklendi: ' + url);
-    } catch {
-      alert('Yükleme hatası');
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -120,7 +99,7 @@ const fileInputRef = useRef<HTMLInputElement>(null)
       const formData = new FormData();
       formData.append('athleteId', talent.id);
       formData.append('content', reply);
-      formData.append('scoutName', profile?.name || 'Athlete Reply');
+      formData.append('scoutName', profile?.full_name || 'Athlete Reply');
       const res = await fetch('/api/scout/contact', {
         method: 'POST',
         body: formData
@@ -219,7 +198,7 @@ const fileInputRef = useRef<HTMLInputElement>(null)
             <BarChart3 className="w-7 h-7 text-[#E94560]" />
             <h2 className="text-2xl font-black text-white">AI Analiz Sonuçları</h2>
             <Badge className="ml-auto bg-gradient-to-r from-[#E94560] to-purple-600 text-sm font-bold">
-              {aiResults.scores.scoutScore}/100
+              {aiResults.genel_potansiyel}/100
             </Badge>
           </div>
 
@@ -231,43 +210,89 @@ const fileInputRef = useRef<HTMLInputElement>(null)
                 <div className="absolute inset-4 md:inset-6 w-full h-full bg-gradient-to-r from-[#E94560]/20 to-purple-600/20 rounded-full animate-pulse" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-4xl md:text-5xl font-black text-white drop-shadow-2xl">
-                    {aiResults.scores.scoutScore}
+                    {aiResults.genel_potansiyel}
                   </div>
                 </div>
               </div>
-              <CardDescription className="text-slate-400 mb-4">Scout Score</CardDescription>
-              <p className="text-slate-200 font-semibold text-lg">{aiResults.scores.recommendation}</p>
+              <CardDescription className="text-slate-400 mb-4">Genel Potansiyel Puanı</CardDescription>
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
+                {aiResults.mevki_uygunlugu.map((m: string) => (
+                  <Badge key={m} className="bg-blue-500/20 text-blue-300">{m}</Badge>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
           {/* Breakdown */}
-          <Card className="border-white/10">
-            <CardHeader>
-              <CardTitle>Beceri Dağılımı</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {Object.entries(aiResults.scores.breakdown).map(([key, value]) => (
-                <div key={key} className="flex items-center gap-4">
-                  <span className="w-24 font-medium text-slate-300 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                  <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-[#E94560] to-purple-600 rounded-full transition-all" 
-                      style={{ width: `${Math.min(100, value as number)}%` }}
-                    />
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="border-white/10">
+              <CardHeader>
+                <CardTitle className="text-lg">Teknik Beceri</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {Object.entries(aiResults.teknik_beceri).map(([key, value]) => (
+                  <div key={key} className="flex items-center gap-4">
+                    <span className="w-24 font-medium text-slate-300 capitalize">{key}</span>
+                    <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-[#E94560] to-purple-600 rounded-full transition-all" style={{ width: `${value as number}%` }} />
+                    </div>
+                    <span className="w-8 font-mono font-bold text-white">{value as number}</span>
                   </div>
-                  <span className="w-12 font-mono font-bold text-white">{Math.round(value)}</span>
-                </div>
-              ))}
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card className="border-white/10">
+              <CardHeader>
+                <CardTitle className="text-lg">Fiziksel Özellikler</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {Object.entries(aiResults.fiziksel_ozellikler).map(([key, value]) => (
+                  <div key={key} className="flex items-center gap-4">
+                    <span className="w-24 font-medium text-slate-300 capitalize">{key}</span>
+                    <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
+                      <div className="h-full bg-[#F7C948] rounded-full transition-all" style={{ width: `${value as number}%` }} />
+                    </div>
+                    <span className="w-8 font-mono font-bold text-white">{value as number}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card className="border-white/10">
+              <CardHeader>
+                <CardTitle className="text-lg">Taktiksel Farkındalık</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {Object.entries(aiResults.taktiksel_farkindalik).map(([key, value]) => (
+                  <div key={key} className="flex items-center gap-4">
+                    <span className="w-28 font-medium text-slate-300 capitalize">{key.replace('_', ' ')}</span>
+                    <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
+                      <div className="h-full bg-[#10B981] rounded-full transition-all" style={{ width: `${value as number}%` }} />
+                    </div>
+                    <span className="w-8 font-mono font-bold text-white">{value as number}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="border-white/10 bg-[#E94560]/10 mt-6">
+            <CardHeader>
+              <CardTitle>Gelişim Önerileri</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="list-disc pl-5 space-y-2 text-slate-300">
+                {aiResults.gelisim_onerileri.map((rec: string, i: number) => (
+                  <li key={i}>{rec}</li>
+                ))}
+              </ul>
             </CardContent>
           </Card>
 
-          <div className="flex gap-3">
-            <Button onClick={handleAnalyze} className="flex-1" variant="outline">
-              Yeni Analiz
-            </Button>
-            <Button onClick={handleUploadVideo} className="flex-1" disabled={uploading || !videoFile}>
-              {uploading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Video className="w-4 h-4 mr-2" />}
-              Videoyu Kaydet
+          <div className="flex gap-3 mt-6">
+            <Button onClick={() => { setAiResults(null); setVideoFile(null); }} className="flex-1" variant="outline">
+              Yeni Video Yükle
             </Button>
           </div>
         </section>
@@ -309,68 +334,23 @@ const fileInputRef = useRef<HTMLInputElement>(null)
               />
             </div>
 
-            {/* Analyze Form */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-              <div>
-                <label className="block text-sm font-medium mb-2 text-slate-300">Boy (cm)</label>
-                <input
-                  type="number"
-                  value={analyzeData.height}
-                  onChange={(e) => setAnalyzeData({...analyzeData, height: e.target.value})}
-                  placeholder="180"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] focus:outline-none text-white"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2 text-slate-300">Kilo (kg)</label>
-                <input
-                  type="number"
-                  value={analyzeData.weight}
-                  onChange={(e) => setAnalyzeData({...analyzeData, weight: e.target.value})}
-                  placeholder="75"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] focus:outline-none text-white"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2 text-slate-300">Yaş</label>
-                <input
-                  type="number"
-                  value={analyzeData.age}
-                  onChange={(e) => setAnalyzeData({...analyzeData, age: e.target.value})}
-                  placeholder="17"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] focus:outline-none text-white"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2 text-slate-300">Pozisyon</label>
-                <select
-                  value={analyzeData.position}
-                  onChange={(e) => setAnalyzeData({...analyzeData, position: e.target.value as Position})}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#E94560] text-white"
-                >
-                  <option value="">Seçin</option>
-                  <option value="Goalkeeper">Goalkeeper</option>
-                  <option value="Defender">Defender</option>
-                  <option value="Striker">Striker</option>
-                </select>
-              </div>
-            </div>
+            {/* Analyze Form removed */}
 
             <Button 
               onClick={handleAnalyze}
-disabled={!analyzeData.height || !analyzeData.weight || !analyzeData.age || !analyzeData.position || analyzing}
+              disabled={!videoFile || analyzing}
               className="w-full h-16 text-xl font-bold bg-gradient-to-r from-[#E94560] to-purple-600 hover:from-red-500 shadow-2xl"
               size="lg"
             >
               {analyzing ? (
                 <>
                   <Loader2 className="w-6 h-6 mr-3 animate-spin" />
-                  AI Analiz Ediyor...
+                  Yükleniyor ve Analiz Ediliyor...
                 </>
               ) : (
                 <>
-                  <BarChart3 className="w-6 h-6 mr-3" />
-                  Scout Score Hesapla
+                  <Upload className="w-6 h-6 mr-3" />
+                  Videoyu Yükle & Analiz Et
                 </>
               )}
             </Button>

@@ -10,9 +10,11 @@ const COUNTRIES = ['Türkiye', 'Brezilya', 'Arjantin', 'Nijerya', 'Fransa', 'Alm
 const POSITIONS = ['Kaleci', 'Stoper', 'Sol Bek', 'Sağ Bek', 'Defans Ortası', 'Merkez Orta Saha', 'Ofansif Orta Saha', 'Sol Kanat', 'Sağ Kanat', 'Forvet / Santrafor']
 const LEVELS = ['Amatör', 'Bölgesel Lig', 'İl Ligi', 'Alt Lig', 'Profesyonel', 'Akademi / U17', 'Akademi / U19', 'Akademi / U21']
 
+import { Database } from '@/types/supabase'
+
 export default function PlayerRegisterPage() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient<any>()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
@@ -21,6 +23,7 @@ export default function PlayerRegisterPage() {
     fullName: '', email: '', password: '', phone: '', birthDate: '', nationality: '',
     position: '', dominantFoot: '', currentClub: '', level: '',
     bio: '', profilePicture: null as File | null,
+    videoFile: null as File | null,
   })
 
   const set = (key: string, value: string | File) => setForm(f => ({ ...f, [key]: value }))
@@ -33,40 +36,142 @@ export default function PlayerRegisterPage() {
     }
   }
 
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 100 * 1024 * 1024) {
+        toast.error('Video boyutu 100MB\'dan küçük olmalıdır.')
+        return
+      }
+      set('videoFile', file)
+    }
+  }
+
   const handleSubmit = async () => {
     setLoading(true)
     try {
+      // 1. Create Auth User
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/player-login`,
           data: {
             role: 'athlete',
             full_name: form.fullName,
-            phone: form.phone,
-            birth_date: form.birthDate,
-            nationality: form.nationality,
-            position: form.position,
-            dominant_foot: form.dominantFoot,
-            current_club: form.currentClub,
-            level: form.level,
-            bio: form.bio,
           }
         }
       })
 
-      if (authError) throw authError
+      if (authError) {
+        if (authError.message.includes('already registered') || authError.message.includes('User already registered')) {
+          throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.')
+        }
+        throw authError
+      }
+      if (!authData.user) throw new Error('Kayıt başarısız oldu. Lütfen tekrar deneyin.')
 
-      if (authData.user && form.profilePicture) {
-        const ext = form.profilePicture.name.split('.').pop()
-        const filePath = `${authData.user.id}/avatar.${ext}`
-        await supabase.storage.from('avatars').upload(filePath, form.profilePicture, { upsert: true })
+      const userId = authData.user.id
+
+      // 2. Create Profile record (Manual fallback for triggers)
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: userId,
+          role: 'athlete',
+          full_name: form.fullName,
+          email: form.email,
+          phone: form.phone,
+          subscription_tier: 'free',
+          subscription_status: 'inactive'
+        }, { onConflict: 'id' })
+      
+      if (profileError && !profileError.code?.includes('23505')) {
+        console.warn('Profile upsert warning:', profileError.message)
+        // Non-fatal: trigger may have already created it
       }
 
-      toast.success('Profiliniz oluşturuldu! E-postanızı doğrulayın.')
+      // 3. Create Athlete Profile
+      const slug = form.fullName.toLowerCase()
+        .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+        .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+        .replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+        + '-' + Math.random().toString(36).substring(2, 7)
+
+      const { data: athleteData, error: athleteError } = await supabase
+        .from('athlete_profiles')
+        .insert({
+          user_id: userId,
+          full_name: form.fullName,
+          birth_date: form.birthDate || null,
+          nationality: form.nationality,
+          position: form.position,
+          dominant_foot: form.dominantFoot,
+          current_club: form.currentClub || null,
+          sport: 'Football',
+          bio: form.bio || null,
+          is_published: true,
+          slug,
+        })
+        .select('id')
+        .single()
+
+      if (athleteError) {
+        // If it's a duplicate slug, try with a different random suffix
+        if (athleteError.code === '23505' && athleteError.message.includes('slug')) {
+          throw new Error('Lütfen farklı bir isim kombinasyonu deneyin.')
+        }
+        throw new Error(`Sporcu profili oluşturulamadı: ${athleteError.message}`)
+      }
+
+      const athleteProfileId = athleteData?.id
+
+      // 4. Upload Avatar
+      if (form.profilePicture && athleteProfileId) {
+        try {
+          const ext = form.profilePicture.name.split('.').pop()
+          const filePath = `${userId}/avatar.${ext}`
+          const { error: uploadError } = await supabase.storage
+            .from('avatars')
+            .upload(filePath, form.profilePicture, { upsert: true })
+          
+          if (!uploadError) {
+            const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath)
+            await supabase.from('athlete_profiles').update({ avatar_url: publicUrl }).eq('id', athleteProfileId)
+          }
+        } catch (uploadErr) {
+          console.warn('Avatar upload failed (non-fatal):', uploadErr)
+        }
+      }
+
+      // 5. Upload Video (non-fatal - registration succeeds even if video fails)
+      if (form.videoFile && athleteProfileId) {
+        try {
+          const ext = form.videoFile.name.split('.').pop()
+          const filePath = `${userId}/highlight.${ext}`
+          const { error: videoUploadError } = await supabase.storage
+            .from('videos')
+            .upload(filePath, form.videoFile, { upsert: true })
+          
+          if (!videoUploadError) {
+            await supabase.from('athlete_videos').insert({
+              athlete_id: athleteProfileId,
+              title: 'Yetenek Videosu',
+              video_type: 'highlight',
+              is_primary: true,
+              storage_path: filePath,
+            })
+          }
+        } catch (videoErr) {
+          console.warn('Video upload failed (non-fatal):', videoErr)
+        }
+      }
+
+      toast.success('Profiliniz başarıyla oluşturuldu! Lütfen e-postanızı doğrulamak için e-postanızı kontrol edin.')
       router.push('/player-login')
     } catch (err: any) {
-      toast.error(err.message || 'Kayıt sırasında hata oluştu.')
+      console.error('Registration error:', err)
+      toast.error(err.message || 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setLoading(false)
     }
@@ -86,7 +191,7 @@ export default function PlayerRegisterPage() {
   const labelStyle = { display: 'block', fontSize: '11px', fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase' as const, letterSpacing: '0.08em', marginBottom: '8px' }
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 flex items-center justify-center" style={{ background: '#0d1b2a' }}>
+    <div className="min-h-screen pt-24 pb-16 px-4 flex items-center justify-center" style={{ background: '#05050A' }}>
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-10">
@@ -98,7 +203,7 @@ export default function PlayerRegisterPage() {
             ⚽ Oyuncu Kaydı — Ücretsiz
           </div>
           <h1 className="text-3xl font-black text-white mb-2">Profilini Oluştur</h1>
-          <p className="text-gray-400">3 adımda küresel scouting ağına katıl</p>
+          <p className="text-gray-400 font-light">3 adımda küresel scouting ağına katıl</p>
         </div>
 
         {/* Progress Bar */}
@@ -116,7 +221,7 @@ export default function PlayerRegisterPage() {
                 {s}
               </div>
               <span className="text-xs font-medium" style={{ color: step >= s ? '#00e5cc' : '#6b7280' }}>
-                {s === 1 ? 'Kişisel' : s === 2 ? 'Futbol' : 'Profil'}
+                {s === 1 ? 'Kişisel' : s === 2 ? 'Futbol' : 'Video & Profil'}
               </span>
               {s < 3 && <div className="absolute" />}
             </div>
@@ -135,7 +240,7 @@ export default function PlayerRegisterPage() {
           {/* STEP 1 */}
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-bold text-white mb-6">Kişisel Bilgiler</h2>
+              <h2 className="text-xl font-bold text-white mb-6 uppercase tracking-tight">Kişisel Bilgiler</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label style={labelStyle}>Ad Soyad *</label>
@@ -173,7 +278,7 @@ export default function PlayerRegisterPage() {
                   }
                   setStep(2)
                 }}
-                className="w-full py-4 font-black text-base mt-4 hover:scale-[1.02] transition-all"
+                className="w-full py-4 font-black text-base mt-4 hover:scale-[1.02] transition-all uppercase tracking-widest"
                 style={{ background: '#00e5cc', color: '#0d1b2a', borderRadius: '8px', boxShadow: '0 0 20px rgba(0,229,204,0.3)' }}
               >
                 İleri →
@@ -184,7 +289,7 @@ export default function PlayerRegisterPage() {
           {/* STEP 2 */}
           {step === 2 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-bold text-white mb-6">Futbol Profili</h2>
+              <h2 className="text-xl font-bold text-white mb-6 uppercase tracking-tight">Futbol Profili</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label style={labelStyle}>Pozisyon *</label>
@@ -215,7 +320,7 @@ export default function PlayerRegisterPage() {
                 </div>
               </div>
               <div className="flex gap-4 pt-4">
-                <button onClick={() => setStep(1)} className="flex-1 py-4 font-bold text-sm hover:opacity-80 transition-all" style={{ border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: '8px', background: 'transparent' }}>
+                <button onClick={() => setStep(1)} className="flex-1 py-4 font-bold text-xs uppercase tracking-widest hover:opacity-80 transition-all" style={{ border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: '8px', background: 'transparent' }}>
                   ← Geri
                 </button>
                 <button
@@ -226,7 +331,7 @@ export default function PlayerRegisterPage() {
                     }
                     setStep(3)
                   }}
-                  className="flex-1 py-4 font-black text-base hover:scale-[1.02] transition-all"
+                  className="flex-1 py-4 font-black text-base hover:scale-[1.02] transition-all uppercase tracking-widest"
                   style={{ background: '#00e5cc', color: '#0d1b2a', borderRadius: '8px', boxShadow: '0 0 20px rgba(0,229,204,0.3)' }}
                 >
                   İleri →
@@ -238,21 +343,40 @@ export default function PlayerRegisterPage() {
           {/* STEP 3 */}
           {step === 3 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-white mb-6">Profil Görseli</h2>
+              <h2 className="text-xl font-bold text-white mb-6 uppercase tracking-tight">Medya & Bio</h2>
 
-              {/* Image Upload */}
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center border-4" style={{ borderColor: previewImage ? '#00e5cc' : 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)' }}>
-                  {previewImage ? (
-                    <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-4xl">⚽</span>
-                  )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                {/* Image Upload */}
+                <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <label style={labelStyle}>Profil Fotoğrafı *</label>
+                  <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center border-4" style={{ borderColor: previewImage ? '#00e5cc' : 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)' }}>
+                    {previewImage ? (
+                      <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-4xl">👤</span>
+                    )}
+                  </div>
+                  <label className="cursor-pointer px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all hover:bg-[#00e5cc] hover:text-black" style={{ border: '1px solid #00e5cc', color: '#00e5cc' }}>
+                    {previewImage ? 'Değiştir' : 'Seç'}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                  </label>
                 </div>
-                <label className="cursor-pointer px-6 py-3 text-sm font-bold rounded-lg transition-all hover:opacity-80" style={{ border: '1px solid #00e5cc', color: '#00e5cc', borderRadius: '8px' }}>
-                  {previewImage ? 'Fotoğrafı Değiştir' : 'Fotoğraf Yükle *'}
-                  <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-                </label>
+
+                {/* Video Upload */}
+                <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <label style={labelStyle}>Yetenek Videosu (MP4)</label>
+                  <div className="w-24 h-24 rounded-2xl overflow-hidden flex items-center justify-center border-4 border-dashed" style={{ borderColor: form.videoFile ? '#00e5cc' : 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)' }}>
+                    {form.videoFile ? (
+                      <span className="text-xs font-bold text-[#00e5cc] text-center px-2">MP4 Seçildi</span>
+                    ) : (
+                      <span className="text-4xl">🎥</span>
+                    )}
+                  </div>
+                  <label className="cursor-pointer px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all hover:bg-[#00e5cc] hover:text-black" style={{ border: '1px solid #00e5cc', color: '#00e5cc' }}>
+                    {form.videoFile ? 'Değiştir' : 'Video Seç'}
+                    <input type="file" accept="video/mp4" className="hidden" onChange={handleVideoChange} />
+                  </label>
+                </div>
               </div>
 
               {/* Bio */}
@@ -267,7 +391,7 @@ export default function PlayerRegisterPage() {
               </div>
 
               <div className="flex gap-4 pt-2">
-                <button onClick={() => setStep(2)} className="flex-1 py-4 font-bold text-sm hover:opacity-80 transition-all" style={{ border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: '8px', background: 'transparent' }}>
+                <button onClick={() => setStep(2)} className="flex-1 py-4 font-bold text-xs uppercase tracking-widest hover:opacity-80 transition-all" style={{ border: '1px solid rgba(255,255,255,0.2)', color: 'white', borderRadius: '8px', background: 'transparent' }}>
                   ← Geri
                 </button>
                 <button
@@ -279,10 +403,10 @@ export default function PlayerRegisterPage() {
                     handleSubmit()
                   }}
                   disabled={loading}
-                  className="flex-1 py-4 font-black text-base transition-all hover:scale-[1.02] disabled:opacity-50"
+                  className="flex-1 py-4 font-black text-base transition-all hover:scale-[1.02] disabled:opacity-50 uppercase tracking-widest"
                   style={{ background: '#00e5cc', color: '#0d1b2a', borderRadius: '8px', boxShadow: '0 0 20px rgba(0,229,204,0.4)' }}
                 >
-                  {loading ? 'Oluşturuluyor...' : '✅ Profil Oluştur'}
+                  {loading ? 'Oluşturuluyor...' : '✅ Kaydı Tamamla'}
                 </button>
               </div>
             </div>

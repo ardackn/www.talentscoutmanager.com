@@ -1,9 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerComponentClient } from '@/lib/supabase-clean'
-import type { Database } from '@/types/supabase'
-import { eq } from 'drizzle-orm' // optional, using raw for now
+import { createServerComponentClient } from '@/lib/supabase-server'
 
 // Admin email - configure via .env.local
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@talentscoutmanager.com'
@@ -13,13 +11,13 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData()
     const athleteId = formData.get('athleteId') as string
     const content = formData.get('content') as string
-    const scoutName = formData.get('scoutName') || 'Anonymous Scout'
+    const scoutName = (formData.get('scoutName') || 'Anonymous Scout') as string
 
     if (!athleteId || !content?.trim()) {
       return NextResponse.json({ error: 'Missing athleteId or content' }, { status: 400 })
     }
 
-    const supabase = createServerComponentClient({ cookies: () => request.cookies })
+    const supabase = createServerComponentClient({ cookies: () => (request as any).cookies }) as any
 
     // Get current user (scout)
     const { data: { user } } = await supabase.auth.getUser()
@@ -27,29 +25,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Must be logged in' }, { status: 401 })
     }
 
-    // Get scout profile ID
-    const { data: scoutProfile } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('role', 'scout')
-      .single()
-
-    const scoutId = scoutProfile?.id || 'anonymous_scout_' + Date.now()
-
     // 1. Save message to DB - goes to admin dashboard
     const { error: insertError } = await supabase
-      .from('messages')
+      .from('contact_messages')
       .insert({
-        scout_id: scoutId,
+        scout_id: user.id,
         athlete_id: athleteId,
-        content,
-        status: 'sent' as const
+        message: content,
+        scout_name: scoutName,
+        contact_email: user.email || ADMIN_EMAIL,
+        status: 'pending'
       })
 
     if (insertError) {
       console.error('DB insert error:', insertError)
-      return NextResponse.json({ error: 'Failed to save message to admin' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to save message: ' + insertError.message }, { status: 500 })
     }
 
     // 2. Log email notification (SMTP setup optional)

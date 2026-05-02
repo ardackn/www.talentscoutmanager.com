@@ -1,11 +1,11 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerComponentClient } from '@/lib/supabase-clean'
+import { createServerComponentClient } from '@/lib/supabase-server'
 import type { AthletePublic } from '@/types/athlete'
 
 async function createAdminClient(cookieStore: any) {
-  const supabase = createServerComponentClient(cookieStore)
+  const supabase = createServerComponentClient(cookieStore) as any
   const { data: { user } } = await supabase.auth.getUser()
   return { supabase, user }
 }
@@ -40,7 +40,7 @@ const SAMPLE_ATHLETES: Omit<AthletePublic, 'id' | 'created_at'>[] = [
 
 export async function POST(req: NextRequest) {
   try {
-    const { supabase, user } = await createAdminClient({ cookies: () => req.cookies })
+    const { supabase, user } = await createAdminClient({ cookies: () => (req as any).cookies })
     
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -49,24 +49,26 @@ export async function POST(req: NextRequest) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
-      .eq('user_id', user.id)
+      .eq('id', user.id)
       .single()
 
-    if (profile?.role !== 'admin') {
+    if ((profile as any)?.role !== 'admin') {
       return NextResponse.json({ error: 'Admin only' }, { status: 403 })
     }
 
     // Clear existing athletes
-    await supabase.from('athletes').delete().neq('id', '')
+    await supabase.from('athlete_profiles').delete().neq('id', '')
 
     // Insert new sample data
-    const { data, error } = await (supabase as any)
-      .from('athletes')
+    const { data, error } = await supabase
+      .from('athlete_profiles')
       .insert(
         SAMPLE_ATHLETES.map(athlete => ({
-          ...athlete,
-          email: `athlete_${athlete.name.replace(/\s/g, '').toLowerCase()}@demo.talent.com`,
-          phone: null
+          user_id: user.id, // Fallback
+          full_name: athlete.name,
+          sport: 'Football',
+          slug: athlete.name.toLowerCase().replace(/\s/g, '-') + '-' + Math.random().toString(36).substring(2, 7),
+          is_published: true
         }))
       )
 

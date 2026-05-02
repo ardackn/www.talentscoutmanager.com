@@ -26,18 +26,31 @@ export default function ScoutLoginPage() {
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
-    const { data: { session }, error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    })
+    try {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      })
 
-    if (error) {
-      toast.error(error.message)
-    } else if (session) {
-      toast.success('Giriş başarılı!')
-      router.push('/scout/search')
+      if (error) {
+        if (error.message.includes('Invalid login credentials') || error.message.includes('invalid_credentials')) {
+          toast.error('E-posta veya şifre hatalı. Lütfen tekrar deneyin.')
+        } else if (error.message.includes('Email not confirmed')) {
+          toast.error('E-posta adresiniz henüz doğrulanmamış. Lütfen gelen kutunuzu kontrol edin.')
+        } else if (error.message.includes('Too many requests')) {
+          toast.error('Çok fazla giriş denemesi. Lütfen bir süre bekleyin.')
+        } else {
+          toast.error(error.message)
+        }
+      } else if (authData.session) {
+        toast.success('Giriş başarılı!')
+        router.push('/scout/search')
+      }
+    } catch (err: any) {
+      toast.error('Giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (

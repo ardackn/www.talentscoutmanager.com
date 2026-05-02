@@ -25,8 +25,8 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Talent Scout Manager',
-  description: 'Scout, athlete and admin workflows for Talent Scout Manager.',
+  title: 'Talent Scout Manager - AI Destekli Yetenek Keşfi',
+  description: 'Dünyanın en gelişmiş AI destekli oyuncu analiz ve yetenek keşif platformu. Geleceğin yıldızlarını yapay zeka ile keşfedin.',
 }
 
 type RootLayoutProps = {
