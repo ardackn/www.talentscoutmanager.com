@@ -154,8 +154,10 @@ export default function PlayerRegisterPage() {
             .upload(filePath, form.videoFile, { upsert: true })
           
           if (!videoUploadError) {
+            const { data: { publicUrl } } = supabase.storage.from('videos').getPublicUrl(filePath)
             await supabase.from('athlete_videos').insert({
               athlete_id: athleteProfileId,
+              video_url: publicUrl,
               title: 'Yetenek Videosu',
               video_type: 'highlight',
               is_primary: true,
