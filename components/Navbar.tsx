@@ -42,10 +42,10 @@ export default function Navbar() {
 
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center gap-10 text-[13px] font-black uppercase tracking-[0.2em] text-gray-400">
+          <Link href="/discovery" className="hover:text-[#00D26A] transition-colors">Keşfet</Link>
+          <Link href="/transfer-list" className="hover:text-[#F5A623] transition-colors">Transfer Listesi</Link>
           <Link href="/about" className="hover:text-[#00D26A] transition-colors">Biz Kimiz</Link>
-          <Link href="/#solutions" className="hover:text-[#00D26A] transition-colors">Çözümler</Link>
           <Link href="/pricing" className="hover:text-[#00D26A] transition-colors">Fiyatlandırma</Link>
-          <Link href="#contact" className="hover:text-[#00D26A] transition-colors">İletişim</Link>
         </div>
 
         {/* Desktop CTA / User Menu */}
@@ -94,10 +94,10 @@ export default function Navbar() {
             </div>
 
             <div className="space-y-6 flex-1">
+              <Link href="/discovery" className="block text-xl font-bold text-white hover:text-[#00D26A] transition-colors" onClick={() => setMenuOpen(false)}>Keşfet</Link>
+              <Link href="/transfer-list" className="block text-xl font-bold text-white hover:text-[#F5A623] transition-colors" onClick={() => setMenuOpen(false)}>Transfer Listesi</Link>
               <Link href="/about" className="block text-xl font-bold text-white hover:text-[#00D26A] transition-colors" onClick={() => setMenuOpen(false)}>Biz Kimiz</Link>
-              <Link href="/#solutions" className="block text-xl font-bold text-white hover:text-[#00D26A] transition-colors" onClick={() => setMenuOpen(false)}>Çözümler</Link>
               <Link href="/pricing" className="block text-xl font-bold text-white hover:text-[#00D26A] transition-colors" onClick={() => setMenuOpen(false)}>Fiyatlandırma</Link>
-              <Link href="#contact" className="block text-xl font-bold text-white hover:text-[#00D26A] transition-colors" onClick={() => setMenuOpen(false)}>İletişim</Link>
               
               <div className="pt-8 border-t border-white/5 space-y-4">
                 {!session ? (

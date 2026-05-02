@@ -37,39 +37,25 @@ export default function ScoutRegisterPage() {
 
     setLoading(true)
     try {
-      const { data: authData, error } = await supabase.auth.signUp({
+      // 1. Create Auth User & Auto-Confirm via Server Action
+      const { createConfirmedUser } = await import('@/app/actions/auth')
+      const authResult = await createConfirmedUser(form.email, form.password, form.fullName, 'scout')
+      
+      if (!authResult.success) {
+        throw new Error(authResult.error)
+      }
+      
+      const userId = authResult.userId
+
+      // 1.5 Log the user in immediately so RLS policies pass
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: form.email,
-        password: form.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/scout-login`,
-          data: {
-            role: 'scout',
-            full_name: form.fullName,
-          }
-        }
+        password: form.password
       })
 
-      if (error) {
-        if (error.message.includes('already registered') || error.message.includes('User already registered')) {
-          throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.')
-        }
-        throw error
+      if (signInError) {
+        throw new Error('Kullanıcı oluşturuldu ancak giriş yapılamadı. Lütfen giriş yapmayı deneyin.')
       }
-      if (!authData.user) throw new Error('Kayıt başarısız oldu. Lütfen tekrar deneyin.')
-      
-      // Check if user already exists (Supabase returns user with empty identities if email enumeration protection is on)
-      if (authData.user.identities && authData.user.identities.length === 0) {
-        throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.')
-      }
-
-      // Check if session exists (If email confirmations are enabled, session will be null)
-      if (!authData.session) {
-        toast.success('Kayıt başarılı! Lütfen e-postanıza gelen doğrulama bağlantısına tıklayın ve ardından giriş yapın.');
-        router.push('/scout-login');
-        return;
-      }
-
-      const userId = authData.user.id
 
       // 1. Create Profile record (upsert handles trigger-created profiles)
       const { error: profileError } = await supabase.from('profiles').upsert({

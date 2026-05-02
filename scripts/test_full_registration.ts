@@ -30,6 +30,7 @@ async function testFullRegistration() {
   }
 
   const userId = authData.user!.id
+  console.log('Session present:', !!authData.session)
   const slug = 'test-athlete-' + Date.now()
 
   console.log('2. Inserting athlete profile for user:', userId)

@@ -24,6 +24,10 @@ export default function DiscoveryDashboard() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterPosition, setFilterPosition] = useState('All')
+  const [filterAge, setFilterAge] = useState('All')
+  const [filterCountry, setFilterCountry] = useState('All')
+  const [sortBy, setSortBy] = useState('newest')
+  const [showFilters, setShowFilters] = useState(false)
   
   const supabase = createClientComponentClient()
 
@@ -37,7 +41,7 @@ export default function DiscoveryDashboard() {
       .from('athlete_profiles')
       .select('*')
       .eq('is_published', true)
-      .order('created_at', { ascending: false })
+      .order(sortBy === 'newest' ? 'created_at' : 'rating', { ascending: false })
 
     if (!error && data) {
       setAthletes(data)
@@ -45,13 +49,24 @@ export default function DiscoveryDashboard() {
     setLoading(false)
   }
 
+  const countries = Array.from(new Set(athletes.map(a => a.nationality).filter(Boolean)))
+
   const filteredAthletes = athletes.filter(a => {
     const name = a.full_name || ''
     const club = a.current_club || ''
     const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           club.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesPosition = filterPosition === 'All' || a.position === filterPosition
-    return matchesSearch && matchesPosition
+    
+    const age = a.birth_date ? (new Date().getFullYear() - new Date(a.birth_date).getFullYear()) : 0
+    const matchesAge = filterAge === 'All' || 
+                      (filterAge === 'U18' && age < 18) ||
+                      (filterAge === '18-21' && age >= 18 && age <= 21) ||
+                      (filterAge === '22+' && age > 21)
+    
+    const matchesCountry = filterCountry === 'All' || a.nationality === filterCountry
+    
+    return matchesSearch && matchesPosition && matchesAge && matchesCountry
   })
 
   return (
@@ -83,14 +98,83 @@ export default function DiscoveryDashboard() {
                   className="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 focus:border-[#10B981] outline-none transition-all w-full md:w-64 font-medium"
                 />
               </div>
-              <button className="bg-white/5 border border-white/10 p-3 rounded-2xl hover:bg-white/10 transition-all">
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className={`bg-white/5 border border-white/10 p-3 rounded-2xl hover:bg-white/10 transition-all ${showFilters ? 'text-[#10B981] border-[#10B981]/50' : ''}`}
+              >
                 <Filter className="w-6 h-6" />
               </button>
             </div>
           </motion.div>
         </div>
 
-        {/* Filters Bar */}
+        {/* Advanced Filters */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mb-10"
+            >
+              <div className="p-6 bg-white/5 rounded-3xl border border-white/10 grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Yaş Aralığı</label>
+                  <select 
+                    value={filterAge}
+                    onChange={(e) => setFilterAge(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-[#10B981] outline-none"
+                  >
+                    <option value="All">Tümü</option>
+                    <option value="U18">U18</option>
+                    <option value="18-21">18-21 Yaş</option>
+                    <option value="22+">22+ Yaş</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Ülke</label>
+                  <select 
+                    value={filterCountry}
+                    onChange={(e) => setFilterCountry(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-[#10B981] outline-none"
+                  >
+                    <option value="All">Tümü</option>
+                    {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Sıralama</label>
+                  <select 
+                    value={sortBy}
+                    onChange={(e) => {
+                      setSortBy(e.target.value);
+                      fetchAthletes();
+                    }}
+                    className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-sm focus:border-[#10B981] outline-none"
+                  >
+                    <option value="newest">En Yeni</option>
+                    <option value="rating">Güç Sıralaması</option>
+                  </select>
+                </div>
+                <div className="flex items-end">
+                  <button 
+                    onClick={() => {
+                      setFilterAge('All');
+                      setFilterCountry('All');
+                      setFilterPosition('All');
+                      setSearchTerm('');
+                    }}
+                    className="w-full p-3 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-white transition-all"
+                  >
+                    Filtreleri Temizle
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Filters Bar (Positions) */}
         <div className="flex gap-2 mb-10 overflow-x-auto pb-4 no-scrollbar">
           {['All', 'ST', 'LW', 'RW', 'AMF', 'CM', 'CDM', 'LB', 'RB', 'CB', 'GK'].map((pos) => (
             <button

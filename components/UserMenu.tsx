@@ -9,7 +9,7 @@ import { LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 
 export function UserMenu() {
-  const { session, loading } = useSession()
+  const { session, profile, loading } = useSession()
   const supabase = createClientComponentClient()
 
   const handleLogout = async () => {
@@ -49,6 +49,30 @@ export function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
+        {profile?.role === 'athlete' && (
+          <Link href="/athlete/dashboard">
+            <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              <span>Panelim</span>
+            </DropdownMenuItem>
+          </Link>
+        )}
+        {profile?.role === 'scout' && (
+          <>
+            <Link href="/scout/search">
+              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
+                <User className="mr-2 h-4 w-4" />
+                <span>Yetenek Keşfi</span>
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/scout/transfer-list">
+              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
+                <User className="mr-2 h-4 w-4" />
+                <span>Transfer Listem</span>
+              </DropdownMenuItem>
+            </Link>
+          </>
+        )}
         <Link href="/settings">
           <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
             <User className="mr-2 h-4 w-4" />

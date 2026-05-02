@@ -50,41 +50,25 @@ export default function PlayerRegisterPage() {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      // 1. Create Auth User
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // 1. Create Auth User & Auto-Confirm via Server Action
+      const { createConfirmedUser } = await import('@/app/actions/auth')
+      const authResult = await createConfirmedUser(form.email, form.password, form.fullName, 'athlete')
+      
+      if (!authResult.success) {
+        throw new Error(authResult.error)
+      }
+      
+      const userId = authResult.userId
+
+      // 1.5 Log the user in immediately so RLS policies pass
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: form.email,
-        password: form.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/player-login`,
-          data: {
-            role: 'athlete',
-            full_name: form.fullName,
-          }
-        }
+        password: form.password
       })
 
-      if (authError) {
-        if (authError.message.includes('already registered') || authError.message.includes('User already registered')) {
-          throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.')
-        }
-        throw authError
+      if (signInError) {
+        throw new Error('Kullanıcı oluşturuldu ancak giriş yapılamadı. Lütfen giriş yapmayı deneyin.')
       }
-      if (!authData.user) throw new Error('Kayıt başarısız oldu. Lütfen tekrar deneyin.')
-      
-      // Check if user already exists (Supabase returns user with empty identities if email enumeration protection is on)
-      if (authData.user.identities && authData.user.identities.length === 0) {
-        throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.')
-      }
-
-      // Check if session exists (If email confirmations are enabled, session will be null)
-      if (!authData.session) {
-        // We cannot insert profiles without an active session due to RLS.
-        toast.success('Kayıt başarılı! Lütfen e-postanıza gelen doğrulama bağlantısına tıklayın ve ardından giriş yapın.');
-        router.push('/player-login');
-        return;
-      }
-
-      const userId = authData.user.id
 
       // 2. Create Profile record (Manual fallback for triggers)
       const { error: profileError } = await supabase
@@ -186,7 +170,11 @@ export default function PlayerRegisterPage() {
       router.push('/player-login')
     } catch (err: any) {
       console.error('Registration error:', err)
-      toast.error(err.message || 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.')
+      if (err.message?.includes('email rate limit exceeded')) {
+        toast.error('Kayıt limiti aşıldı! Supabase panelinden (Authentication -> Settings -> Rate Limits) limiti artırmanız gerekiyor.')
+      } else {
+        toast.error(err.message || 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.')
+      }
     } finally {
       setLoading(false)
     }

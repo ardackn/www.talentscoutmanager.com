@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -20,6 +20,12 @@ export default function ScoutLoginPage() {
   const router = useRouter()
   const supabase = createClientComponentClient()
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema)
   })
@@ -52,6 +58,8 @@ export default function ScoutLoginPage() {
       setLoading(false)
     }
   }
+
+  if (!mounted) return null
 
   return (
     <div className="min-h-screen flex" style={{ background: '#0d1b2a' }}>

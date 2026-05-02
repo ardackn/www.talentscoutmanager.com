@@ -40,6 +40,7 @@ CREATE TABLE public.athlete_profiles (
   current_club TEXT,
   bio TEXT, -- Changed from biography to bio to match player-register/page.tsx
   avatar_url TEXT,
+  rating INT DEFAULT 0, -- Added for power ranking
   is_published BOOLEAN DEFAULT true,
   profile_views INT DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -87,14 +88,31 @@ CREATE TABLE public.analysis_reports (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 7. ENABLE RLS
+-- 7. CREATE TRANSFER_LISTINGS TABLE
+CREATE TABLE public.transfer_listings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  scout_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  athlete_id UUID REFERENCES public.athlete_profiles(id) ON DELETE SET NULL, -- Optional link to platform athlete
+  full_name TEXT NOT NULL,
+  position TEXT,
+  age INT,
+  image_url TEXT,
+  features JSONB DEFAULT '{}',
+  description TEXT,
+  price TEXT,
+  is_published BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 8. ENABLE RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.athlete_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.scout_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.athlete_videos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analysis_reports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.transfer_listings ENABLE ROW LEVEL SECURITY;
 
--- 8. RLS POLICIES
+-- 9. RLS POLICIES
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
 CREATE POLICY "Users can insert own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
@@ -108,6 +126,9 @@ CREATE POLICY "Scout profiles are viewable by everyone" ON public.scout_profiles
 CREATE POLICY "Scouts can insert own scout profile" ON public.scout_profiles FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Scouts can update own scout profile" ON public.scout_profiles FOR UPDATE USING (user_id = auth.uid());
 CREATE POLICY "Scouts can delete own scout profile" ON public.scout_profiles FOR DELETE USING (user_id = auth.uid());
+
+CREATE POLICY "Transfer listings are viewable by everyone" ON public.transfer_listings FOR SELECT USING (is_published = true);
+CREATE POLICY "Scouts can manage own transfer listings" ON public.transfer_listings FOR ALL USING (scout_id = auth.uid());
 
 CREATE POLICY "Videos are viewable by everyone" ON public.athlete_videos FOR SELECT USING (true);
 CREATE POLICY "Athletes can manage own videos" ON public.athlete_videos FOR ALL USING (
