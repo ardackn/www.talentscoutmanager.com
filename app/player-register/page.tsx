@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@/lib/supabase-client'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { createConfirmedUser } from '@/app/actions/auth'
 
 const COUNTRIES = ['Türkiye', 'Brezilya', 'Arjantin', 'Nijerya', 'Fransa', 'Almanya', 'İspanya', 'İngiltere', 'Portekiz', 'İtalya', 'Hollanda', 'Belçika', 'Uruguay', 'Kolombiya', 'Meksika', 'Diğer']
 const POSITIONS = ['Kaleci', 'Stoper', 'Sol Bek', 'Sağ Bek', 'Defans Ortası', 'Merkez Orta Saha', 'Ofansif Orta Saha', 'Sol Kanat', 'Sağ Kanat', 'Forvet / Santrafor']
@@ -51,7 +52,6 @@ export default function PlayerRegisterPage() {
     setLoading(true)
     try {
       // 1. Create Auth User & Auto-Confirm via Server Action
-      const { createConfirmedUser } = await import('@/app/actions/auth')
       const authResult = await createConfirmedUser(form.email, form.password, form.fullName, 'athlete')
       
       if (!authResult.success) {

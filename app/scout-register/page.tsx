@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@/lib/supabase-client'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { createConfirmedUser } from '@/app/actions/auth'
 import { Dna, Network, Shield } from 'lucide-react'
 
 const COUNTRIES = ['United States', 'United Kingdom', 'Brazil', 'Argentina', 'Nigeria', 'France', 'Germany', 'Spain', 'Portugal', 'Italy', 'Netherlands', 'Belgium', 'Uruguay', 'Colombia', 'Mexico', 'Other']
@@ -38,7 +39,6 @@ export default function ScoutRegisterPage() {
     setLoading(true)
     try {
       // 1. Create Auth User & Auto-Confirm via Server Action
-      const { createConfirmedUser } = await import('@/app/actions/auth')
       const authResult = await createConfirmedUser(form.email, form.password, form.fullName, 'scout')
       
       if (!authResult.success) {
