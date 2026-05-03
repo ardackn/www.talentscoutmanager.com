@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@/lib/supabase-client'
-import { Search, Filter, Star, Target, TrendingUp, Shield, ChevronRight } from 'lucide-react'
+import { Search, Filter, Star, Target, TrendingUp, Shield, ChevronRight, ListPlus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
@@ -252,12 +252,20 @@ export default function DiscoveryDashboard() {
                       </div>
                     </div>
 
-                    <Link 
-                      href={`/scout/reports?id=${athlete.id}`}
-                      className="w-full py-4 bg-white/5 border border-white/10 hover:bg-[#10B981] hover:text-[#0D0D1A] rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center justify-center gap-2"
-                    >
-                      Analiz Raporu <ChevronRight className="w-4 h-4" />
-                    </Link>
+                    <div className="flex gap-2">
+                      <Link 
+                        href={`/scout/reports?id=${athlete.id}`}
+                        className="flex-1 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                      >
+                        Rapor <ChevronRight className="w-3 h-3" />
+                      </Link>
+                      <button 
+                        onClick={() => toast.success(`${athlete.full_name} transfer listesine eklendi!`)}
+                        className="flex-1 py-4 bg-white/5 border border-white/10 hover:bg-[#F5A623] hover:text-[#0D0D1A] rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                      >
+                        Listeye Ekle <ListPlus className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               ))}

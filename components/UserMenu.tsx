@@ -5,7 +5,7 @@ import { createClientComponentClient } from '@/lib/supabase-client'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, User, Search } from 'lucide-react'
 import Link from 'next/link'
 
 export function UserMenu() {
@@ -59,9 +59,15 @@ export function UserMenu() {
         )}
         {profile?.role === 'scout' && (
           <>
-            <Link href="/scout/search">
+            <Link href="/scout/overview">
               <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
                 <User className="mr-2 h-4 w-4" />
+                <span>İzci Paneli</span>
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/scout/search">
+              <DropdownMenuItem className="focus:bg-white/10 cursor-pointer">
+                <Search className="mr-2 h-4 w-4" />
                 <span>Yetenek Keşfi</span>
               </DropdownMenuItem>
             </Link>

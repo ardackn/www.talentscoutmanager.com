@@ -1,391 +1,317 @@
 "use client"
 
-
 import { useState, useEffect, useRef } from 'react'
 import { createClientComponentClient } from '@/lib/supabase-client'
-import type { Database } from '@/types/supabase'
-import type { AthletePublic } from '@/types/athlete'
-import { Position } from '@/types/athlete'
 import { useSession } from '@/hooks/use-session'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Loader2, Upload, Video, BarChart3, MessageSquare } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { talents } from '@/lib/talent-data'
-
-interface Message {
-  id: string
-  fromScout: string
-  toTalentId: string
-  content: string
-  timestamp: string
-  replied: boolean
-}
+import { Loader2, Upload, Video, Edit2, Check, X, Film } from 'lucide-react'
+import { toast } from 'sonner'
+import Link from 'next/link'
 
 export default function AthleteDashboardPage() {
   const { session, profile, loading: sessionLoading } = useSession()
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient()
   
-  const [talent, setTalent] = useState<any>(null)
-  const [messages, setMessages] = useState<Message[]>([])
-  const [reply, setReply] = useState('')
+  const [athlete, setAthlete] = useState<any>(null)
+  const [videos, setVideos] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  
+  // Edit State
+  const [isEditing, setIsEditing] = useState(false)
+  const [editForm, setEditForm] = useState({
+    full_name: '',
+    position: '',
+    nationality: '',
+    birth_date: '',
+    current_club: '',
+    city: ''
+  })
 
-  // Video upload state
+  // Video Upload State
   const [uploading, setUploading] = useState(false)
-  const [videoFile, setVideoFile] = useState<File | null>(null)
-  const [aiResults, setAiResults] = useState<any>(null)
-  const [analyzing, setAnalyzing] = useState(false);
-const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setVideoFile(e.target.files[0]);
-    }
-  };
-
-  const handleVideoDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setVideoFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleAnalyze = async () => {
-    if (!videoFile) {
-      alert('Lütfen önce bir video seçin');
-      return;
-    }
-
-    setAnalyzing(true);
-    try {
-      // Simulate Cloudinary upload
-      await new Promise(r => setTimeout(r, 1500));
-      const mockVideoUrl = 'https://res.cloudinary.com/demo/video/upload/sample.mp4';
-      
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          videoUrl: mockVideoUrl,
-          athleteId: session?.user?.id || talent?.id,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setAiResults(data.analysis);
-      } else {
-        alert('Analiz hatası: ' + data.error);
-      }
-    } catch (error) {
-      alert('Bağlantı hatası');
-    } finally {
-      setAnalyzing(false);
-    }
-  };
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    // Demo: assume first talent or from session
-    const demoTalent = talents[0]
-    setTalent(demoTalent)
-    setMessages(demoTalent?.messages || [])
-  }, [])
+    if (session?.user?.id) {
+      fetchData()
+    }
+  }, [session])
 
-  const sendReply = async () => {
-    if (!talent || !reply.trim()) return
+  const fetchData = async () => {
+    setLoading(true)
+    
+    // Fetch Profile
+    const { data: athData, error: athError } = await supabase
+      .from('athlete_profiles')
+      .select('*')
+      .eq('user_id', session?.user?.id)
+      .single()
 
-    // POST to scout or general message API
+    if (athData) {
+      setAthlete(athData)
+      setEditForm({
+        full_name: athData.full_name || '',
+        position: athData.position || '',
+        nationality: athData.nationality || '',
+        birth_date: athData.birth_date || '',
+        current_club: athData.current_club || '',
+        city: athData.city || ''
+      })
+    }
+
+    // Fetch Videos
+    const { data: vidData } = await supabase
+      .from('athlete_videos')
+      .select('*')
+      .eq('athlete_id', athData?.id)
+      .order('created_at', { ascending: false })
+
+    if (vidData) setVideos(vidData)
+
+    setLoading(false)
+  }
+
+  const handleSaveProfile = async () => {
     try {
-      const formData = new FormData();
-      formData.append('athleteId', talent.id);
-      formData.append('content', reply);
-      formData.append('scoutName', profile?.full_name || 'Athlete Reply');
-      const res = await fetch('/api/scout/contact', {
-        method: 'POST',
-        body: formData
-      });
-      if (res.ok) {
-        alert('Yanıt gönderildi!')
-        setReply('')
-      }
-    } catch {
-      alert('Hata')
+      const { error } = await supabase
+        .from('athlete_profiles')
+        .update(editForm)
+        .eq('id', athlete.id)
+
+      if (error) throw error
+      
+      setAthlete({ ...athlete, ...editForm })
+      setIsEditing(false)
+      toast.success('Profil güncellendi!')
+    } catch (err: any) {
+      toast.error('Güncelleme hatası: ' + err.message)
     }
   }
 
-  if (!talent) {
-    return <div className="container py-16 text-center text-slate-300">Yükleniyor...</div>
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !athlete) return
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error('Video boyutu 100MB dan küçük olmalı')
+      return
+    }
+
+    setUploading(true)
+    try {
+      const ext = file.name.split('.').pop()
+      const filename = `vid_${Math.random().toString(36).slice(2)}.${ext}`
+      const filePath = `${session?.user?.id}/${filename}`
+      
+      const { error: uploadError } = await supabase.storage
+        .from('videos')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      const { data: { publicUrl } } = supabase.storage.from('videos').getPublicUrl(filePath)
+
+      const { data: newVideo, error: dbError } = await supabase
+        .from('athlete_videos')
+        .insert({
+          athlete_id: athlete.id,
+          video_url: publicUrl,
+          title: file.name,
+          video_type: 'custom',
+          is_primary: videos.length === 0,
+          storage_path: filePath
+        })
+        .select()
+        .single()
+
+      if (dbError) throw dbError
+
+      setVideos([newVideo, ...videos])
+      toast.success('Video başarıyla yüklendi!')
+    } catch (err: any) {
+      toast.error('Video yükleme hatası: ' + err.message)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleDeleteVideo = async (videoId: string, storagePath: string) => {
+    try {
+      if (storagePath) {
+        await supabase.storage.from('videos').remove([storagePath])
+      }
+      await supabase.from('athlete_videos').delete().eq('id', videoId)
+      setVideos(videos.filter(v => v.id !== videoId))
+      toast.success('Video silindi')
+    } catch (err) {
+      toast.error('Silme başarısız oldu')
+    }
+  }
+
+  if (sessionLoading || loading) {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin" /></div>
+  }
+
+  if (!athlete) {
+    return (
+      <div className="container py-16 text-center">
+        Profiliniz bulunamadı. Lütfen destek ile iletişime geçin.
+      </div>
+    )
   }
 
   return (
-    <main className="container py-10 md:py-16">
-      <section className="card p-8 md:p-10 mb-12">
-        <div className="flex items-start gap-6 mb-8">
-          <img src={talent.image} alt={talent.name} className="w-24 h-24 rounded-3xl object-cover flex-shrink-0" />
-          <div>
-            <h1 className="text-4xl font-black text-white">{talent.name}</h1>
-            <div className="flex items-center gap-4 text-xl text-slate-300 mt-2">
-              <span>{talent.aiScore} AI</span>
-              <span>{talent.country}</span>
-              <span>{talent.position}</span>
-            </div>
-            <div className="text-lg text-slate-400 mt-1">{talent.age} yaşında • {talent.height}</div>
-          </div>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <div className="text-3xl font-bold text-[#E94560] mb-2">{talent.aiScore}</div>
-            <div className="text-sm text-slate-400">AI Puanı</div>
-          </div>
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <div className="text-3xl font-bold text-[#F7C948] mb-2">{talent.messages.length}</div>
-            <div className="text-sm text-slate-400">Gelen Mesaj</div>
-          </div>
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-            <div className="text-3xl font-bold text-green-400 mb-2">✅</div>
-            <div className="text-sm text-slate-400">Doğrulanmış</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Messages */}
-      <section className="card p-8">
-        <h2 className="text-2xl font-bold text-white mb-8">📥 Gelen Mesajlar</h2>
-        <div className="space-y-4 max-h-96 overflow-y-auto mb-8">
-          {messages.length === 0 ? (
-            <div className="text-center py-12 text-slate-500 rounded-2xl bg-white/5">
-              Henüz scout mesajı yok. Profiliniz öne çıktıkça mesajlar gelecek!
-            </div>
-          ) : (
-            messages.map((msg) => (
-              <div key={msg.id} className="bg-white/10 rounded-2xl p-6 border border-white/20">
-                <div className="flex items-start justify-between mb-3">
-                  <span className="font-semibold bg-[#E94560] px-3 py-1 rounded-full text-sm">{msg.fromScout}</span>
-                  <span className="text-xs text-slate-400">{new Date(msg.timestamp).toLocaleDateString('tr-TR')}</span>
-                </div>
-                <p className="text-slate-200 mb-4 leading-relaxed">{msg.content}</p>
-                {!msg.replied && (
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-                    <p className="text-green-300 text-sm mb-3">Yeni mesaj!</p>
-                    <textarea
-                      value={reply}
-                      onChange={(e) => setReply(e.target.value)}
-                      placeholder="Yanıt yaz..."
-                      className="w-full h-20 p-4 rounded-xl border border-green-500/50 bg-green-500/5 text-white placeholder-slate-400 focus:border-green-400 focus:outline-none resize-none"
-                    />
-                    <button
-                      onClick={sendReply}
-                      disabled={!reply.trim()}
-                      className="mt-3 w-full py-3 px-6 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 disabled:opacity-50 transition"
-                    >
-                      Yanıt Gönder
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-        <div className="text-center text-sm text-slate-500 pt-6 border-t border-white/10">
-          Scout mesajları profilinize gönderilenler. Yanıtlar doğrudan iletilir.
-        </div>
-      </section>
-
-      {/* AI Video Upload & Analysis Section */}
-      {aiResults ? (
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <BarChart3 className="w-7 h-7 text-[#E94560]" />
-            <h2 className="text-2xl font-black text-white">AI Analiz Sonuçları</h2>
-            <Badge className="ml-auto bg-gradient-to-r from-[#E94560] to-purple-600 text-sm font-bold">
-              {aiResults.genel_potansiyel}/100
-            </Badge>
-          </div>
-
-          {/* Score Card */}
-          <Card className="border-white/20 overflow-hidden">
-            <CardContent className="p-8 md:p-12 text-center">
-              <div className="relative mx-auto w-32 h-32 md:w-40 md:h-40 mb-6">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-slate-800/50 to-slate-900/50 border-8 border-white/10" />
-                <div className="absolute inset-4 md:inset-6 w-full h-full bg-gradient-to-r from-[#E94560]/20 to-purple-600/20 rounded-full animate-pulse" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-4xl md:text-5xl font-black text-white drop-shadow-2xl">
-                    {aiResults.genel_potansiyel}
-                  </div>
-                </div>
-              </div>
-              <CardDescription className="text-slate-400 mb-4">Genel Potansiyel Puanı</CardDescription>
-              <div className="flex flex-wrap justify-center gap-2 mb-4">
-                {aiResults.mevki_uygunlugu.map((m: string) => (
-                  <Badge key={m} className="bg-blue-500/20 text-blue-300">{m}</Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Breakdown */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="border-white/10">
-              <CardHeader>
-                <CardTitle className="text-lg">Teknik Beceri</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {Object.entries(aiResults.teknik_beceri).map(([key, value]) => (
-                  <div key={key} className="flex items-center gap-4">
-                    <span className="w-24 font-medium text-slate-300 capitalize">{key}</span>
-                    <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#E94560] to-purple-600 rounded-full transition-all" style={{ width: `${value as number}%` }} />
-                    </div>
-                    <span className="w-8 font-mono font-bold text-white">{value as number}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="border-white/10">
-              <CardHeader>
-                <CardTitle className="text-lg">Fiziksel Özellikler</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {Object.entries(aiResults.fiziksel_ozellikler).map(([key, value]) => (
-                  <div key={key} className="flex items-center gap-4">
-                    <span className="w-24 font-medium text-slate-300 capitalize">{key}</span>
-                    <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
-                      <div className="h-full bg-[#F7C948] rounded-full transition-all" style={{ width: `${value as number}%` }} />
-                    </div>
-                    <span className="w-8 font-mono font-bold text-white">{value as number}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="border-white/10">
-              <CardHeader>
-                <CardTitle className="text-lg">Taktiksel Farkındalık</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {Object.entries(aiResults.taktiksel_farkindalik).map(([key, value]) => (
-                  <div key={key} className="flex items-center gap-4">
-                    <span className="w-28 font-medium text-slate-300 capitalize">{key.replace('_', ' ')}</span>
-                    <div className="flex-1 bg-white/5 rounded-full h-3 relative overflow-hidden">
-                      <div className="h-full bg-[#10B981] rounded-full transition-all" style={{ width: `${value as number}%` }} />
-                    </div>
-                    <span className="w-8 font-mono font-bold text-white">{value as number}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="border-white/10 bg-[#E94560]/10 mt-6">
-            <CardHeader>
-              <CardTitle>Gelişim Önerileri</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="list-disc pl-5 space-y-2 text-slate-300">
-                {aiResults.gelisim_onerileri.map((rec: string, i: number) => (
-                  <li key={i}>{rec}</li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          <div className="flex gap-3 mt-6">
-            <Button onClick={() => { setAiResults(null); setVideoFile(null); }} className="flex-1" variant="outline">
-              Yeni Video Yükle
-            </Button>
-          </div>
-        </section>
-      ) : (
-        <section className="card p-8 md:p-12">
-          <CardHeader className="text-center pb-2">
-            <CardTitle className="flex items-center justify-center gap-3 text-3xl md:text-4xl">
-              <BarChart3 className="w-10 h-10" />
-              Video Yükle & AI Analizi
-            </CardTitle>
-            <CardDescription className="text-slate-400 max-w-md mx-auto">
-              Videonuzu yükleyin, ölçülerinizi girin ve otomatik Scout Score alın!
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Video Upload */}
-            <div className="border-2 border-dashed border-white/20 rounded-3xl p-8 text-center hover:border-[#E94560]/50 transition-all group cursor-pointer bg-white/5 hover:bg-white/10" 
-                 onClick={() => fileInputRef.current?.click()}
-                 onDrop={handleVideoDrop}
-                 onDragOver={(e) => e.preventDefault()}>
-              <Upload className="w-12 h-12 mx-auto mb-4 text-slate-400 group-hover:text-[#E94560] transition" />
-              {videoFile ? (
-                <div>
-                  <p className="text-lg font-semibold mb-2 text-white">{videoFile.name}</p>
-                  <video src={URL.createObjectURL(videoFile)} controls className="max-w-full max-h-48 mx-auto rounded-2xl" />
-                </div>
-              ) : (
-                <>
-                  <p className="text-lg font-semibold mb-1 text-white">Drag & drop video veya tıkla</p>
-                  <p className="text-sm text-slate-400">MP4/MOV (max 100MB)</p>
-                </>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="video/*"
-                onChange={handleVideoSelect}
-                className="hidden"
-              />
-            </div>
-
-            {/* Analyze Form removed */}
-
-            <Button 
-              onClick={handleAnalyze}
-              disabled={!videoFile || analyzing}
-              className="w-full h-16 text-xl font-bold bg-gradient-to-r from-[#E94560] to-purple-600 hover:from-red-500 shadow-2xl"
-              size="lg"
+    <main className="container py-10 md:py-16 min-h-screen">
+      
+      {/* Profile Section */}
+      <section className="card p-8 md:p-10 mb-8 relative">
+        {!isEditing ? (
+          <button 
+            onClick={() => setIsEditing(true)}
+            className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors flex items-center gap-2"
+          >
+            <Edit2 className="w-4 h-4" /> <span className="text-sm font-bold">Düzenle</span>
+          </button>
+        ) : (
+          <div className="absolute top-6 right-6 flex gap-2">
+            <button 
+              onClick={handleSaveProfile}
+              className="p-3 bg-[#00e5cc] text-black hover:bg-white rounded-xl transition-colors flex items-center gap-2"
             >
-              {analyzing ? (
-                <>
-                  <Loader2 className="w-6 h-6 mr-3 animate-spin" />
-                  Yükleniyor ve Analiz Ediliyor...
-                </>
-              ) : (
-                <>
-                  <Upload className="w-6 h-6 mr-3" />
-                  Videoyu Yükle & Analiz Et
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </section>
-      )}
+              <Check className="w-4 h-4" /> <span className="text-sm font-bold">Kaydet</span>
+            </button>
+            <button 
+              onClick={() => setIsEditing(false)}
+              className="p-3 bg-red-500/20 text-red-500 hover:bg-red-500/40 rounded-xl transition-colors flex items-center gap-2"
+            >
+              <X className="w-4 h-4" /> <span className="text-sm font-bold">İptal</span>
+            </button>
+          </div>
+        )}
 
-      {/* Quick Actions */}
-      <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-        <a href="/" className="card p-8 text-center hover:-translate-y-1 transition">
-          <div className="text-3xl mb-4">🏠</div>
-          <h3 className="font-bold mb-2">Ana Sayfa</h3>
-          <p className="text-sm text-slate-400">Platforma dön</p>
-        </a>
-        <a href="/scout/overview" className="card p-8 text-center hover:-translate-y-1 transition">
-          <div className="text-3xl mb-4">🔍</div>
-          <h3 className="font-bold mb-2">İzci Görünümü</h3>
-          <p className="text-sm text-slate-400">İzci tarafını test et</p>
-        </a>
-        <a href="/admin/login" className="card p-8 text-center hover:-translate-y-1 transition">
-          <div className="text-3xl mb-4">⚙️</div>
-          <h3 className="font-bold mb-2">Admin</h3>
-          <p className="text-sm text-slate-400">Yönetim paneli</p>
-        </a>
+        <div className="flex items-start gap-6">
+          <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center overflow-hidden border border-white/20">
+            {athlete.avatar_url ? (
+              <img src={athlete.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-3xl font-black italic text-white/50">{athlete.full_name.charAt(0)}</span>
+            )}
+          </div>
+          <div className="flex-1 mt-2">
+            {isEditing ? (
+              <input 
+                value={editForm.full_name} 
+                onChange={e => setEditForm({...editForm, full_name: e.target.value})}
+                className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-2xl font-black text-white w-full max-w-sm mb-2"
+              />
+            ) : (
+              <h1 className="text-4xl font-black text-white">{athlete.full_name}</h1>
+            )}
+            
+            <div className="flex flex-wrap gap-4 text-sm font-bold uppercase tracking-widest text-gray-400 mt-2">
+              <span className="flex items-center gap-2">
+                🌍 
+                {isEditing ? (
+                   <input value={editForm.nationality} onChange={e=>setEditForm({...editForm, nationality: e.target.value})} className="bg-white/5 border border-white/20 rounded px-2 py-1 text-white w-24"/>
+                ) : (athlete.nationality || 'Belirtilmedi')}
+              </span>
+              <span className="flex items-center gap-2">
+                ⚽ 
+                {isEditing ? (
+                   <input value={editForm.position} onChange={e=>setEditForm({...editForm, position: e.target.value})} className="bg-white/5 border border-white/20 rounded px-2 py-1 text-white w-24"/>
+                ) : (athlete.position || 'Belirtilmedi')}
+              </span>
+              <span className="flex items-center gap-2">
+                🛡️ 
+                {isEditing ? (
+                   <input value={editForm.current_club} onChange={e=>setEditForm({...editForm, current_club: e.target.value})} className="bg-white/5 border border-white/20 rounded px-2 py-1 text-white w-32" placeholder="Kulüp"/>
+                ) : (athlete.current_club || 'Serbest')}
+              </span>
+            </div>
+            
+            {isEditing && (
+              <div className="mt-4">
+                <label className="block text-[10px] font-black uppercase text-gray-500 mb-1">Şehir</label>
+                <input 
+                  value={editForm.city} 
+                  onChange={e => setEditForm({...editForm, city: e.target.value})}
+                  className="bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white w-full max-w-md"
+                />
+              </div>
+            )}
+            {!isEditing && athlete.city && (
+              <p className="mt-4 text-sm text-gray-400 max-w-2xl">Şehir: {athlete.city}</p>
+            )}
+          </div>
+        </div>
       </section>
+
+      {/* Videos Section */}
+      <section className="card p-8 md:p-10 mb-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-black text-white flex items-center gap-3">
+            <Film className="w-6 h-6 text-[#00e5cc]" /> Videolarım
+          </h2>
+          <div>
+            <input 
+              type="file" 
+              accept="video/*" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleVideoUpload}
+            />
+            <Button 
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="bg-[#00e5cc] text-black hover:bg-white font-bold"
+            >
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Upload className="w-4 h-4 mr-2" />}
+              {uploading ? 'Yükleniyor...' : 'Video Yükle'}
+            </Button>
+          </div>
+        </div>
+
+        {videos.length === 0 ? (
+          <div className="text-center py-12 bg-white/5 border border-dashed border-white/10 rounded-2xl">
+            <Video className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-bold mb-2">Henüz Video Yüklemedin</h3>
+            <p className="text-gray-500 text-sm">Yeteneklerini sergilemek için sınırsız sayıda maç veya antrenman videosu yükleyebilirsin.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videos.map(video => (
+              <div key={video.id} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden group">
+                <video src={video.video_url} controls className="w-full aspect-video bg-black object-contain" />
+                <div className="p-4 flex justify-between items-center">
+                  <span className="font-bold text-sm truncate">{video.title || 'İsimsiz Video'}</span>
+                  <button 
+                    onClick={() => handleDeleteVideo(video.id, video.storage_path)}
+                    className="text-red-500 hover:text-red-400 text-xs font-bold uppercase"
+                  >
+                    Sil
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Quick Links */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <Link href="/discovery" className="card p-8 text-center hover:bg-white/5 transition-colors group">
+          <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🌍</div>
+          <h3 className="text-xl font-black uppercase italic mb-2">Keşfet</h3>
+          <p className="text-sm text-gray-400">Tüm yetenekleri gör (Filtresiz Görünüm)</p>
+        </Link>
+        <Link href="/transfer-list" className="card p-8 text-center hover:bg-white/5 transition-colors group">
+          <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">📋</div>
+          <h3 className="text-xl font-black uppercase italic mb-2">Transfer Listesi</h3>
+          <p className="text-sm text-gray-400">Açık transfer pazarını incele</p>
+        </Link>
+      </section>
+
     </main>
   )
 }
-
-
-
-
-
-
-
-
-
-
