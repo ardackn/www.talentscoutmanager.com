@@ -6,8 +6,9 @@ import { createClientComponentClient } from '@/lib/supabase-client'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { createConfirmedUser } from '@/app/actions/auth'
+import { ALL_COUNTRIES } from '@/lib/countries'
 
-const COUNTRIES = ['Türkiye', 'Brezilya', 'Arjantin', 'Nijerya', 'Fransa', 'Almanya', 'İspanya', 'İngiltere', 'Portekiz', 'İtalya', 'Hollanda', 'Belçika', 'Uruguay', 'Kolombiya', 'Meksika', 'Diğer']
+const COUNTRIES = ALL_COUNTRIES
 const POSITIONS = ['Kaleci', 'Stoper', 'Sol Bek', 'Sağ Bek', 'Defans Ortası', 'Merkez Orta Saha', 'Ofansif Orta Saha', 'Sol Kanat', 'Sağ Kanat', 'Forvet / Santrafor']
 const LEVELS = ['Amatör', 'Bölgesel Lig', 'İl Ligi', 'Alt Lig', 'Profesyonel', 'Akademi / U17', 'Akademi / U19', 'Akademi / U21']
 

@@ -7,8 +7,9 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { createConfirmedUser } from '@/app/actions/auth'
 import { Dna, Network, Shield } from 'lucide-react'
+import { ALL_COUNTRIES } from '@/lib/countries'
 
-const COUNTRIES = ['United States', 'United Kingdom', 'Brazil', 'Argentina', 'Nigeria', 'France', 'Germany', 'Spain', 'Portugal', 'Italy', 'Netherlands', 'Belgium', 'Uruguay', 'Colombia', 'Mexico', 'Other']
+const COUNTRIES = ALL_COUNTRIES
 
 import { Database } from '@/types/supabase'
 
