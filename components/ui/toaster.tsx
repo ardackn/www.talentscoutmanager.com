@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  Toast,
-  Toaster as Sonner
-} from "sonner"
+import { Toaster as Sonner } from "sonner"
 
 const Toaster = ({
   ...props
