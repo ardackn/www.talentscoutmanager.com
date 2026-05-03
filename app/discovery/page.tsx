@@ -7,28 +7,34 @@ import Link from 'next/link'
 
 const POSITIONS = ['Kaleci','Stoper','Sol Bek','Sağ Bek','Defans Ortası','Merkez Orta Saha','Ofansif Orta Saha','Sol Kanat','Sağ Kanat','Forvet']
 
-const NAMES = [
-  'Arda Güler','Kerem Aktürkoğlu','Barış Alper Yılmaz','Semih Kılıçsoy','Kenan Yıldız',
-  'Can Uzun','Bertuğ Yıldırım','Yunus Akgün','Orkun Kökçü','Hakan Çalhanoğlu',
-  'Ferdi Kadıoğlu','Zeki Çelik','Merih Demiral','Ozan Kabak','Çağlar Söyüncü',
-  'Uğurcan Çakır','Altay Bayındır','Mert Günok','İrfan Can Kahveci','Okay Yokuşlu',
-  'Salih Özcan','Cengiz Ünder','Enes Ünal','Umut Nayir','Cenk Tosun',
-  'Abdülkerim Bardakcı','Samet Akaydın','Eren Elmalı','Rıdvan Yılmaz','Bünyamin Balcı',
-  'Emirhan İlkhan','Yasin Özcan','Cihan Çanak','Efe Akman','Hamza Akman',
-  'Gökdeniz Bayrakdar','Tiago Çukur','Erencan Yardımcı','Ali Akman','Ravil Tagir',
-  'Serdar Saatçı','Ahmetcan Kaplan','Doğan Alemdar','Taha Altıkardeş','Arif Boşluk',
-  'Emrecan Bulut','Yunus Emre Konak','Emre Demir','Burak İnce','Ömer Faruk Beyaz',
-  'Enis Destan','Naci Ünüvar','Efecan Karaca','Berkan Kutlu','Taylan Antalyalı',
-  'Halil Dervişoğlu','Serdar Dursun','Yusuf Yazıcı','Dorukhan Toköz','Abdülkadir Ömür',
-  'Yusuf Sarı','Deniz Türüç','Berkay Özcan','Salih Uçan','Emre Akbaba',
-  'Efkan Bekiroğlu','Oğuz Aydın','Can Keleş','Eren Dinkçi','Atakan Karazor',
-  'Suat Serdar','Kerem Demirbay','Emre Can','İlkay Gündoğan','Deniz Undav',
-  'Mert Müldür','Kaan Ayhan','Umut Meraş','Onur Bulut','Mehmet Zeki Çelik',
-  'Necip Uysal','Cenk Özkaçar','Tayyip Talha Sanuç','Ozan Tufan','Yusuf Erdoğan',
-  'Emre Mor','Gökhan Töre','Caner Erkin','Gökhan Gönül','Arda Turan',
-  'Burak Yılmaz','Selçuk İnan','Hami Mandıralı','Tanju Çolak','Metin Oktay',
-  'Rıdvan Dilmen','Sergen Yalçın','Fatih Terim','Şenol Güneş','Mustafa Denizli'
+const FIRST_NAMES = [
+  'Ahmet','Mehmet','Mustafa','Ali','Hüseyin','İbrahim','Ömer','Kerem','Emre','Arda',
+  'Enes','Furkan','Burak','Oğuzhan','Selim','Can','Mert','Yiğit','Berkay','Tolga',
+  'Semih','Atakan','Efe','Umut','Cihan','Sarp','Bora','Kaan','Deniz','Ege'
 ]
+
+const LAST_NAMES = [
+  'Yılmaz','Kaya','Demir','Çelik','Şahin','Yıldız','Aydın','Özdemir','Arslan','Doğan',
+  'Kılıç','Aslan','Çetin','Kara','Koç','Kurt','Özcan','Tekin','Polat','Güneş',
+  'Bulut','Yıldırım','Sert','Toprak',' Kaplan','Aksoy','Öztürk','Avcı','Uysal','Sarı'
+]
+
+function generateRandomNames(count: number) {
+  const names: string[] = []
+  for (let i = 0; i < count; i++) {
+    const first = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)]
+    const last = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)]
+    const name = `${first} ${last}`
+    if (!names.includes(name)) {
+      names.push(name)
+    } else {
+      i-- // Retry if duplicate
+    }
+  }
+  return names
+}
+
+const NAMES = generateRandomNames(100)
 
 const BIRTH_YEARS = Array.from({length: 7}, (_,i) => 2008 + i) // 2008-2014 → 12-18 yaş
 
@@ -44,10 +50,11 @@ function generatePlayers() {
     const currentYear = new Date().getFullYear()
     const age = currentYear - birthYear
     
-    // Yaşa ve isme göre benzersiz, gerçekçi portre eşleşmesi (xsgames kütüphanesi ile daha net ayrım)
+    // Yaşa ve isme göre benzersiz, gerçekçi portre eşleşmesi
+    // Not: AI Görsel oluşturucu (Nano/Gemini) kotası dolu olduğu için xsgames kütüphanesinden gerçekçi ve Türk tipolojisine en uygun yüzler seçiliyor.
     let avatarId = 1
     if (age <= 14) {
-      avatarId = (i % 25) + 50 // Daha genç/çocuksu profiller
+      avatarId = (i % 25) + 50 // Çocuksu/Genç profiller
     } else if (age <= 16) {
       avatarId = (i % 25) + 25 // Genç ergen profilleri
     } else {
