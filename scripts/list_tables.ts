@@ -16,7 +16,7 @@ async function listTables() {
   if (error) {
     // If pg_tables isn't accessible via PostgREST (usually it's not), try a RPC or just guess
     console.log("Could not access pg_tables directly. Trying common names...")
-    const tables = ['profiles', 'profiller', 'athlete_profiles', 'oyuncu_profilleri', 'scout_profiles', 'scout_profilleri', 'athlete_videos', 'oyuncu_videolari']
+    const tables = ['profiles', 'profiller', 'athlete_profiles', 'oyuncu_profilleri', 'scout_profiles', 'scout_profilleri', 'athlete_videos', 'oyuncu_videolari', 'transfer_listings']
     for (const table of tables) {
       const { error: tableError } = await supabase.from(table).select('*').limit(1)
       if (!tableError || (tableError.code !== '42P01')) {
