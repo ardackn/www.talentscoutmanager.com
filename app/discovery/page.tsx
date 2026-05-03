@@ -36,7 +36,7 @@ function generateRandomNames(count: number) {
 
 const NAMES = generateRandomNames(100)
 
-const BIRTH_YEARS = Array.from({length: 7}, (_,i) => 2008 + i) // 2008-2014 → 12-18 yaş
+const BIRTH_YEARS = Array.from({length: 5}, (_,i) => 2010 + i) // 2010-2014 → 12-16 yaş (2026 baz alınarak)
 
 function generatePlayers() {
   return NAMES.slice(0, 100).map((name, i) => {
@@ -50,16 +50,9 @@ function generatePlayers() {
     const currentYear = new Date().getFullYear()
     const age = currentYear - birthYear
     
-    // Yaşa ve isme göre benzersiz, gerçekçi portre eşleşmesi
-    // Not: AI Görsel oluşturucu (Nano/Gemini) kotası dolu olduğu için xsgames kütüphanesinden gerçekçi ve Türk tipolojisine en uygun yüzler seçiliyor.
-    let avatarId = 1
-    if (age <= 14) {
-      avatarId = (i % 25) + 50 // Çocuksu/Genç profiller
-    } else if (age <= 16) {
-      avatarId = (i % 25) + 25 // Genç ergen profilleri
-    } else {
-      avatarId = (i % 25) + 1  // Genç yetişkin profilleri
-    }
+    // 12-16 yaş arası beyaz Avrupalı tipolojisine uygun yüzler seçiliyor.
+    // i % 40 + 10 aralığı genellikle bu tipolojiye uygun çeşitlilik sunar.
+    let avatarId = (i % 40) + 10 
 
     return {
       id: String(i + 1),
@@ -69,7 +62,7 @@ function generatePlayers() {
       nationality: 'Türkiye',
       current_club: 'Amatör (Bağımsız)',
       rating,
-      avatar_url: `https://xsgames.co/randomusers/assets/avatars/male/${avatarId}.jpg?v=${i}`,
+      avatar_url: `https://randomuser.me/api/portraits/men/${avatarId}.jpg?v=${i}`,
     }
   })
 }
