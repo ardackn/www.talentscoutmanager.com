@@ -7,57 +7,51 @@ import Link from 'next/link'
 
 const POSITIONS = ['Kaleci','Stoper','Sol Bek','Sağ Bek','Defans Ortası','Merkez Orta Saha','Ofansif Orta Saha','Sol Kanat','Sağ Kanat','Forvet']
 
-const FIRST_NAMES = [
-  'Ahmet','Mehmet','Mustafa','Ali','Hüseyin','İbrahim','Ömer','Kerem','Emre','Arda',
-  'Enes','Furkan','Burak','Oğuzhan','Selim','Can','Mert','Yiğit','Berkay','Tolga',
-  'Semih','Atakan','Efe','Umut','Cihan','Sarp','Bora','Kaan','Deniz','Ege'
+const GLOBAL_FIRST_NAMES = [
+  'James', 'Lukas', 'Mateo', 'Alex', 'Giovanni', 'Lars', 'Sven', 'Pavel', 'Dimitri', 'Hugo',
+  'Carlos', 'Joao', 'Andre', 'Stefan', 'Nikola', 'Zlatan', 'Kylian', 'Kevin', 'Jude', 'Erling',
+  'Mohamed', 'Hakim', 'Sadio', 'Victor', 'Alphonso', 'Christian', 'Robert', 'Harry', 'Declan', 'Bukayo'
 ]
 
-const LAST_NAMES = [
-  'Yılmaz','Kaya','Demir','Çelik','Şahin','Yıldız','Aydın','Özdemir','Arslan','Doğan',
-  'Kılıç','Aslan','Çetin','Kara','Koç','Kurt','Özcan','Tekin','Polat','Güneş',
-  'Bulut','Yıldırım','Sert','Toprak',' Kaplan','Aksoy','Öztürk','Avcı','Uysal','Sarı'
+const GLOBAL_LAST_NAMES = [
+  'Smith', 'Müller', 'Garcia', 'Rossi', 'Silva', 'Hansen', 'Andersson', 'Ivanov', 'Popov', 'Dubois',
+  'Martinez', 'Ferreira', 'Santos', 'Novak', 'Petrovic', 'Ibrahimovic', 'Mbappe', 'De Bruyne', 'Bellingham', 'Haaland',
+  'Salah', 'Ziyech', 'Mane', 'Osimhen', 'Davies', 'Pulisic', 'Lewandowski', 'Kane', 'Rice', 'Saka'
 ]
 
-function generateRandomNames(count: number) {
+function generateGlobalNames(count: number) {
   const names: string[] = []
   for (let i = 0; i < count; i++) {
-    const first = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)]
-    const last = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)]
-    const name = `${first} ${last}`
-    if (!names.includes(name)) {
-      names.push(name)
-    } else {
-      i-- // Retry if duplicate
-    }
+    const first = GLOBAL_FIRST_NAMES[i % GLOBAL_FIRST_NAMES.length]
+    const last = GLOBAL_LAST_NAMES[Math.floor(i / GLOBAL_FIRST_NAMES.length) % GLOBAL_LAST_NAMES.length]
+    names.push(`${first} ${last}`)
   }
   return names
 }
 
-const NAMES = generateRandomNames(100)
+const NAMES = generateGlobalNames(80)
 
-const BIRTH_YEARS = Array.from({length: 5}, (_,i) => 2010 + i) // 2010-2014 → 12-16 yaş (2026 baz alınarak)
+const BIRTH_YEARS = Array.from({length: 12}, (_,i) => 1998 + i) // 1998-2009 → 17-28 yaş (2026 baz alınarak)
 
 function generatePlayers() {
-  return NAMES.slice(0, 100).map((name, i) => {
+  return NAMES.map((name, i) => {
     const pos = POSITIONS[i % POSITIONS.length]
     const birthYear = BIRTH_YEARS[i % BIRTH_YEARS.length]
     const birthMonth = String((i % 12) + 1).padStart(2,'0')
     const birthDay = String((i % 28) + 1).padStart(2,'0')
-    const rating = 68 + (i % 22)
-    // Use DiceBear with unique seeds based on name for consistent avatars
-    const seed = encodeURIComponent(name + i)
-    const currentYear = new Date().getFullYear()
-    const age = currentYear - birthYear
     
+    // 30 Kiralık (i < 30), 50 Satılık (i >= 30)
+    const status = i < 30 ? 'Kiralık' : 'Satılık'
+
     return {
       id: String(i + 1),
       full_name: name,
       position: pos,
       birth_date: `${birthYear}-${birthMonth}-${birthDay}`,
-      nationality: 'Türkiye',
-      current_club: 'Amatör (Bağımsız)',
-      rating,
+      nationality: 'Global',
+      current_club: 'Serbest',
+      level: 'Profesyonel',
+      status: status
     }
   })
 }
@@ -71,12 +65,14 @@ interface Player {
   birth_date: string
   nationality: string
   current_club: string
-  rating: number
+  level: string
+  status: 'Satılık' | 'Kiralık'
 }
 
 interface ContactForm {
   phone: string
   email: string
+  clubName: string
   message: string
 }
 
@@ -84,7 +80,7 @@ export default function DiscoveryPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
   const [showContact, setShowContact] = useState(false)
-  const [contactForm, setContactForm] = useState<ContactForm>({ phone: '', email: '', message: '' })
+  const [contactForm, setContactForm] = useState<ContactForm>({ phone: '', email: '', clubName: '', message: '' })
   const [sending, setSending] = useState(false)
 
   const filtered = PLAYERS.filter(p =>
@@ -95,8 +91,8 @@ export default function DiscoveryPage() {
   const getAge = (birth_date: string) => new Date().getFullYear() - new Date(birth_date).getFullYear()
 
   const handleSendContact = async () => {
-    if (!contactForm.phone || !contactForm.email) {
-      toast.error('Telefon ve e-posta zorunludur.')
+    if (!contactForm.phone || !contactForm.email || !contactForm.clubName) {
+      toast.error('Telefon, e-posta ve kulüp ismi zorunludur.')
       return
     }
     if (!contactForm.message) {
@@ -112,13 +108,14 @@ export default function DiscoveryPage() {
           playerName: selectedPlayer?.full_name,
           senderPhone: contactForm.phone,
           senderEmail: contactForm.email,
+          senderClub: contactForm.clubName,
           message: contactForm.message,
         }),
       })
       if (!res.ok) throw new Error()
       toast.success('Mesajınız başarıyla iletildi!')
       setShowContact(false)
-      setContactForm({ phone: '', email: '', message: '' })
+      setContactForm({ phone: '', email: '', clubName: '', message: '' })
       setSelectedPlayer(null)
     } catch {
       toast.error('Mesaj gönderilemedi. Lütfen tekrar deneyin.')
@@ -134,10 +131,10 @@ export default function DiscoveryPage() {
       <div className="pb-16 text-center px-6 relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#10B981]/5 rounded-full blur-[100px] pointer-events-none" />
         <h1 className="text-4xl md:text-6xl font-black uppercase italic tracking-tighter mb-4 relative z-10">
-          Global <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-white">Discovery Grid</span>
+          Transfer <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-white">Listesi</span>
         </h1>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base font-light relative z-10">
-          Tüm dünyadan oyuncuları keşfedin.
+          Satılık ve Kiralık Profesyonel Oyuncular (17-28 Yaş)
         </p>
         <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-xs font-black uppercase tracking-widest">
@@ -184,11 +181,11 @@ export default function DiscoveryPage() {
                   {player.full_name.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A14] via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-[#10B981]">
-                  {player.position}
+                <div className="absolute top-3 left-3 bg-[#10B981] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-black">
+                  {player.status}
                 </div>
-                <div className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-[#05050A] border border-white/10 flex items-center justify-center text-sm font-black italic group-hover:border-[#10B981] group-hover:text-[#10B981] transition-colors">
-                  {player.rating}
+                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-white">
+                  {player.position}
                 </div>
               </div>
               <div className="p-3">
@@ -198,7 +195,7 @@ export default function DiscoveryPage() {
                     {getAge(player.birth_date)} YAŞ
                   </span>
                   <span className="text-[9px] bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 px-2 py-0.5 rounded font-black uppercase">
-                    Amatör
+                    {player.level}
                   </span>
                 </div>
               </div>
@@ -248,8 +245,8 @@ export default function DiscoveryPage() {
                     <h2 className="text-3xl font-black italic text-white uppercase mt-4 mb-2">{selectedPlayer.full_name}</h2>
                     <div className="grid grid-cols-3 gap-4 py-4 border-y border-white/5 mb-6">
                       <div>
-                        <div className="text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-1">Skor</div>
-                        <div className="text-3xl font-black text-[#10B981] italic">{selectedPlayer.rating}</div>
+                        <div className="text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-1">Durum</div>
+                        <div className="text-xl font-black text-[#10B981] italic uppercase">{selectedPlayer.status}</div>
                       </div>
                       <div>
                         <div className="text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-1">Yaş</div>
@@ -257,7 +254,7 @@ export default function DiscoveryPage() {
                       </div>
                       <div>
                         <div className="text-[9px] text-gray-500 uppercase tracking-widest font-bold mb-1">Seviye</div>
-                        <div className="text-sm font-bold text-white mt-1">Amatör</div>
+                        <div className="text-sm font-bold text-white mt-1">{selectedPlayer.level}</div>
                       </div>
                     </div>
 
@@ -270,6 +267,13 @@ export default function DiscoveryPage() {
                           placeholder="Telefon numaranız *"
                           value={contactForm.phone}
                           onChange={e => setContactForm(f => ({ ...f, phone: e.target.value }))}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#10B981] transition-all"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Kulüp İsminiz *"
+                          value={contactForm.clubName}
+                          onChange={e => setContactForm(f => ({ ...f, clubName: e.target.value }))}
                           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none focus:border-[#10B981] transition-all"
                         />
                         <input
@@ -289,7 +293,7 @@ export default function DiscoveryPage() {
                       </div>
                     ) : (
                       <p className="text-gray-500 text-sm leading-relaxed">
-                        Tüm dünyadan keşfedilmeyi bekleyen futbol yetenekleri. İletişim kurmak için aşağıdaki butona tıklayın.
+                        Profesyonel transfer listesinde yer alan oyuncu için transfer süreci başlatmak üzeresiniz. Lütfen bilgilerinizi eksiksiz doldurun.
                       </p>
                     )}
                   </div>
@@ -318,7 +322,7 @@ export default function DiscoveryPage() {
                         className="w-full py-4 bg-white text-[#05050A] rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#10B981] transition-colors group"
                       >
                         <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        İletişim Kur
+                        Transfer Et
                       </button>
                     )}
                   </div>
