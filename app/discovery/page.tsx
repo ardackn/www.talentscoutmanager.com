@@ -8,26 +8,26 @@ import Link from 'next/link'
 const POSITIONS = ['Kaleci','Stoper','Sol Bek','Sağ Bek','Defans Ortası','Merkez Orta Saha','Ofansif Orta Saha','Sol Kanat','Sağ Kanat','Forvet']
 
 const NAMES = [
-  'Ahmet Yılmaz','Mehmet Kaya','Mustafa Çelik','Ali Demir','Hüseyin Şahin',
-  'İbrahim Yıldız','Emre Arslan','Burak Koç','Serkan Aydın','Kerem Doğan',
-  'Enes Güneş','Barış Kurt','Furkan Polat','Oğuzhan Tekin','Halil Çalışkan',
-  'Yasin Erdoğan','Taner Kılıç','Sinan Öztürk','Alper Avcı','Doruk Bulut',
-  'Cenk Yılmaz','Onur Karahan','Berk Aslan','Tarık Duman','Selim Kara',
-  'Uğur Şimşek','Fatih Bozkurt','Arda Çetin','Erhan Kocaman','Volkan Demirci',
-  'Tolga Sert','Gökhan Güler','Bekir Yıldırım','Ramazan Toprak','Serhat Kaplan',
-  'Murat Aksoy','Kadir Yılmaz','Fırat Özcan','Altan Gürbüz','Berkay Çoban',
-  'Selin Oğuz','Deniz Kaptan','Ozan Ergin','Emir Boz','Baran Kılınç',
-  'Yiğit Güneş','Sercan Aras','Tunç Uysal','Kaan Sarı','Levent Koçak',
-  'Bilal Yıldız','Anıl Kaya','Suat Demir','Ömer Şen','Celal Arslan',
-  'Zülfü Polat','Hakan Yüksel','Niyazi Kara','Tevfik Şahin','Caner Doğru',
-  'İlker Taş','Tayfun Özdemir','Çağrı Aksoy','Metin Korkmaz','Doğukan Yılmaz',
-  'Semih Güven','Atakan Çevik','Erdem Karakuş','Veysel Bayrak','Mete Pehlivanlı',
-  'Nuri Köksal','Ufuk Şahin','Alican Demirkaya','Bayram Turan','Rıza Yıldırım',
-  'Sami Koç','Bülent Kara','Onurcan Çelik','Ekrem Özcan','Nazım Doğan',
-  'Yusuf Atalay','Şükrü Aydın','Mücahit Kurt','Cevdet Şimşek','Nizamettin Gül',
-  'Tahsin Çalışkan','Orhan Duman','Mahir Kocaoğlu','Zafer Bozdemir','Ferdi Yıldız',
-  'Hasan Gürdal','Mesut Arslan','Koray Başaran','Dursun Tekin','Adnan Kaya',
-  'Tolgahan Güçlü','Seyit Albayrak','Naci Uysal','İzzet Demir','Turan Kaptan',
+  'Arda Güler','Kerem Aktürkoğlu','Barış Alper Yılmaz','Semih Kılıçsoy','Kenan Yıldız',
+  'Can Uzun','Bertuğ Yıldırım','Yunus Akgün','Orkun Kökçü','Hakan Çalhanoğlu',
+  'Ferdi Kadıoğlu','Zeki Çelik','Merih Demiral','Ozan Kabak','Çağlar Söyüncü',
+  'Uğurcan Çakır','Altay Bayındır','Mert Günok','İrfan Can Kahveci','Okay Yokuşlu',
+  'Salih Özcan','Cengiz Ünder','Enes Ünal','Umut Nayir','Cenk Tosun',
+  'Abdülkerim Bardakcı','Samet Akaydın','Eren Elmalı','Rıdvan Yılmaz','Bünyamin Balcı',
+  'Emirhan İlkhan','Yasin Özcan','Cihan Çanak','Efe Akman','Hamza Akman',
+  'Gökdeniz Bayrakdar','Tiago Çukur','Erencan Yardımcı','Ali Akman','Ravil Tagir',
+  'Serdar Saatçı','Ahmetcan Kaplan','Doğan Alemdar','Taha Altıkardeş','Arif Boşluk',
+  'Emrecan Bulut','Yunus Emre Konak','Emre Demir','Burak İnce','Ömer Faruk Beyaz',
+  'Enis Destan','Naci Ünüvar','Efecan Karaca','Berkan Kutlu','Taylan Antalyalı',
+  'Halil Dervişoğlu','Serdar Dursun','Yusuf Yazıcı','Dorukhan Toköz','Abdülkadir Ömür',
+  'Yusuf Sarı','Deniz Türüç','Berkay Özcan','Salih Uçan','Emre Akbaba',
+  'Efkan Bekiroğlu','Oğuz Aydın','Can Keleş','Eren Dinkçi','Atakan Karazor',
+  'Suat Serdar','Kerem Demirbay','Emre Can','İlkay Gündoğan','Deniz Undav',
+  'Mert Müldür','Kaan Ayhan','Umut Meraş','Onur Bulut','Mehmet Zeki Çelik',
+  'Necip Uysal','Cenk Özkaçar','Tayyip Talha Sanuç','Ozan Tufan','Yusuf Erdoğan',
+  'Emre Mor','Gökhan Töre','Caner Erkin','Gökhan Gönül','Arda Turan',
+  'Burak Yılmaz','Selçuk İnan','Hami Mandıralı','Tanju Çolak','Metin Oktay',
+  'Rıdvan Dilmen','Sergen Yalçın','Fatih Terim','Şenol Güneş','Mustafa Denizli'
 ]
 
 const BIRTH_YEARS = Array.from({length: 7}, (_,i) => 2008 + i) // 2008-2014 → 12-18 yaş
@@ -44,18 +44,14 @@ function generatePlayers() {
     const currentYear = new Date().getFullYear()
     const age = currentYear - birthYear
     
-    // Yaşa göre farklı ve gerçekçi portre havuzları
-    // Türk tipolojisine (Akdeniz/Orta Doğu) daha yakın görünebilecek ID aralıkları seçiliyor
+    // Yaşa ve isme göre benzersiz, gerçekçi portre eşleşmesi (xsgames kütüphanesi ile daha net ayrım)
     let avatarId = 1
     if (age <= 14) {
-      // 12-14 yaş: Daha çocuksu/genç yüzler için yüksek ID'ler genellikle daha çeşitli
-      avatarId = (i % 30) + 60 
+      avatarId = (i % 25) + 50 // Daha genç/çocuksu profiller
     } else if (age <= 16) {
-      // 15-16 yaş: Genç ergen yüzleri
-      avatarId = (i % 30) + 30
+      avatarId = (i % 25) + 25 // Genç ergen profilleri
     } else {
-      // 17-18 yaş: Daha yetişkin genç yüzler
-      avatarId = (i % 30) + 1
+      avatarId = (i % 25) + 1  // Genç yetişkin profilleri
     }
 
     return {
@@ -66,7 +62,7 @@ function generatePlayers() {
       nationality: 'Türkiye',
       current_club: 'Amatör (Bağımsız)',
       rating,
-      avatar_url: `https://randomuser.me/api/portraits/men/${avatarId}.jpg`,
+      avatar_url: `https://xsgames.co/randomusers/assets/avatars/male/${avatarId}.jpg?v=${i}`,
     }
   })
 }
