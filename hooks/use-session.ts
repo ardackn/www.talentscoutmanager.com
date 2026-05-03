@@ -29,12 +29,30 @@ export function useSession() {
         
         setSession(user)
         if (user) {
-          const { data, error } = await supabase
+          let { data, error } = await supabase
             .from('profiles')
             .select('id, role, full_name, phone, status, subscription_tier, email')
             .or(`user_id.eq.${user.id},id.eq.${user.id}`)
             .single()
           
+          // Profile Repair: If logged in but profile missing, create it
+          if (!data && user.id) {
+            console.log('Profile missing for user, creating one...', user.id)
+            const { data: newData, error: insertError } = await supabase
+              .from('profiles')
+              .upsert({
+                id: user.id,
+                email: user.email,
+                role: user.user_metadata?.role || 'athlete',
+                full_name: user.user_metadata?.full_name || 'Kullanıcı',
+                subscription_tier: 'free'
+              })
+              .select()
+              .single()
+            
+            if (!insertError) data = newData
+          }
+
           if (!mounted) return
           setProfile((data as any) || null)
         } else {
