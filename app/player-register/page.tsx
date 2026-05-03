@@ -51,6 +51,7 @@ export default function PlayerRegisterPage() {
 
   const handleSubmit = async () => {
     setLoading(true)
+    try {
       // 1. Try Auto-Confirm Registration (Admin Method)
       let userId = '';
       const authResult = await createConfirmedUser(form.email, form.password, form.fullName, 'athlete')
