@@ -44,14 +44,18 @@ function generatePlayers() {
     const currentYear = new Date().getFullYear()
     const age = currentYear - birthYear
     
-    // Yaşa göre farklı ve gerçekçi portre havuzları (AI image servisi limitine takıldığı için public API'lerden yaşa uygun olabilecek id'ler seçiliyor)
+    // Yaşa göre farklı ve gerçekçi portre havuzları
+    // Türk tipolojisine (Akdeniz/Orta Doğu) daha yakın görünebilecek ID aralıkları seçiliyor
     let avatarId = 1
     if (age <= 14) {
-      avatarId = (i % 20) + 70 // Daha genç görünümlü olabilecek portreler
+      // 12-14 yaş: Daha çocuksu/genç yüzler için yüksek ID'ler genellikle daha çeşitli
+      avatarId = (i % 30) + 60 
     } else if (age <= 16) {
-      avatarId = (i % 30) + 40 // Orta yaş (genç) portreler
+      // 15-16 yaş: Genç ergen yüzleri
+      avatarId = (i % 30) + 30
     } else {
-      avatarId = (i % 40) + 1  // Standart genç yetişkin
+      // 17-18 yaş: Daha yetişkin genç yüzler
+      avatarId = (i % 30) + 1
     }
 
     return {
@@ -60,7 +64,7 @@ function generatePlayers() {
       position: pos,
       birth_date: `${birthYear}-${birthMonth}-${birthDay}`,
       nationality: 'Türkiye',
-      current_club: 'Bağımsız',
+      current_club: 'Amatör (Bağımsız)',
       rating,
       avatar_url: `https://randomuser.me/api/portraits/men/${avatarId}.jpg`,
     }
