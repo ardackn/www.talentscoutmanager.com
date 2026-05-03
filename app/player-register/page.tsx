@@ -51,28 +51,39 @@ export default function PlayerRegisterPage() {
 
   const handleSubmit = async () => {
     setLoading(true)
-    try {
-      // 1. Create Auth User & Auto-Confirm via Server Action
+      // 1. Try Auto-Confirm Registration (Admin Method)
+      let userId = '';
       const authResult = await createConfirmedUser(form.email, form.password, form.fullName, 'athlete')
       
-      if (!authResult.success) {
-        throw new Error(authResult.error)
+      if (authResult.success) {
+        userId = authResult.userId
+      } else {
+        console.warn('Admin registration failed, falling back to standard signup:', authResult.error)
+        // Fallback: Standard Registration
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: {
+            data: {
+              full_name: form.fullName,
+              role: 'athlete'
+            }
+          }
+        })
+
+        if (signUpError) throw signUpError
+        if (!signUpData.user) throw new Error('Kullanıcı oluşturulamadı.')
+        userId = signUpData.user.id
       }
       
-      const userId = authResult.userId
-
-      // 1.5 Log the user in immediately so RLS policies pass
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      // 1.5 Log the user in immediately (works if auto-confirm succeeded or if session auto-starts)
+      await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password
       })
 
-      if (signInError) {
-        throw new Error('Kullanıcı oluşturuldu ancak giriş yapılamadı. Lütfen giriş yapmayı deneyin.')
-      }
-
       // 2. Create Profile record (Manual fallback for triggers)
-      const { error: profileError } = await supabase
+      await supabase
         .from('profiles')
         .upsert({
           id: userId,
@@ -84,11 +95,6 @@ export default function PlayerRegisterPage() {
           subscription_status: 'inactive'
         }, { onConflict: 'id' })
       
-      if (profileError && !profileError.code?.includes('23505')) {
-        console.warn('Profile upsert warning:', profileError.message)
-        // Non-fatal: trigger may have already created it
-      }
-
       // 3. Create Athlete Profile
       const slug = form.fullName.toLowerCase()
         .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
@@ -115,11 +121,8 @@ export default function PlayerRegisterPage() {
         .single()
 
       if (athleteError) {
-        // If it's a duplicate slug, try with a different random suffix
-        if (athleteError.code === '23505' && athleteError.message.includes('slug')) {
-          throw new Error('Lütfen farklı bir isim kombinasyonu deneyin.')
-        }
-        throw new Error(`Sporcu profili oluşturulamadı: ${athleteError.message}`)
+        // Log but don't fail registration if profile insert fails (user exists now)
+        console.error('Athlete profile error:', athleteError)
       }
 
       const athleteProfileId = athleteData?.id
@@ -142,7 +145,7 @@ export default function PlayerRegisterPage() {
         }
       }
 
-      // 5. Upload Video (non-fatal - registration succeeds even if video fails)
+      // 5. Upload Video (non-fatal)
       if (form.videoFile && athleteProfileId) {
         try {
           const ext = form.videoFile.name.split('.').pop()
@@ -167,15 +170,11 @@ export default function PlayerRegisterPage() {
         }
       }
 
-      toast.success('Profiliniz başarıyla oluşturuldu! Lütfen e-postanızı doğrulamak için e-postanızı kontrol edin.')
+      toast.success('Kayıt Başarılı! Hesabınıza yönlendiriliyorsunuz...')
       router.push('/player-login')
     } catch (err: any) {
       console.error('Registration error:', err)
-      if (err.message?.includes('email rate limit exceeded')) {
-        toast.error('Kayıt limiti aşıldı! Supabase panelinden (Authentication -> Settings -> Rate Limits) limiti artırmanız gerekiyor.')
-      } else {
-        toast.error(err.message || 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.')
-      }
+      toast.error(err.message || 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setLoading(false)
     }

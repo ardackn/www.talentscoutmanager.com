@@ -19,21 +19,35 @@ export function useSession() {
   const supabase = createClientComponentClient()
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const user = session?.user || null
-      setSession(user)
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('id, role, full_name, phone, status, subscription_tier, email')
-          .or(`user_id.eq.${user.id},id.eq.${user.id}`)
-          .single()
-        setProfile((data as any) || null)
-      } else {
-        setProfile(null)
+    let mounted = true
+
+    async function initialize() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const user = session?.user || null
+        if (!mounted) return
+        
+        setSession(user)
+        if (user) {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('id, role, full_name, phone, status, subscription_tier, email')
+            .or(`user_id.eq.${user.id},id.eq.${user.id}`)
+            .single()
+          
+          if (!mounted) return
+          setProfile((data as any) || null)
+        } else {
+          setProfile(null)
+        }
+      } catch (err) {
+        console.error('Session initialization error:', err)
+      } finally {
+        if (mounted) setLoading(false)
       }
-      setLoading(false)
-    })
+    }
+
+    initialize()
 
     const {
       data: { subscription },
@@ -41,19 +55,26 @@ export function useSession() {
       const user = session?.user || null
       setSession(user)
       if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('id, role, full_name, phone, status, subscription_tier, email')
-          .or(`user_id.eq.${user.id},id.eq.${user.id}`)
-          .single()
-        setProfile((data as any) || null)
+        try {
+          const { data } = await supabase
+            .from('profiles')
+            .select('id, role, full_name, phone, status, subscription_tier, email')
+            .or(`user_id.eq.${user.id},id.eq.${user.id}`)
+            .single()
+          if (mounted) setProfile((data as any) || null)
+        } catch (e) {
+          if (mounted) setProfile(null)
+        }
       } else {
-        setProfile(null)
+        if (mounted) setProfile(null)
       }
-      setLoading(false)
+      if (mounted) setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [supabase])
 
   return { session, profile, loading }

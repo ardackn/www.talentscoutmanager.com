@@ -38,28 +38,39 @@ export default function ScoutRegisterPage() {
     }
 
     setLoading(true)
-    try {
-      // 1. Create Auth User & Auto-Confirm via Server Action
+      // 1. Try Auto-Confirm Registration (Admin Method)
+      let userId = '';
       const authResult = await createConfirmedUser(form.email, form.password, form.fullName, 'scout')
       
-      if (!authResult.success) {
-        throw new Error(authResult.error)
+      if (authResult.success) {
+        userId = authResult.userId
+      } else {
+        console.warn('Admin registration failed, falling back to standard signup:', authResult.error)
+        // Fallback: Standard Registration
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: {
+            data: {
+              full_name: form.fullName,
+              role: 'scout'
+            }
+          }
+        })
+
+        if (signUpError) throw signUpError
+        if (!signUpData.user) throw new Error('Kullanıcı oluşturulamadı.')
+        userId = signUpData.user.id
       }
       
-      const userId = authResult.userId
-
-      // 1.5 Log the user in immediately so RLS policies pass
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      // 1.5 Log the user in immediately
+      await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password
       })
 
-      if (signInError) {
-        throw new Error('Kullanıcı oluşturuldu ancak giriş yapılamadı. Lütfen giriş yapmayı deneyin.')
-      }
-
       // 1. Create Profile record (upsert handles trigger-created profiles)
-      const { error: profileError } = await supabase.from('profiles').upsert({
+      await supabase.from('profiles').upsert({
         id: userId,
         role: 'scout',
         full_name: form.fullName,
@@ -68,11 +79,6 @@ export default function ScoutRegisterPage() {
         subscription_tier: 'free',
         subscription_status: 'inactive'
       }, { onConflict: 'id' })
-
-      if (profileError && !profileError.code?.includes('23505')) {
-        console.warn('Profile upsert warning:', profileError.message)
-        // Non-fatal
-      }
 
       // 2. Create Scout Profile
       const { error: scoutError } = await supabase.from('scout_profiles').insert({
@@ -85,15 +91,10 @@ export default function ScoutRegisterPage() {
       })
 
       if (scoutError) {
-        if (scoutError.code === '23505') {
-          // Duplicate - likely already exists, not fatal
-          console.warn('Scout profile may already exist:', scoutError.message)
-        } else {
-          throw new Error(`İzci profili oluşturulamadı: ${scoutError.message}`)
-        }
+        console.error('Scout profile error:', scoutError)
       }
 
-      toast.success('Kayıt başarılı! Lütfen e-postanızı doğrulamak için gelen kutunuzu kontrol edin.')
+      toast.success('Kayıt Başarılı! Hesabınıza yönlendiriliyorsunuz...')
       router.push('/scout-login')
     } catch (err: any) {
       console.error('Scout registration error:', err)

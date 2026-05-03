@@ -17,16 +17,8 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  if (loading) {
-    return (
-      <nav className="fixed top-0 w-full z-50 bg-[#0d1b2a]/90 backdrop-blur-md border-b border-white/5 py-4">
-        <div className="container mx-auto px-6 max-w-7xl flex items-center justify-between">
-          <div className="w-32 h-8 bg-white/10 rounded-xl animate-pulse" />
-          <div className="hidden md:flex gap-4"><div className="w-20 h-6 bg-white/10 rounded-md animate-pulse" /></div>
-        </div>
-      </nav>
-    )
-  }
+  // Removed if(loading) to ensure logo is always visible and prevent "stuck" skeleton loader from annoying users
+  // We handle loading state inline for the auth buttons instead
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0d1b2a]/95 backdrop-blur-md border-b border-white/10 py-3' : 'bg-transparent py-5'}`}>
@@ -51,7 +43,9 @@ export default function Navbar() {
         {/* Desktop CTA / User Menu */}
         <div className="flex items-center gap-6">
           <div className="hidden md:flex items-center gap-4">
-            {!session ? (
+            {loading ? (
+              <div className="w-24 h-10 bg-white/5 rounded-full animate-pulse" />
+            ) : !session ? (
               <>
                 <Link
                   href="/player-login"
@@ -100,7 +94,9 @@ export default function Navbar() {
               <Link href="/pricing" className="block text-xl font-bold text-white hover:text-[#00D26A] transition-colors" onClick={() => setMenuOpen(false)}>Fiyatlandırma</Link>
               
               <div className="pt-8 border-t border-white/5 space-y-4">
-                {!session ? (
+                {loading ? (
+                  <div className="w-full h-12 bg-white/5 rounded-2xl animate-pulse" />
+                ) : !session ? (
                   <>
                     <Link 
                       href="/player-login" 
