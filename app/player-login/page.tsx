@@ -50,7 +50,7 @@ export default function PlayerLoginPage() {
         }
       } else if (authData.session) {
         toast.success('Giriş başarılı!')
-        router.push('/athlete/dashboard')
+        window.location.href = '/athlete/dashboard'
       }
     } catch (err: any) {
       toast.error('Giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.')

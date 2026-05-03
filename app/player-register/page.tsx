@@ -59,7 +59,8 @@ export default function PlayerRegisterPage() {
         password: form.password
       })
 
-      router.push('/athlete/dashboard')
+      // Hard redirect to ensure session is picked up correctly
+      window.location.href = '/athlete/dashboard'
     } catch (err: any) {
       console.error('Registration error:', err)
       toast.error(err.message || 'Kayıt sırasında bir hata oluştu.')

@@ -50,7 +50,7 @@ export default function ScoutLoginPage() {
         }
       } else if (authData.session) {
         toast.success('Giriş başarılı!')
-        router.push('/scout/search')
+        window.location.href = '/scout/overview'
       }
     } catch (err: any) {
       toast.error('Giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.')
