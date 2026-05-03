@@ -50,10 +50,6 @@ function generatePlayers() {
     const currentYear = new Date().getFullYear()
     const age = currentYear - birthYear
     
-    // 12-16 yaş arası beyaz Avrupalı tipolojisine uygun yüzler seçiliyor.
-    // i % 40 + 10 aralığı genellikle bu tipolojiye uygun çeşitlilik sunar.
-    let avatarId = (i % 40) + 10 
-
     return {
       id: String(i + 1),
       full_name: name,
@@ -62,7 +58,6 @@ function generatePlayers() {
       nationality: 'Türkiye',
       current_club: 'Amatör (Bağımsız)',
       rating,
-      avatar_url: `https://randomuser.me/api/portraits/men/${avatarId}.jpg?v=${i}`,
     }
   })
 }
@@ -77,7 +72,6 @@ interface Player {
   nationality: string
   current_club: string
   rating: number
-  avatar_url: string
 }
 
 interface ContactForm {
@@ -185,12 +179,10 @@ export default function DiscoveryPage() {
               onClick={() => { setSelectedPlayer(player); setShowContact(false) }}
               className="group cursor-pointer bg-[#0A0A14] border border-white/5 hover:border-[#10B981]/50 rounded-[24px] overflow-hidden transition-all shadow-lg hover:shadow-[0_20px_40px_rgba(16,185,129,0.1)]"
             >
-              <div className="aspect-square relative overflow-hidden bg-[#0d1117]">
-                <img
-                  src={player.avatar_url}
-                  alt={player.full_name}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                />
+              <div className="aspect-square relative overflow-hidden bg-[#0d1117] flex items-center justify-center">
+                <div className="text-4xl font-black text-white/20 select-none">
+                  {player.full_name.split(' ').map(n => n[0]).join('')}
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A14] via-transparent to-transparent" />
                 <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest text-[#10B981]">
                   {player.position}
@@ -232,9 +224,11 @@ export default function DiscoveryPage() {
               className="w-full max-w-2xl bg-[#0A0A14] border border-white/10 rounded-[32px] overflow-hidden shadow-[0_0_100px_rgba(16,185,129,0.15)]"
             >
               <div className="flex flex-col md:flex-row">
-                {/* Image side */}
-                <div className="w-full md:w-2/5 aspect-square relative bg-[#0d1117]">
-                  <img src={selectedPlayer.avatar_url} alt={selectedPlayer.full_name} className="w-full h-full object-cover" />
+                {/* Image side replaced with initials */}
+                <div className="w-full md:w-2/5 aspect-square relative bg-[#0d1117] flex items-center justify-center">
+                  <div className="text-7xl font-black text-white/10 select-none">
+                    {selectedPlayer.full_name.split(' ').map(n => n[0]).join('')}
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A14] via-transparent to-transparent md:bg-gradient-to-r" />
                 </div>
 
