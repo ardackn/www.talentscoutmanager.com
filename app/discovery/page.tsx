@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { X, Mail, Phone, Search, Send } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 const POSITIONS = ['Kaleci','Stoper','Sol Bek','Sağ Bek','Defans Ortası','Merkez Orta Saha','Ofansif Orta Saha','Sol Kanat','Sağ Kanat','Forvet']
 
@@ -45,10 +46,10 @@ function generatePlayers() {
       full_name: name,
       position: pos,
       birth_date: `${birthYear}-${birthMonth}-${birthDay}`,
-      nationality: 'Türkiye',
-      current_club: 'Amatör',
+      nationality: 'Global',
+      current_club: 'Bağımsız',
       rating,
-      avatar_url: `https://api.dicebear.com/9.x/adventurer/svg?seed=${seed}&backgroundColor=0a0a14&hair=short01,short02,short03,short04,short05&skinColor=apricot,brown,bronze,wheat&eyes=variant01,variant02,variant04,variant06`,
+      avatar_url: `https://randomuser.me/api/portraits/men/${(i % 99) + 1}.jpg`,
     }
   })
 }
@@ -129,10 +130,20 @@ export default function DiscoveryPage() {
           Global <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-white">Discovery Grid</span>
         </h1>
         <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base font-light relative z-10">
-          100 Türk genç futbol yeteneği — 12-18 yaş arası, iletişime hazır.
+          Tüm dünyadan oyuncuları keşfedin.
         </p>
-        <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-xs font-black uppercase tracking-widest relative z-10">
-          ⚽ {PLAYERS.length} Sporcu
+        <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-xs font-black uppercase tracking-widest">
+            ⚽ 10.048 Kayıtlı Kişi
+          </div>
+        </div>
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+          <Link href="/scout-register" className="px-6 py-3 bg-[#10B981] text-[#05050A] rounded-full font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+            Keşfetmek İçin Kayıt Ol (İzci)
+          </Link>
+          <Link href="/player-register" className="px-6 py-3 bg-white/5 text-white border border-white/20 rounded-full font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-colors">
+            Yeteneğiniz Görünür Olsun - Coğrafya Kader Değil, Videonu Yükle
+          </Link>
         </div>
       </div>
 
@@ -271,7 +282,7 @@ export default function DiscoveryPage() {
                       </div>
                     ) : (
                       <p className="text-gray-500 text-sm leading-relaxed">
-                        Türkiye genelinde keşfedilmeyi bekleyen genç amatör futbol yeteneği. İletişim kurmak için aşağıdaki butona tıklayın.
+                        Tüm dünyadan keşfedilmeyi bekleyen futbol yetenekleri. İletişim kurmak için aşağıdaki butona tıklayın.
                       </p>
                     )}
                   </div>
